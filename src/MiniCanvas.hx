@@ -46,6 +46,16 @@ class MiniCanvas {
   }
 
   // utilities
+  public function box(handler : Float -> Float -> RGBA) {
+    for(x in 0...width) {
+      for(y in 0...height) {
+        ctx.fillStyle = handler(x/width, y/height).toCSS3();
+        ctx.fillRect(x, y, 1, 1);
+      }
+    }
+    return this;
+  }
+
   public function checkboard(?size : Float = 8, ?light : RGB, ?dark : RGB) {
     var cols   = (width / size).ceil(),
         rows   = (height / size).ceil(),
@@ -57,6 +67,7 @@ class MiniCanvas {
         ctx.fillRect(c * size, r * size, size, size);
       }
     }
+    return this;
   }
 
   // platform specific
