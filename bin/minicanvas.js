@@ -240,27 +240,46 @@ Main.main = function() {
 	}).display("gradientVertical");
 };
 Math.__name__ = true;
-var MiniCanvas = function(width,height) {
+var MiniCanvas = function(width,height,scaleMode) {
+	if(null != scaleMode) this.scaleMode = scaleMode; else if(MiniCanvas.isNode()) this.scaleMode = ScaleMode.NoScale; else this.scaleMode = ScaleMode.Auto;
 	this.width = width;
 	this.height = height;
+	this.processScale();
 	if(MiniCanvas.isNode()) this.initNode(); else this.initBrowser();
 };
 MiniCanvas.__name__ = true;
 MiniCanvas.isNode = function() {
 	return typeof module !== 'undefined' && module.exports;
 };
-MiniCanvas.prototype = {
-	initNode: function() {
-		var Canvas = require("canvas");
-		this.canvas = new Canvas(this.width,this.height);
-		this.ctx = this.canvas.getContext("2d");
-	}
-	,initBrowser: function() {
+MiniCanvas.devicePixelRatio = function() {
+	return window.devicePixelRatio || 1;
+};
+MiniCanvas.backingStoreRatio = function() {
+	if(MiniCanvas._backingStoreRatio == 0) {
+		var canvas;
 		var _this = window.document;
-		this.canvas = _this.createElement("canvas");
-		this.canvas.width = this.width;
-		this.canvas.height = this.height;
-		this.ctx = this.canvas.getContext("2d");
+		canvas = _this.createElement("canvas");
+		var context = canvas.getContext("2d");
+		MiniCanvas._backingStoreRatio = (function(c) {
+        return c.webkitBackingStorePixelRatio ||
+          c.mozBackingStorePixelRatio ||
+          c.msBackingStorePixelRatio ||
+          c.oBackingStorePixelRatio ||
+          c.backingStorePixelRatio || 1;
+        })(context);
+	}
+	return MiniCanvas._backingStoreRatio;
+};
+MiniCanvas.prototype = {
+	processScale: function() {
+		var _g = this.scaleMode;
+		switch(_g[1]) {
+		case 1:
+			var ratio = MiniCanvas.devicePixelRatio() / MiniCanvas.backingStoreRatio();
+			if(ratio != 1) this.scaleMode = ScaleMode.Scaled(ratio); else this.scaleMode = ScaleMode.NoScale;
+			break;
+		default:
+		}
 	}
 	,display: function(name) {
 		if(MiniCanvas.isNode()) this.save(name); else this.append(name);
@@ -328,6 +347,28 @@ MiniCanvas.prototype = {
 		}
 		return this;
 	}
+	,initBrowser: function() {
+		var _this = window.document;
+		this.canvas = _this.createElement("canvas");
+		{
+			var _g = this.scaleMode;
+			switch(_g[1]) {
+			case 2:
+				var v = _g[2];
+				this.canvas.width = Math.round(this.width * v);
+				this.canvas.height = Math.round(this.height * v);
+				this.canvas.style.width = "" + this.width + "px";
+				this.canvas.style.height = "" + this.height + "px";
+				this.ctx = this.canvas.getContext("2d");
+				this.ctx.scale(v,v);
+				break;
+			default:
+				this.canvas.width = this.width;
+				this.canvas.height = this.height;
+				this.ctx = this.canvas.getContext("2d");
+			}
+		}
+	}
 	,append: function(name) {
 		var figure = window.document.createElement("figure");
 		var caption = window.document.createElement("figcaption");
@@ -348,8 +389,31 @@ MiniCanvas.prototype = {
 			console.log("saved " + name + ".png");
 		});
 	}
+	,initNode: function() {
+		var Canvas = require("canvas");
+		{
+			var _g = this.scaleMode;
+			switch(_g[1]) {
+			case 2:
+				var v = _g[2];
+				this.canvas = new Canvas(this.width * v,this.height * v);
+				this.ctx = this.canvas.getContext("2d");
+				this.ctx.scale(v,v);
+				break;
+			default:
+				this.canvas = new Canvas(this.width,this.height);
+				this.ctx = this.canvas.getContext("2d");
+			}
+		}
+	}
 	,__class__: MiniCanvas
 };
+var ScaleMode = { __ename__ : true, __constructs__ : ["NoScale","Auto","Scaled"] };
+ScaleMode.NoScale = ["NoScale",0];
+ScaleMode.NoScale.__enum__ = ScaleMode;
+ScaleMode.Auto = ["Auto",1];
+ScaleMode.Auto.__enum__ = ScaleMode;
+ScaleMode.Scaled = function(v) { var $x = ["Scaled",2,v]; $x.__enum__ = ScaleMode; return $x; };
 var Std = function() { };
 Std.__name__ = true;
 Std.string = function(s) {
@@ -5332,6 +5396,7 @@ thx.color.Color.names.h["$" + "yellow green"] = thx.color.Color.yellowgreen;
     ;
 MiniCanvas.imagePath = "images";
 MiniCanvas.parentNode = typeof document != 'undefined' && document.body;
+MiniCanvas._backingStoreRatio = 0;
 js.Boot.__toStr = {}.toString;
 thx.color._Grey.Grey_Impl_.black = 0;
 thx.color._Grey.Grey_Impl_.white = 1;

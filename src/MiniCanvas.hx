@@ -12,11 +12,14 @@ class MiniCanvas {
 
   public var width(default, null) : Int;
   public var height(default, null) : Int;
+  public var scaleMode(default, null) : ScaleMode;
   public var canvas(default, null) : CanvasElement;
   public var ctx(default, null) : CanvasRenderingContext2D;
-  public function new(width : Int, height : Int) {
+  public function new(width : Int, height : Int, ?scaleMode : ScaleMode) {
+    this.scaleMode = null != scaleMode ? scaleMode : isNode() ? NoScale : Auto;
     this.width = width;
     this.height = height;
+    processScale();
     if(isNode()) {
       initNode();
     } else {
@@ -24,17 +27,16 @@ class MiniCanvas {
     }
   }
 
-  function initNode() untyped {
-    var Canvas =  require("canvas");
-    canvas = __js__("new Canvas")(this.width, this.height);
-    ctx = canvas.getContext2d();
-  }
-
-  function initBrowser() {
-    canvas = js.Browser.document.createCanvasElement();
-    canvas.width = width;
-    canvas.height = height;
-    ctx = canvas.getContext2d();
+  function processScale() {
+    switch scaleMode {
+      case Auto:
+        var ratio = devicePixelRatio() / backingStoreRatio();
+        if(ratio != 1)
+          scaleMode = Scaled(ratio);
+        else
+          scaleMode = NoScale;
+      case _: // do nothing;
+    };
   }
 
   public function display(name : String) {
@@ -88,6 +90,27 @@ class MiniCanvas {
   }
 
   // platform specific
+  public static function isNode() : Bool
+    return untyped __js__("typeof module !== 'undefined' && module.exports");
+
+  function initBrowser() {
+    canvas = js.Browser.document.createCanvasElement();
+    switch scaleMode {
+      case Scaled(v):
+        canvas.width = (width * v).round();
+        canvas.height = (height * v).round();
+        canvas.style.width = '${width}px';
+        canvas.style.height = '${height}px';
+        ctx = canvas.getContext2d();
+        ctx.scale(v, v);
+      case _:
+        canvas.width = width;
+        canvas.height = height;
+        ctx = canvas.getContext2d();
+    };
+  }
+
+  // browser
   public function append(name : String) {
     var figure = js.Browser.document.createElement("figure"),
         caption = js.Browser.document.createElement("figcaption");
@@ -98,6 +121,26 @@ class MiniCanvas {
     parentNode.appendChild(figure);
   }
 
+  public static function devicePixelRatio() : Float
+    return untyped __js__("window.devicePixelRatio || 1");
+
+  static var _backingStoreRatio : Float = 0;
+  public static function backingStoreRatio() : Float {
+    if(_backingStoreRatio == 0) {
+      var canvas = js.Browser.document.createCanvasElement(),
+          context = canvas.getContext2d();
+      _backingStoreRatio =  untyped __js__("(function(c) {
+        return c.webkitBackingStorePixelRatio ||
+          c.mozBackingStorePixelRatio ||
+          c.msBackingStorePixelRatio ||
+          c.oBackingStorePixelRatio ||
+          c.backingStorePixelRatio || 1;
+        })")(context);
+    }
+    return _backingStoreRatio;
+  }
+
+  // canvas
   public function save(name : String) untyped {
     var fs = require('fs'),
         out = fs.createWriteStream('$imagePath/$name.png'),
@@ -107,6 +150,22 @@ class MiniCanvas {
     stream.on('end', function(_) console.log('saved $name.png'));
   }
 
-  public static function isNode() : Bool
-    return untyped __js__("typeof module !== 'undefined' && module.exports");
+  function initNode() untyped {
+    var Canvas =  require("canvas");
+    switch scaleMode {
+      case Scaled(v):
+        canvas = __js__("new Canvas")(width * v, height * v);
+        ctx = canvas.getContext2d();
+        ctx.scale(v, v);
+      case _:
+        canvas = __js__("new Canvas")(width, height);
+        ctx = canvas.getContext2d();
+    };
+  }
+}
+
+enum ScaleMode {
+  NoScale;
+  Auto;
+  Scaled(v : Float);
 }
