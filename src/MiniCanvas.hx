@@ -5,8 +5,11 @@ import js.html.Element;
 import thx.color.*;
 using thx.core.Floats;
 using thx.core.Strings;
+import thx.core.Timer;
 
 class MiniCanvas {
+  public static var defaultNodeScaleMode = NoScale;
+  public static var defaultBrowserScaleMode = Auto;
   public static var imagePath = 'images';
   public static var parentNode : Element = untyped __js__("typeof document != 'undefined' && document.body");
 
@@ -28,6 +31,7 @@ class MiniCanvas {
   }
 
   function processScale() {
+    scaleMode = null != scaleMode ? scaleMode : isNode() ? defaultNodeScaleMode : defaultBrowserScaleMode;
     switch scaleMode {
       case Auto:
         var ratio = devicePixelRatio() / backingStoreRatio();
