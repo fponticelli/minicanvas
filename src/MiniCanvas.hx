@@ -4,6 +4,7 @@ import js.html.Element;
 
 import thx.color.*;
 using thx.core.Floats;
+using thx.core.Strings;
 
 class MiniCanvas {
   public static var imagePath = 'images';
@@ -76,7 +77,7 @@ class MiniCanvas {
         caption = js.Browser.document.createElement("figcaption");
     figure.className = "minicanvas";
     figure.appendChild(canvas);
-    caption.innerHTML = name;
+    caption.innerHTML = name.humanize();
     figure.appendChild(caption);
     parentNode.appendChild(figure);
   }
