@@ -1,0 +1,6 @@
+-js bin/minicanvas.js
+-main Main
+-cp src
+-cp demo
+-lib thx.core
+-lib thx.color
