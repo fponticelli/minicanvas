@@ -1,0 +1,15 @@
+{
+  "name": "minicanvas",
+  "url": "https://github.com/fponticelli/minicanvas",
+  "license": "MIT",
+  "classPath": "src",
+  "tags": ["js"],
+  "description": "Mini-library to quickly generate canvas images (for the browser and nodejs).",
+  "releasenote": "first release.",
+  "version": "0.0.1",
+  "contributors": ["fponticelli"],
+  "dependencies": {
+    "thx.core": "",
+    "thx.color": ""
+  }
+}
