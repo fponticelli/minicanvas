@@ -19,7 +19,7 @@ class MiniCanvas {
   public var canvas(default, null) : CanvasElement;
   public var ctx(default, null) : CanvasRenderingContext2D;
   public function new(width : Int, height : Int, ?scaleMode : ScaleMode) {
-    this.scaleMode = null != scaleMode ? scaleMode : isNode() ? NoScale : Auto;
+    this.scaleMode = scaleMode;
     this.width = width;
     this.height = height;
     processScale();
