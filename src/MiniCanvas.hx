@@ -71,6 +71,22 @@ class MiniCanvas {
     return this;
   }
 
+  public function gradientHorizontal(handler : Float -> RGBA) {
+    for(x in 0...width) {
+      ctx.fillStyle = handler(x/width).toCSS3();
+      ctx.fillRect(x, 0, 1, height);
+    }
+    return this;
+  }
+
+  public function gradientVertical(handler : Float -> RGBA) {
+    for(y in 0...height) {
+      ctx.fillStyle = handler(y/height).toCSS3();
+      ctx.fillRect(0, y, width, 1);
+    }
+    return this;
+  }
+
   // platform specific
   public function append(name : String) {
     var figure = js.Browser.document.createElement("figure"),

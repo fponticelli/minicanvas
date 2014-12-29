@@ -115,7 +115,7 @@ Main.main = function() {
 		var channels = [thx.color._HSLA.HSLA_Impl_._c(this1[0] + 120,this1[1],this1[2]),thx.color._HSLA.HSLA_Impl_._c(this1[0],this1[1],this1[2]),thx.color._HSLA.HSLA_Impl_._c(this1[0] - 120,this1[1],this1[2]),this1[3]];
 		this2 = channels;
 		return thx.color._RGBA.RGBA_Impl_.fromFloats([this2[0],this2[1],this2[2],this2[3]]);
-	}).display("rainbow-alpha");
+	}).display("rainbowAlpha");
 	new MiniCanvas(200,200).box(function(x1,y1) {
 		var this11 = thx.color._HSL.HSL_Impl_.create(x1 * 360,1,y1);
 		var this21;
@@ -126,6 +126,118 @@ Main.main = function() {
 		this21 = channels11;
 		return thx.color._RGBA.RGBA_Impl_.fromFloats([this21[0],this21[1],this21[2],this21[3]]);
 	}).display("rainbow");
+	new MiniCanvas(200,20).gradientHorizontal(function(x2) {
+		var this12 = thx.color._HSV.HSV_Impl_.create(x2 * 360,1,1);
+		var this22;
+		var this31;
+		if(this12[1] == 0) this31 = [this12[2],this12[2],this12[2]]; else {
+			var r;
+			var g;
+			var b;
+			var i;
+			var f;
+			var p;
+			var q;
+			var t;
+			var h = this12[0] / 60;
+			i = Math.floor(h);
+			f = h - i;
+			p = this12[2] * (1 - this12[1]);
+			q = this12[2] * (1 - f * this12[1]);
+			t = this12[2] * (1 - (1 - f) * this12[1]);
+			switch(i) {
+			case 0:
+				r = this12[2];
+				g = t;
+				b = p;
+				break;
+			case 1:
+				r = q;
+				g = this12[2];
+				b = p;
+				break;
+			case 2:
+				r = p;
+				g = this12[2];
+				b = t;
+				break;
+			case 3:
+				r = p;
+				g = q;
+				b = this12[2];
+				break;
+			case 4:
+				r = t;
+				g = p;
+				b = this12[2];
+				break;
+			default:
+				r = this12[2];
+				g = p;
+				b = q;
+			}
+			this31 = [r,g,b];
+		}
+		var channels2 = this31.concat([1.0]);
+		this22 = channels2;
+		return thx.color._RGBA.RGBA_Impl_.fromFloats([this22[0],this22[1],this22[2],this22[3]]);
+	}).display("gradientHorizontal");
+	new MiniCanvas(20,200).gradientVertical(function(y2) {
+		var this13 = thx.color._HSV.HSV_Impl_.create(y2 * 360,1,1);
+		var this23;
+		var this32;
+		if(this13[1] == 0) this32 = [this13[2],this13[2],this13[2]]; else {
+			var r1;
+			var g1;
+			var b1;
+			var i1;
+			var f1;
+			var p1;
+			var q1;
+			var t1;
+			var h1 = this13[0] / 60;
+			i1 = Math.floor(h1);
+			f1 = h1 - i1;
+			p1 = this13[2] * (1 - this13[1]);
+			q1 = this13[2] * (1 - f1 * this13[1]);
+			t1 = this13[2] * (1 - (1 - f1) * this13[1]);
+			switch(i1) {
+			case 0:
+				r1 = this13[2];
+				g1 = t1;
+				b1 = p1;
+				break;
+			case 1:
+				r1 = q1;
+				g1 = this13[2];
+				b1 = p1;
+				break;
+			case 2:
+				r1 = p1;
+				g1 = this13[2];
+				b1 = t1;
+				break;
+			case 3:
+				r1 = p1;
+				g1 = q1;
+				b1 = this13[2];
+				break;
+			case 4:
+				r1 = t1;
+				g1 = p1;
+				b1 = this13[2];
+				break;
+			default:
+				r1 = this13[2];
+				g1 = p1;
+				b1 = q1;
+			}
+			this32 = [r1,g1,b1];
+		}
+		var channels3 = this32.concat([1.0]);
+		this23 = channels3;
+		return thx.color._RGBA.RGBA_Impl_.fromFloats([this23[0],this23[1],this23[2],this23[3]]);
+	}).display("gradientVertical");
 };
 Math.__name__ = true;
 var MiniCanvas = function(width,height) {
@@ -179,9 +291,9 @@ MiniCanvas.prototype = {
 		if(null == light) this1 = thx.color.Color.white; else this1 = light;
 		slight = "rgb(" + (this1 >> 16 & 255) + "," + (this1 >> 8 & 255) + "," + (this1 & 255) + ")";
 		var sdark;
-		var this2;
-		if(null == dark) this2 = thx.color.Color.lightgrey; else this2 = dark;
-		sdark = "rgb(" + (this2 >> 16 & 255) + "," + (this2 >> 8 & 255) + "," + (this2 & 255) + ")";
+		var this11;
+		if(null == dark) this11 = thx.color.Color.lightgrey; else this11 = dark;
+		sdark = "rgb(" + (this11 >> 16 & 255) + "," + (this11 >> 8 & 255) + "," + (this11 & 255) + ")";
 		var _g = 0;
 		while(_g < cols) {
 			var c = _g++;
@@ -194,12 +306,34 @@ MiniCanvas.prototype = {
 		}
 		return this;
 	}
+	,gradientHorizontal: function(handler) {
+		var _g1 = 0;
+		var _g = this.width;
+		while(_g1 < _g) {
+			var x = _g1++;
+			var this1 = handler(x / this.width);
+			this.ctx.fillStyle = "rgba(" + (this1 >> 16 & 255) + "," + (this1 >> 8 & 255) + "," + (this1 & 255) + "," + (this1 >> 24 & 255) / 255 + ")";
+			this.ctx.fillRect(x,0,1,this.height);
+		}
+		return this;
+	}
+	,gradientVertical: function(handler) {
+		var _g1 = 0;
+		var _g = this.height;
+		while(_g1 < _g) {
+			var y = _g1++;
+			var this1 = handler(y / this.height);
+			this.ctx.fillStyle = "rgba(" + (this1 >> 16 & 255) + "," + (this1 >> 8 & 255) + "," + (this1 & 255) + "," + (this1 >> 24 & 255) / 255 + ")";
+			this.ctx.fillRect(0,y,this.width,1);
+		}
+		return this;
+	}
 	,append: function(name) {
 		var figure = window.document.createElement("figure");
 		var caption = window.document.createElement("figcaption");
 		figure.className = "minicanvas";
 		figure.appendChild(this.canvas);
-		caption.innerHTML = name;
+		caption.innerHTML = thx.core.Strings.humanize(name);
 		figure.appendChild(caption);
 		MiniCanvas.parentNode.appendChild(figure);
 	}
