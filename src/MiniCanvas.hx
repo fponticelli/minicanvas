@@ -10,6 +10,7 @@ import thx.core.Timer;
 class MiniCanvas {
   public static var defaultNodeScaleMode = NoScale;
   public static var defaultBrowserScaleMode = Auto;
+  public static var displayGenerationTime = false;
   public static var imagePath = 'images';
   public static var parentNode : Element = untyped __js__("typeof document != 'undefined' && document.body");
 
@@ -18,6 +19,10 @@ class MiniCanvas {
   public var scaleMode(default, null) : ScaleMode;
   public var canvas(default, null) : CanvasElement;
   public var ctx(default, null) : CanvasRenderingContext2D;
+
+  var startTime : Float;
+  var deltaTime : Float;
+
   public function new(width : Int, height : Int, ?scaleMode : ScaleMode) {
     this.scaleMode = scaleMode;
     this.width = width;
@@ -28,6 +33,7 @@ class MiniCanvas {
     } else {
       initBrowser();
     }
+    startTime = Timer.time();
   }
 
   function processScale() {
@@ -44,6 +50,9 @@ class MiniCanvas {
   }
 
   public function display(name : String) {
+    deltaTime = Timer.time() - startTime;
+    if(!displayGenerationTime)
+      trace('generated "$name" in ${deltaTime.roundTo(2)}ms');
     if(isNode()) {
       save(name);
     } else {
@@ -120,7 +129,7 @@ class MiniCanvas {
         caption = js.Browser.document.createElement("figcaption");
     figure.className = "minicanvas";
     figure.appendChild(canvas);
-    caption.innerHTML = name.humanize();
+    caption.innerHTML = name.humanize() + (displayGenerationTime ? ' <span class="info">(${deltaTime.roundTo(2)}ms)</span>' : '');
     figure.appendChild(caption);
     parentNode.appendChild(figure);
   }

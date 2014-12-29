@@ -2,6 +2,8 @@ import thx.color.*;
 
 class Main {
   public static function main() {
+    MiniCanvas.displayGenerationTime = true;
+
     new MiniCanvas(200, 200)
       .checkboard()
       .display("checkboard");

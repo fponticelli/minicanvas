@@ -108,6 +108,7 @@ HxOverrides.iter = function(a) {
 var Main = function() { };
 Main.__name__ = true;
 Main.main = function() {
+	MiniCanvas.displayGenerationTime = true;
 	new MiniCanvas(200,200).checkboard().display("checkboard");
 	new MiniCanvas(200,200).checkboard().box(function(x,y) {
 		var this1 = thx.color._HSLA.HSLA_Impl_.create(x * 360,1,y,0.75);
@@ -240,12 +241,19 @@ Main.main = function() {
 	}).display("gradientVertical");
 };
 Math.__name__ = true;
+var ScaleMode = { __ename__ : true, __constructs__ : ["NoScale","Auto","Scaled"] };
+ScaleMode.NoScale = ["NoScale",0];
+ScaleMode.NoScale.__enum__ = ScaleMode;
+ScaleMode.Auto = ["Auto",1];
+ScaleMode.Auto.__enum__ = ScaleMode;
+ScaleMode.Scaled = function(v) { var $x = ["Scaled",2,v]; $x.__enum__ = ScaleMode; return $x; };
 var MiniCanvas = function(width,height,scaleMode) {
-	if(null != scaleMode) this.scaleMode = scaleMode; else if(MiniCanvas.isNode()) this.scaleMode = ScaleMode.NoScale; else this.scaleMode = ScaleMode.Auto;
+	this.scaleMode = scaleMode;
 	this.width = width;
 	this.height = height;
 	this.processScale();
 	if(MiniCanvas.isNode()) this.initNode(); else this.initBrowser();
+	this.startTime = performance.now();
 };
 MiniCanvas.__name__ = true;
 MiniCanvas.isNode = function() {
@@ -272,6 +280,7 @@ MiniCanvas.backingStoreRatio = function() {
 };
 MiniCanvas.prototype = {
 	processScale: function() {
+		if(null != this.scaleMode) this.scaleMode = this.scaleMode; else if(MiniCanvas.isNode()) this.scaleMode = MiniCanvas.defaultNodeScaleMode; else this.scaleMode = MiniCanvas.defaultBrowserScaleMode;
 		var _g = this.scaleMode;
 		switch(_g[1]) {
 		case 1:
@@ -282,6 +291,8 @@ MiniCanvas.prototype = {
 		}
 	}
 	,display: function(name) {
+		this.deltaTime = performance.now() - this.startTime;
+		if(!MiniCanvas.displayGenerationTime) console.log("generated \"" + name + "\" in " + thx.core.Floats.roundTo(this.deltaTime,2) + "ms");
 		if(MiniCanvas.isNode()) this.save(name); else this.append(name);
 		return this;
 	}
@@ -374,7 +385,7 @@ MiniCanvas.prototype = {
 		var caption = window.document.createElement("figcaption");
 		figure.className = "minicanvas";
 		figure.appendChild(this.canvas);
-		caption.innerHTML = thx.core.Strings.humanize(name);
+		caption.innerHTML = thx.core.Strings.humanize(name) + (MiniCanvas.displayGenerationTime?" <span class=\"info\">(" + thx.core.Floats.roundTo(this.deltaTime,2) + "ms)</span>":"");
 		figure.appendChild(caption);
 		MiniCanvas.parentNode.appendChild(figure);
 	}
@@ -408,12 +419,6 @@ MiniCanvas.prototype = {
 	}
 	,__class__: MiniCanvas
 };
-var ScaleMode = { __ename__ : true, __constructs__ : ["NoScale","Auto","Scaled"] };
-ScaleMode.NoScale = ["NoScale",0];
-ScaleMode.NoScale.__enum__ = ScaleMode;
-ScaleMode.Auto = ["Auto",1];
-ScaleMode.Auto.__enum__ = ScaleMode;
-ScaleMode.Scaled = function(v) { var $x = ["Scaled",2,v]; $x.__enum__ = ScaleMode; return $x; };
 var Std = function() { };
 Std.__name__ = true;
 Std.string = function(s) {
@@ -4793,6 +4798,91 @@ thx.core.Strings.wrapLine = function(s,columns,indent,newline) {
 	}
 	return indent + parts.join(newline + indent);
 };
+thx.core.Timer = function() { };
+thx.core.Timer.__name__ = true;
+thx.core.Timer.debounce = function(callback,delayms,leading) {
+	if(leading == null) leading = false;
+	var cancel = thx.core.Functions.noop;
+	var poll = function() {
+		cancel();
+		cancel = thx.core.Timer.delay(callback,delayms);
+	};
+	return function() {
+		if(leading) {
+			leading = false;
+			callback();
+		}
+		poll();
+	};
+};
+thx.core.Timer.throttle = function(callback,delayms,leading) {
+	if(leading == null) leading = false;
+	var waiting = false;
+	var poll = function() {
+		waiting = true;
+		thx.core.Timer.delay(callback,delayms);
+	};
+	return function() {
+		if(leading) {
+			leading = false;
+			callback();
+			return;
+		}
+		if(waiting) return;
+		poll();
+	};
+};
+thx.core.Timer.repeat = function(callback,delayms) {
+	return (function(f,id) {
+		return function() {
+			f(id);
+		};
+	})(thx.core.Timer.clear,setInterval(callback,delayms));
+};
+thx.core.Timer.delay = function(callback,delayms) {
+	return (function(f,id) {
+		return function() {
+			f(id);
+		};
+	})(thx.core.Timer.clear,setTimeout(callback,delayms));
+};
+thx.core.Timer.frame = function(callback) {
+	var cancelled = false;
+	var f = thx.core.Functions.noop;
+	var current = performance.now();
+	var next;
+	f = function() {
+		if(cancelled) return;
+		next = performance.now();
+		callback(next - current);
+		current = next;
+		requestAnimationFrame(f);
+	};
+	requestAnimationFrame(f);
+	return function() {
+		cancelled = false;
+	};
+};
+thx.core.Timer.nextFrame = function(callback) {
+	var id = requestAnimationFrame(callback);
+	return function() {
+		cancelAnimationFrame(id);
+	};
+};
+thx.core.Timer.immediate = function(callback) {
+	return (function(f,id) {
+		return function() {
+			f(id);
+		};
+	})(thx.core.Timer.clear,setImmediate(callback));
+};
+thx.core.Timer.clear = function(id) {
+	clearTimeout(id);
+	return;
+};
+thx.core.Timer.time = function() {
+	return performance.now();
+};
 thx.core._Tuple = {};
 thx.core._Tuple.Tuple0_Impl_ = {};
 thx.core._Tuple.Tuple0_Impl_.__name__ = true;
@@ -4946,6 +5036,8 @@ if(Array.prototype.indexOf) HxOverrides.indexOf = function(a,o,i) {
 String.prototype.__class__ = String;
 String.__name__ = true;
 Array.__name__ = true;
+Date.prototype.__class__ = Date;
+Date.__name__ = ["Date"];
 var Int = { __name__ : ["Int"]};
 var Dynamic = { __name__ : ["Dynamic"]};
 var Float = Number;
@@ -5394,6 +5486,42 @@ thx.color.Color.names.h["$" + "yellow green"] = thx.color.Color.yellowgreen;
         };
       }
     ;
+var scope = ("undefined" !== typeof window && window) || ("undefined" !== typeof global && global) || this;
+if(!scope.setImmediate) scope.setImmediate = function(callback) {
+	scope.setTimeout(callback,0);
+};
+var lastTime = 0;
+var vendors = ["webkit","moz"];
+var x = 0;
+while(x < vendors.length && !scope.requestAnimationFrame) {
+	scope.requestAnimationFrame = scope[vendors[x] + "RequestAnimationFrame"];
+	scope.cancelAnimationFrame = scope[vendors[x] + "CancelAnimationFrame"] || scope[vendors[x] + "CancelRequestAnimationFrame"];
+	x++;
+}
+if(!scope.requestAnimationFrame) scope.requestAnimationFrame = function(callback1) {
+	var currTime = new Date().getTime();
+	var timeToCall = Math.max(0,16 - (currTime - lastTime));
+	var id = scope.setTimeout(function() {
+		callback1(currTime + timeToCall);
+	},timeToCall);
+	lastTime = currTime + timeToCall;
+	return id;
+};
+if(!scope.cancelAnimationFrame) scope.cancelAnimationFrame = function(id1) {
+	scope.clearTimeout(id1);
+};
+if(typeof(scope.performance) == "undefined") scope.performance = { };
+if(typeof(scope.performance.now) == "undefined") {
+	var nowOffset = new Date().getTime();
+	if(scope.performance.timing && scope.performance.timing.navigationStart) nowOffset = scope.performance.timing.navigationStart;
+	var now = function() {
+		return new Date() - nowOffset;
+	};
+	scope.performance.now = now;
+}
+MiniCanvas.defaultNodeScaleMode = ScaleMode.NoScale;
+MiniCanvas.defaultBrowserScaleMode = ScaleMode.Auto;
+MiniCanvas.displayGenerationTime = false;
 MiniCanvas.imagePath = "images";
 MiniCanvas.parentNode = typeof document != 'undefined' && document.body;
 MiniCanvas._backingStoreRatio = 0;
@@ -5414,5 +5542,6 @@ thx.core.Strings.DIGITS = new EReg("^[0-9]+$","");
 thx.core.Strings.STRIPTAGS = new EReg("</?[a-z]+[^>]*?/?>","gi");
 thx.core.Strings.WSG = new EReg("\\s+","g");
 thx.core.Strings.SPLIT_LINES = new EReg("\r\n|\n\r|\n|\r","g");
+thx.core.Timer.FRAME_RATE = Math.round(16.6666666666666679);
 Main.main();
 })();
