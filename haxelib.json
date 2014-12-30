@@ -5,8 +5,8 @@
   "classPath": "src",
   "tags": ["js"],
   "description": "Mini-library to quickly generate canvas images (for the browser and nodejs).",
-  "releasenote": "first release.",
-  "version": "0.0.1",
+  "releasenote": "added scale mode and generation time.",
+  "version": "0.1.0",
   "contributors": ["fponticelli"],
   "dependencies": {
     "thx.core": "",
