@@ -102,6 +102,17 @@ class MiniCanvas {
     return this;
   }
 
+  public function context(callback : CanvasRenderingContext2D -> Int -> Int -> Void) {
+    callback(ctx, width, height);
+    return this;
+  }
+
+  public function sample(name : String, callback : CanvasRenderingContext2D -> Int -> Int -> Void) {
+    context(callback);
+    display(name);
+    return this;
+  }
+
   // platform specific
   public static function isNode() : Bool
     return untyped __js__("typeof module !== 'undefined' && module.exports");
