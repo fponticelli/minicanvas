@@ -1,6 +1,6 @@
 # minicanvas
 
-Simple helper to quickly generate canvas images (for the browser and canvas)
+Simple helper to quickly generate canvas images (for the browser and nodejs).
 
 ```haxe
 new MiniCanvas(200, 200)
