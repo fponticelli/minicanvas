@@ -1,6 +1,6 @@
 # minicanvas
 
-Simple helper to quickly generate canvas images (for the browser and nodejs).
+Simple library to quickly generate canvas images (for the browser and for nodejs).
 
 ```haxe
 new MiniCanvas(200, 200)
@@ -46,3 +46,31 @@ new MiniCanvas(20, 200)
 ```
 
 ![gradient vertical](https://github.com/fponticelli/minicanvas/raw/master/images/gradientVertical.png?raw=true "gradient vertical")
+
+```haxe
+var red   = HSL.create(340, 0.5, 0.5),
+    green = HSL.create(120, 0.5, 0.5);
+
+new MiniCanvas(200, 90)
+  .palette([[
+    red.analogous().left,
+    red,
+    red.analogous().right
+  ], [
+    green.split().left,
+    green,
+    green.split().right
+  ]])
+  .display("palette");
+```
+
+![color palette](https://github.com/fponticelli/minicanvas/raw/master/images/palette.png?raw=true "color palette")
+
+```haxe
+new MiniCanvas(200, 200)
+  .grid()
+  .cross()
+  .display("grid");
+```
+
+![grid](https://github.com/fponticelli/minicanvas/raw/master/images/grid.png?raw=true "grid")
