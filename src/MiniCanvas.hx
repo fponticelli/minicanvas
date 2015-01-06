@@ -87,6 +87,24 @@ class MiniCanvas {
     return this;
   }
 
+  public function palette(colors : Array<Array<RGBA>>, ?padding = 2.0, ?margin = 0.0) {
+    var rows = colors.length,
+        h    = (height - 2 * margin - (rows - 1) * padding) / rows,
+        py   = margin;
+    for(row in colors) {
+      var cols = row.length,
+          w    = (width - 2 * margin - (cols - 1) * padding) / cols,
+          px   = margin;
+      for(col in row) {
+        ctx.fillStyle = col.toCSS3();
+        ctx.fillRect(px, py, w, h);
+        px += w + padding;
+      }
+      py += h + padding;
+    }
+    return this;
+  }
+
   public function gradientHorizontal(handler : Float -> RGBA) {
     for(x in 0...width) {
       ctx.fillStyle = handler(x/width).toCSS3();

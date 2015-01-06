@@ -28,5 +28,20 @@ class Main {
       .gradientVertical(function(y) : RGBA
         return HSV.create(y * 360, 1, 1))
       .display("gradientVertical");
+
+    var red   = HSL.create(340, 0.5, 0.5),
+        green = HSL.create(120, 0.5, 0.5);
+
+    new MiniCanvas(200, 90)
+      .palette([[
+        red.analogous().left,
+        red,
+        red.analogous().right
+      ], [
+        green.split().left,
+        green,
+        green.split().right
+      ]])
+      .display("palette");
   }
 }
