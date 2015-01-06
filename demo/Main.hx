@@ -43,5 +43,10 @@ class Main {
         green.split().right
       ]])
       .display("palette");
+
+    new MiniCanvas(200, 200)
+      .grid()
+      .cross()
+      .display("grid");
   }
 }

@@ -133,6 +133,36 @@ class MiniCanvas {
     return this;
   }
 
+  public function gridHorizontal(dy = 10.0, ?weight = 1.0, ?color : RGBA, oy = 0.0) {
+    if(dy == 0) throw 'invalid argument dy, should be different from zero';
+    if(null == color)
+      color = (Color.lightgrey : RGBA);
+    var py = oy % dy;
+    while(py - weight / 2 <= height) {
+      lineHorizontal(py, weight, color);
+      py += dy;
+    }
+    return this;
+  }
+
+  public function gridVertical(dx = 10.0, ?weight = 1.0, ?color : RGBA, ox = 0.0) {
+    if(dx == 0) throw 'invalid argument dx, should be different from zero';
+    if(null == color)
+      color = (Color.lightgrey : RGBA);
+    var px = ox % dx;
+    while(px - weight / 2 <= width) {
+      lineVertical(px, weight, color);
+      px += dx;
+    }
+    return this;
+  }
+
+  public function grid(dx = 10.0, dy = 10.0, ?weight = 1.0, ?color : RGBA, ox = 0.0, oy = 0.0) {
+    gridHorizontal(dy, weight, color, oy);
+    gridVertical(dx, weight, color, ox);
+    return this;
+  }
+
   public function gradientHorizontal(handler : Float -> RGBA) {
     for(x in 0...width) {
       ctx.fillStyle = handler(x/width).toCSS3();
