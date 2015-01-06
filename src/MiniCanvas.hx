@@ -105,6 +105,14 @@ class MiniCanvas {
     return this;
   }
 
+  public function cross(?ox : Float, ?oy : Float, ?weight = 1.0, ?color : RGBA) {
+    if(null == ox) ox = width / 2;
+    if(null == oy) oy = height / 2;
+    lineHorizontal(oy, weight, color);
+    lineVertical(ox, weight, color);
+    return this;
+  }
+
   public function lineHorizontal(offset : Float, ?weight = 1.0, ?color : RGBA) {
     ctx.lineWidth = weight;
     ctx.strokeStyle = color.or((Color.black : RGBA)).toCSS3();
