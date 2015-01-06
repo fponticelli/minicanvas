@@ -105,6 +105,26 @@ class MiniCanvas {
     return this;
   }
 
+  public function lineHorizontal(offset : Float, ?weight = 1.0, ?color : RGBA) {
+    ctx.lineWidth = weight;
+    ctx.strokeStyle = color.or((Color.black : RGBA)).toCSS3();
+    ctx.beginPath();
+    ctx.moveTo(0, offset);
+    ctx.lineTo(width, offset);
+    ctx.stroke();
+    return this;
+  }
+
+  public function lineVertical(offset : Float, ?weight = 1.0, ?color : RGBA) {
+    ctx.lineWidth = weight;
+    ctx.strokeStyle = color.or((Color.black : RGBA)).toCSS3();
+    ctx.beginPath();
+    ctx.moveTo(offset, 0);
+    ctx.lineTo(offset, height);
+    ctx.stroke();
+    return this;
+  }
+
   public function gradientHorizontal(handler : Float -> RGBA) {
     for(x in 0...width) {
       ctx.fillStyle = handler(x/width).toCSS3();
