@@ -6,6 +6,7 @@ import thx.color.*;
 using thx.core.Floats;
 using thx.core.Strings;
 import thx.core.Timer;
+using thx.core.Nulls;
 
 class MiniCanvas {
   public static var defaultNodeScaleMode = NoScale;
@@ -72,11 +73,11 @@ class MiniCanvas {
     return this;
   }
 
-  public function checkboard(?size : Float = 8, ?light : RGB, ?dark : RGB) {
+  public function checkboard(?size : Float = 8, ?light : RGBA, ?dark : RGBA) {
     var cols   = (width / size).ceil(),
         rows   = (height / size).ceil(),
-        slight = (null == light ? Color.white : light).toCSS3(),
-        sdark  = (null == dark ? Color.lightgrey : dark).toCSS3();
+        slight = (null == light ? (Color.white : RGBA) : light).toCSS3(),
+        sdark  = (null == dark  ? (Color.lightgrey : RGBA) : dark).toCSS3();
     for(c in 0...cols) {
       for(r in 0...rows) {
         ctx.fillStyle = c % 2 != r % 2 ? slight : sdark;
