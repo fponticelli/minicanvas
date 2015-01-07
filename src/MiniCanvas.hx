@@ -5,6 +5,7 @@ import js.html.Element;
 import thx.color.*;
 using thx.core.Floats;
 using thx.core.Strings;
+import js.html.MouseEvent;
 import thx.core.Timer;
 using thx.core.Nulls;
 
@@ -23,6 +24,7 @@ class MiniCanvas {
 
   var startTime : Float;
   var deltaTime : Float;
+  var events : Map<String, { callback : MiniCanvasEvent -> Void, listener : MouseEvent -> Void }>;
 
   public function new(width : Int, height : Int, ?scaleMode : ScaleMode) {
     this.scaleMode = scaleMode;
@@ -35,6 +37,7 @@ class MiniCanvas {
       initBrowser();
     }
     startTime = Timer.time();
+    events = new Map();
   }
 
   function processScale() {
@@ -200,6 +203,48 @@ class MiniCanvas {
   public function sample(name : String, callback : CanvasRenderingContext2D -> Int -> Int -> Void) {
     context(callback);
     display(name);
+    return this;
+  }
+
+  // interaction
+
+  // interaction internals
+  function onMouseEvent(type : String, ?name : String, callback : MiniCanvasEvent -> Void) {
+    if(null == name) name = type;
+    offMouseEvent(type, name);
+    var listener = function(e : MouseEvent) {
+      var rect = canvas.getBoundingClientRect();
+      trigger(name, e.clientX - rect.left, e.clientY - rect.top);
+    };
+    events.set(name, {
+      callback : callback,
+      listener : listener
+    });
+    if(!isNode()) {
+      canvas.addEventListener(type, listener, false);
+    }
+    return this;
+  }
+
+  function offMouseEvent(type : String, ?name : String) {
+    if(null == name) name = type;
+    var item = events.get(name);
+    if(null == item) return this;
+    events.remove(name);
+    if(!isNode()) {
+      canvas.removeEventListener(type, item.listener, false);
+    }
+    return this;
+  }
+
+  function trigger(name : String, x : Float, y : Float) {
+    var item = events.get(name);
+    if(null == item) return this;
+    item.callback({
+      mini : this,
+      x : x,
+      y : y
+    });
     return this;
   }
 
