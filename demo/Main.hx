@@ -48,5 +48,18 @@ class Main {
       .grid()
       .cross()
       .display("grid");
+
+    new MiniCanvas(200, 200)
+      .checkboard()
+      .onMove(function(e) {
+        e.mini.dot(e.x, e.y);
+      })
+      .onTrail(function(e) {
+        e.mini.line(e.x0, e.y0, e.x1, e.y1);
+      })
+      .click(20, 30)
+      .move(20, 30, 150, 10)
+      .move(150, 10, 5, 190)
+      .display("events");
   }
 }

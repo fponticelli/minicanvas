@@ -122,28 +122,28 @@ Main.main = function() {
 		return thx.color._RGBA.RGBA_Impl_.fromFloats([this2[0],this2[1],this2[2],this2[3]]);
 	}).display("rainbowAlpha");
 	new MiniCanvas(200,200).box(function(x1,y1) {
-		var this11 = thx.color._HSL.HSL_Impl_.create(x1 * 360,1,y1);
-		var this21;
-		var this3;
-		this3 = (function($this) {
+		var this3 = thx.color._HSL.HSL_Impl_.create(x1 * 360,1,y1);
+		var this4;
+		var this5;
+		this5 = (function($this) {
 			var $r;
-			var channels1 = [thx.color._HSL.HSL_Impl_._c(this11[0] + 120,this11[1],this11[2]),thx.color._HSL.HSL_Impl_._c(this11[0],this11[1],this11[2]),thx.color._HSL.HSL_Impl_._c(this11[0] - 120,this11[1],this11[2])];
+			var channels1 = [thx.color._HSL.HSL_Impl_._c(this3[0] + 120,this3[1],this3[2]),thx.color._HSL.HSL_Impl_._c(this3[0],this3[1],this3[2]),thx.color._HSL.HSL_Impl_._c(this3[0] - 120,this3[1],this3[2])];
 			$r = channels1;
 			return $r;
 		}(this));
-		this21 = (function($this) {
+		this4 = (function($this) {
 			var $r;
-			var channels11 = this3.concat([1.0]);
-			$r = channels11;
+			var channels2 = this5.concat([1.0]);
+			$r = channels2;
 			return $r;
 		}(this));
-		return thx.color._RGBA.RGBA_Impl_.fromFloats([this21[0],this21[1],this21[2],this21[3]]);
+		return thx.color._RGBA.RGBA_Impl_.fromFloats([this4[0],this4[1],this4[2],this4[3]]);
 	}).display("rainbow");
 	new MiniCanvas(200,20).gradientHorizontal(function(x2) {
-		var this12 = thx.color._HSV.HSV_Impl_.create(x2 * 360,1,1);
-		var this22;
-		var this31;
-		if(this12[1] == 0) this31 = [this12[2],this12[2],this12[2]]; else {
+		var this6 = thx.color._HSV.HSV_Impl_.create(x2 * 360,1,1);
+		var this7;
+		var this8;
+		if(this6[1] == 0) this8 = [this6[2],this6[2],this6[2]]; else {
 			var r;
 			var g;
 			var b;
@@ -152,58 +152,58 @@ Main.main = function() {
 			var p;
 			var q;
 			var t;
-			var h = this12[0] / 60;
+			var h = this6[0] / 60;
 			i = Math.floor(h);
 			f = h - i;
-			p = this12[2] * (1 - this12[1]);
-			q = this12[2] * (1 - f * this12[1]);
-			t = this12[2] * (1 - (1 - f) * this12[1]);
+			p = this6[2] * (1 - this6[1]);
+			q = this6[2] * (1 - f * this6[1]);
+			t = this6[2] * (1 - (1 - f) * this6[1]);
 			switch(i) {
 			case 0:
-				r = this12[2];
+				r = this6[2];
 				g = t;
 				b = p;
 				break;
 			case 1:
 				r = q;
-				g = this12[2];
+				g = this6[2];
 				b = p;
 				break;
 			case 2:
 				r = p;
-				g = this12[2];
+				g = this6[2];
 				b = t;
 				break;
 			case 3:
 				r = p;
 				g = q;
-				b = this12[2];
+				b = this6[2];
 				break;
 			case 4:
 				r = t;
 				g = p;
-				b = this12[2];
+				b = this6[2];
 				break;
 			default:
-				r = this12[2];
+				r = this6[2];
 				g = p;
 				b = q;
 			}
-			this31 = [r,g,b];
+			this8 = [r,g,b];
 		}
-		this22 = (function($this) {
+		this7 = (function($this) {
 			var $r;
-			var channels2 = this31.concat([1.0]);
-			$r = channels2;
+			var channels3 = this8.concat([1.0]);
+			$r = channels3;
 			return $r;
 		}(this));
-		return thx.color._RGBA.RGBA_Impl_.fromFloats([this22[0],this22[1],this22[2],this22[3]]);
+		return thx.color._RGBA.RGBA_Impl_.fromFloats([this7[0],this7[1],this7[2],this7[3]]);
 	}).display("gradientHorizontal");
 	new MiniCanvas(20,200).gradientVertical(function(y2) {
-		var this13 = thx.color._HSV.HSV_Impl_.create(y2 * 360,1,1);
-		var this23;
-		var this32;
-		if(this13[1] == 0) this32 = [this13[2],this13[2],this13[2]]; else {
+		var this9 = thx.color._HSV.HSV_Impl_.create(y2 * 360,1,1);
+		var this10;
+		var this11;
+		if(this9[1] == 0) this11 = [this9[2],this9[2],this9[2]]; else {
 			var r1;
 			var g1;
 			var b1;
@@ -212,213 +212,202 @@ Main.main = function() {
 			var p1;
 			var q1;
 			var t1;
-			var h1 = this13[0] / 60;
+			var h1 = this9[0] / 60;
 			i1 = Math.floor(h1);
 			f1 = h1 - i1;
-			p1 = this13[2] * (1 - this13[1]);
-			q1 = this13[2] * (1 - f1 * this13[1]);
-			t1 = this13[2] * (1 - (1 - f1) * this13[1]);
+			p1 = this9[2] * (1 - this9[1]);
+			q1 = this9[2] * (1 - f1 * this9[1]);
+			t1 = this9[2] * (1 - (1 - f1) * this9[1]);
 			switch(i1) {
 			case 0:
-				r1 = this13[2];
+				r1 = this9[2];
 				g1 = t1;
 				b1 = p1;
 				break;
 			case 1:
 				r1 = q1;
-				g1 = this13[2];
+				g1 = this9[2];
 				b1 = p1;
 				break;
 			case 2:
 				r1 = p1;
-				g1 = this13[2];
+				g1 = this9[2];
 				b1 = t1;
 				break;
 			case 3:
 				r1 = p1;
 				g1 = q1;
-				b1 = this13[2];
+				b1 = this9[2];
 				break;
 			case 4:
 				r1 = t1;
 				g1 = p1;
-				b1 = this13[2];
+				b1 = this9[2];
 				break;
 			default:
-				r1 = this13[2];
+				r1 = this9[2];
 				g1 = p1;
 				b1 = q1;
 			}
-			this32 = [r1,g1,b1];
+			this11 = [r1,g1,b1];
 		}
-		this23 = (function($this) {
+		this10 = (function($this) {
 			var $r;
-			var channels3 = this32.concat([1.0]);
-			$r = channels3;
+			var channels4 = this11.concat([1.0]);
+			$r = channels4;
 			return $r;
 		}(this));
-		return thx.color._RGBA.RGBA_Impl_.fromFloats([this23[0],this23[1],this23[2],this23[3]]);
+		return thx.color._RGBA.RGBA_Impl_.fromFloats([this10[0],this10[1],this10[2],this10[3]]);
 	}).display("gradientVertical");
 	var red = thx.color._HSL.HSL_Impl_.create(340,0.5,0.5);
 	var green = thx.color._HSL.HSL_Impl_.create(120,0.5,0.5);
 	new MiniCanvas(200,90).palette([[(function($this) {
 		var $r;
-		var this14;
+		var this12;
 		{
-			var this15 = thx.color._HSL.HSL_Impl_.analogous(red);
-			this14 = this15._0;
+			var this14 = thx.color._HSL.HSL_Impl_.analogous(red);
+			this12 = this14._0;
 		}
-		$r = (function($this) {
-			var $r;
-			var this24;
-			{
-				var this33;
-				this33 = (function($this) {
-					var $r;
-					var channels4 = [thx.color._HSL.HSL_Impl_._c(this14[0] + 120,this14[1],this14[2]),thx.color._HSL.HSL_Impl_._c(this14[0],this14[1],this14[2]),thx.color._HSL.HSL_Impl_._c(this14[0] - 120,this14[1],this14[2])];
-					$r = channels4;
-					return $r;
-				}($this));
-				this24 = (function($this) {
-					var $r;
-					var channels12 = this33.concat([1.0]);
-					$r = channels12;
-					return $r;
-				}($this));
-			}
-			$r = thx.color._RGBA.RGBA_Impl_.fromFloats([this24[0],this24[1],this24[2],this24[3]]);
-			return $r;
-		}($this));
-		return $r;
-	}(this)),(function($this) {
-		var $r;
-		var this25;
+		var this13;
 		{
-			var this34;
-			this34 = (function($this) {
+			var this15;
+			this15 = (function($this) {
 				var $r;
-				var channels5 = [thx.color._HSL.HSL_Impl_._c(red[0] + 120,red[1],red[2]),thx.color._HSL.HSL_Impl_._c(red[0],red[1],red[2]),thx.color._HSL.HSL_Impl_._c(red[0] - 120,red[1],red[2])];
+				var channels5 = [thx.color._HSL.HSL_Impl_._c(this12[0] + 120,this12[1],this12[2]),thx.color._HSL.HSL_Impl_._c(this12[0],this12[1],this12[2]),thx.color._HSL.HSL_Impl_._c(this12[0] - 120,this12[1],this12[2])];
 				$r = channels5;
 				return $r;
 			}($this));
-			this25 = (function($this) {
+			this13 = (function($this) {
 				var $r;
-				var channels13 = this34.concat([1.0]);
-				$r = channels13;
+				var channels6 = this15.concat([1.0]);
+				$r = channels6;
 				return $r;
 			}($this));
 		}
-		$r = thx.color._RGBA.RGBA_Impl_.fromFloats([this25[0],this25[1],this25[2],this25[3]]);
+		$r = thx.color._RGBA.RGBA_Impl_.fromFloats([this13[0],this13[1],this13[2],this13[3]]);
 		return $r;
 	}(this)),(function($this) {
 		var $r;
 		var this16;
 		{
-			var this17 = thx.color._HSL.HSL_Impl_.analogous(red);
-			this16 = this17._1;
+			var this17;
+			this17 = (function($this) {
+				var $r;
+				var channels7 = [thx.color._HSL.HSL_Impl_._c(red[0] + 120,red[1],red[2]),thx.color._HSL.HSL_Impl_._c(red[0],red[1],red[2]),thx.color._HSL.HSL_Impl_._c(red[0] - 120,red[1],red[2])];
+				$r = channels7;
+				return $r;
+			}($this));
+			this16 = (function($this) {
+				var $r;
+				var channels8 = this17.concat([1.0]);
+				$r = channels8;
+				return $r;
+			}($this));
 		}
-		$r = (function($this) {
-			var $r;
-			var this26;
-			{
-				var this35;
-				this35 = (function($this) {
-					var $r;
-					var channels6 = [thx.color._HSL.HSL_Impl_._c(this16[0] + 120,this16[1],this16[2]),thx.color._HSL.HSL_Impl_._c(this16[0],this16[1],this16[2]),thx.color._HSL.HSL_Impl_._c(this16[0] - 120,this16[1],this16[2])];
-					$r = channels6;
-					return $r;
-				}($this));
-				this26 = (function($this) {
-					var $r;
-					var channels14 = this35.concat([1.0]);
-					$r = channels14;
-					return $r;
-				}($this));
-			}
-			$r = thx.color._RGBA.RGBA_Impl_.fromFloats([this26[0],this26[1],this26[2],this26[3]]);
-			return $r;
-		}($this));
+		$r = thx.color._RGBA.RGBA_Impl_.fromFloats([this16[0],this16[1],this16[2],this16[3]]);
 		return $r;
-	}(this))],[(function($this) {
+	}(this)),(function($this) {
 		var $r;
 		var this18;
 		{
-			var this19 = thx.color._HSL.HSL_Impl_.split(green);
-			this18 = this19._0;
+			var this20 = thx.color._HSL.HSL_Impl_.analogous(red);
+			this18 = this20._1;
 		}
-		$r = (function($this) {
-			var $r;
+		var this19;
+		{
+			var this21;
+			this21 = (function($this) {
+				var $r;
+				var channels9 = [thx.color._HSL.HSL_Impl_._c(this18[0] + 120,this18[1],this18[2]),thx.color._HSL.HSL_Impl_._c(this18[0],this18[1],this18[2]),thx.color._HSL.HSL_Impl_._c(this18[0] - 120,this18[1],this18[2])];
+				$r = channels9;
+				return $r;
+			}($this));
+			this19 = (function($this) {
+				var $r;
+				var channels10 = this21.concat([1.0]);
+				$r = channels10;
+				return $r;
+			}($this));
+		}
+		$r = thx.color._RGBA.RGBA_Impl_.fromFloats([this19[0],this19[1],this19[2],this19[3]]);
+		return $r;
+	}(this))],[(function($this) {
+		var $r;
+		var this22;
+		{
+			var this24 = thx.color._HSL.HSL_Impl_.split(green);
+			this22 = this24._0;
+		}
+		var this23;
+		{
+			var this25;
+			this25 = (function($this) {
+				var $r;
+				var channels11 = [thx.color._HSL.HSL_Impl_._c(this22[0] + 120,this22[1],this22[2]),thx.color._HSL.HSL_Impl_._c(this22[0],this22[1],this22[2]),thx.color._HSL.HSL_Impl_._c(this22[0] - 120,this22[1],this22[2])];
+				$r = channels11;
+				return $r;
+			}($this));
+			this23 = (function($this) {
+				var $r;
+				var channels12 = this25.concat([1.0]);
+				$r = channels12;
+				return $r;
+			}($this));
+		}
+		$r = thx.color._RGBA.RGBA_Impl_.fromFloats([this23[0],this23[1],this23[2],this23[3]]);
+		return $r;
+	}(this)),(function($this) {
+		var $r;
+		var this26;
+		{
 			var this27;
-			{
-				var this36;
-				this36 = (function($this) {
-					var $r;
-					var channels7 = [thx.color._HSL.HSL_Impl_._c(this18[0] + 120,this18[1],this18[2]),thx.color._HSL.HSL_Impl_._c(this18[0],this18[1],this18[2]),thx.color._HSL.HSL_Impl_._c(this18[0] - 120,this18[1],this18[2])];
-					$r = channels7;
-					return $r;
-				}($this));
-				this27 = (function($this) {
-					var $r;
-					var channels15 = this36.concat([1.0]);
-					$r = channels15;
-					return $r;
-				}($this));
-			}
-			$r = thx.color._RGBA.RGBA_Impl_.fromFloats([this27[0],this27[1],this27[2],this27[3]]);
-			return $r;
-		}($this));
+			this27 = (function($this) {
+				var $r;
+				var channels13 = [thx.color._HSL.HSL_Impl_._c(green[0] + 120,green[1],green[2]),thx.color._HSL.HSL_Impl_._c(green[0],green[1],green[2]),thx.color._HSL.HSL_Impl_._c(green[0] - 120,green[1],green[2])];
+				$r = channels13;
+				return $r;
+			}($this));
+			this26 = (function($this) {
+				var $r;
+				var channels14 = this27.concat([1.0]);
+				$r = channels14;
+				return $r;
+			}($this));
+		}
+		$r = thx.color._RGBA.RGBA_Impl_.fromFloats([this26[0],this26[1],this26[2],this26[3]]);
 		return $r;
 	}(this)),(function($this) {
 		var $r;
 		var this28;
 		{
-			var this37;
-			this37 = (function($this) {
+			var this30 = thx.color._HSL.HSL_Impl_.split(green);
+			this28 = this30._1;
+		}
+		var this29;
+		{
+			var this31;
+			this31 = (function($this) {
 				var $r;
-				var channels8 = [thx.color._HSL.HSL_Impl_._c(green[0] + 120,green[1],green[2]),thx.color._HSL.HSL_Impl_._c(green[0],green[1],green[2]),thx.color._HSL.HSL_Impl_._c(green[0] - 120,green[1],green[2])];
-				$r = channels8;
+				var channels15 = [thx.color._HSL.HSL_Impl_._c(this28[0] + 120,this28[1],this28[2]),thx.color._HSL.HSL_Impl_._c(this28[0],this28[1],this28[2]),thx.color._HSL.HSL_Impl_._c(this28[0] - 120,this28[1],this28[2])];
+				$r = channels15;
 				return $r;
 			}($this));
-			this28 = (function($this) {
+			this29 = (function($this) {
 				var $r;
-				var channels16 = this37.concat([1.0]);
+				var channels16 = this31.concat([1.0]);
 				$r = channels16;
 				return $r;
 			}($this));
 		}
-		$r = thx.color._RGBA.RGBA_Impl_.fromFloats([this28[0],this28[1],this28[2],this28[3]]);
-		return $r;
-	}(this)),(function($this) {
-		var $r;
-		var this110;
-		{
-			var this111 = thx.color._HSL.HSL_Impl_.split(green);
-			this110 = this111._1;
-		}
-		$r = (function($this) {
-			var $r;
-			var this29;
-			{
-				var this38;
-				this38 = (function($this) {
-					var $r;
-					var channels9 = [thx.color._HSL.HSL_Impl_._c(this110[0] + 120,this110[1],this110[2]),thx.color._HSL.HSL_Impl_._c(this110[0],this110[1],this110[2]),thx.color._HSL.HSL_Impl_._c(this110[0] - 120,this110[1],this110[2])];
-					$r = channels9;
-					return $r;
-				}($this));
-				this29 = (function($this) {
-					var $r;
-					var channels17 = this38.concat([1.0]);
-					$r = channels17;
-					return $r;
-				}($this));
-			}
-			$r = thx.color._RGBA.RGBA_Impl_.fromFloats([this29[0],this29[1],this29[2],this29[3]]);
-			return $r;
-		}($this));
+		$r = thx.color._RGBA.RGBA_Impl_.fromFloats([this29[0],this29[1],this29[2],this29[3]]);
 		return $r;
 	}(this))]]).display("palette");
 	new MiniCanvas(200,200).grid().cross().display("grid");
+	new MiniCanvas(200,200).checkboard().onMove(function(e) {
+		e.mini.dot(e.x,e.y);
+	}).onTrail(function(e1) {
+		e1.mini.line(e1.x0,e1.y0,e1.x1,e1.y1);
+	}).click(20,30).move(20,30,150,10).move(150,10,5,190).display("events");
 };
 Math.__name__ = true;
 var ScaleMode = { __ename__ : true, __constructs__ : ["NoScale","Auto","Scaled"] };
@@ -434,6 +423,7 @@ var MiniCanvas = function(width,height,scaleMode) {
 	this.processScale();
 	if(MiniCanvas.isNode()) this.initNode(); else this.initBrowser();
 	this.startTime = performance.now();
+	this.events = new haxe.ds.StringMap();
 };
 MiniCanvas.__name__ = true;
 MiniCanvas.isNode = function() {
@@ -470,11 +460,18 @@ MiniCanvas.prototype = {
 		default:
 		}
 	}
+	,clear: function() {
+		this.ctx.clearRect(0,0,this.width,this.height);
+	}
 	,display: function(name) {
 		this.deltaTime = performance.now() - this.startTime;
 		if(!MiniCanvas.displayGenerationTime) console.log("generated \"" + name + "\" in " + thx.core.Floats.roundTo(this.deltaTime,2) + "ms");
 		if(MiniCanvas.isNode()) this.save(name); else this.append(name);
 		return this;
+	}
+	,fill: function(color) {
+		this.ctx.fillStyle = "rgba(" + (color >> 16 & 255) + "," + (color >> 8 & 255) + "," + (color & 255) + "," + (color >> 24 & 255) / 255 + ")";
+		this.ctx.fillRect(0,0,this.width,this.height);
 	}
 	,box: function(handler) {
 		var _g1 = 0;
@@ -499,17 +496,17 @@ MiniCanvas.prototype = {
 		var slight;
 		var this1;
 		if(null == light) {
-			var this11 = thx.color.Color.white;
-			this1 = thx.color._RGBA.RGBA_Impl_.fromInts([this11 >> 16 & 255,this11 >> 8 & 255,this11 & 255,255]);
+			var this2 = thx.color.Color.white;
+			this1 = thx.color._RGBA.RGBA_Impl_.fromInts([this2 >> 16 & 255,this2 >> 8 & 255,this2 & 255,255]);
 		} else this1 = light;
 		slight = "rgba(" + (this1 >> 16 & 255) + "," + (this1 >> 8 & 255) + "," + (this1 & 255) + "," + (this1 >> 24 & 255) / 255 + ")";
 		var sdark;
-		var this12;
+		var this3;
 		if(null == dark) {
-			var this13 = thx.color.Color.lightgrey;
-			this12 = thx.color._RGBA.RGBA_Impl_.fromInts([this13 >> 16 & 255,this13 >> 8 & 255,this13 & 255,255]);
-		} else this12 = dark;
-		sdark = "rgba(" + (this12 >> 16 & 255) + "," + (this12 >> 8 & 255) + "," + (this12 & 255) + "," + (this12 >> 24 & 255) / 255 + ")";
+			var this4 = thx.color.Color.lightgrey;
+			this3 = thx.color._RGBA.RGBA_Impl_.fromInts([this4 >> 16 & 255,this4 >> 8 & 255,this4 & 255,255]);
+		} else this3 = dark;
+		sdark = "rgba(" + (this3 >> 16 & 255) + "," + (this3 >> 8 & 255) + "," + (this3 & 255) + "," + (this3 >> 24 & 255) / 255 + ")";
 		var _g = 0;
 		while(_g < cols) {
 			var c = _g++;
@@ -555,7 +552,20 @@ MiniCanvas.prototype = {
 		this.lineVertical(ox,weight,color);
 		return this;
 	}
-	,lineHorizontal: function(offset,weight,color) {
+	,dot: function(x,y,radius,color) {
+		if(radius == null) radius = 3.0;
+		this.ctx.beginPath();
+		var this1;
+		var t;
+		var _0 = color;
+		if(null == _0) t = null; else t = _0;
+		if(t != null) this1 = t; else this1 = thx.color._RGBA.RGBA_Impl_.fromString("#cc3300");
+		this.ctx.fillStyle = "rgba(" + (this1 >> 16 & 255) + "," + (this1 >> 8 & 255) + "," + (this1 & 255) + "," + (this1 >> 24 & 255) / 255 + ")";
+		this.ctx.arc(x,y,radius,0,Math.PI * 2,true);
+		this.ctx.fill();
+		return this;
+	}
+	,line: function(x0,y0,x1,y1,weight,color) {
 		if(weight == null) weight = 1.0;
 		this.ctx.lineWidth = weight;
 		var this1;
@@ -563,33 +573,23 @@ MiniCanvas.prototype = {
 		var _0 = color;
 		if(null == _0) t = null; else t = _0;
 		if(t != null) this1 = t; else {
-			var this11 = thx.color.Color.black;
-			this1 = thx.color._RGBA.RGBA_Impl_.fromInts([this11 >> 16 & 255,this11 >> 8 & 255,this11 & 255,255]);
+			var this2 = thx.color.Color.black;
+			this1 = thx.color._RGBA.RGBA_Impl_.fromInts([this2 >> 16 & 255,this2 >> 8 & 255,this2 & 255,255]);
 		}
 		this.ctx.strokeStyle = "rgba(" + (this1 >> 16 & 255) + "," + (this1 >> 8 & 255) + "," + (this1 & 255) + "," + (this1 >> 24 & 255) / 255 + ")";
 		this.ctx.beginPath();
-		this.ctx.moveTo(0,offset);
-		this.ctx.lineTo(this.width,offset);
+		this.ctx.moveTo(x0,y0);
+		this.ctx.lineTo(x1,y1);
 		this.ctx.stroke();
 		return this;
 	}
+	,lineHorizontal: function(offset,weight,color) {
+		if(weight == null) weight = 1.0;
+		return this.line(0,offset,this.width,offset,weight,color);
+	}
 	,lineVertical: function(offset,weight,color) {
 		if(weight == null) weight = 1.0;
-		this.ctx.lineWidth = weight;
-		var this1;
-		var t;
-		var _0 = color;
-		if(null == _0) t = null; else t = _0;
-		if(t != null) this1 = t; else {
-			var this11 = thx.color.Color.black;
-			this1 = thx.color._RGBA.RGBA_Impl_.fromInts([this11 >> 16 & 255,this11 >> 8 & 255,this11 & 255,255]);
-		}
-		this.ctx.strokeStyle = "rgba(" + (this1 >> 16 & 255) + "," + (this1 >> 8 & 255) + "," + (this1 & 255) + "," + (this1 >> 24 & 255) / 255 + ")";
-		this.ctx.beginPath();
-		this.ctx.moveTo(offset,0);
-		this.ctx.lineTo(offset,this.height);
-		this.ctx.stroke();
-		return this;
+		return this.line(offset,0,offset,this.height,weight,color);
 	}
 	,gridHorizontal: function(dy,weight,color,oy) {
 		if(oy == null) oy = 0.0;
@@ -662,6 +662,108 @@ MiniCanvas.prototype = {
 	,sample: function(name,callback) {
 		this.context(callback);
 		this.display(name);
+		return this;
+	}
+	,onClick: function(callback) {
+		return this.onMouseEvent("click",null,callback);
+	}
+	,onDown: function(callback) {
+		return this.onMouseEvent("mousedown",null,callback);
+	}
+	,onMove: function(callback) {
+		return this.onMouseEvent("mousemove",null,callback);
+	}
+	,onTrail: function(callback) {
+		var _g = this;
+		var first = true;
+		var x0 = 0.0;
+		var y0 = 0.0;
+		var x1;
+		var y1;
+		var listener = function(e) {
+			if(first) {
+				x0 = e.x;
+				y0 = e.y;
+				first = false;
+			} else {
+				x1 = e.x;
+				y1 = e.y;
+				callback({ mini : _g, x0 : x0, y0 : y0, x1 : x1, y1 : y1});
+				x0 = x1;
+				y0 = y1;
+			}
+		};
+		return this.onMouseEvent("mousemove","trail",listener);
+	}
+	,onUp: function(callback) {
+		return this.onMouseEvent("mouseup",null,callback);
+	}
+	,offClick: function() {
+		return this.offMouseEvent("click");
+	}
+	,offDown: function() {
+		return this.offMouseEvent("mousedown");
+	}
+	,offMove: function() {
+		return this.offMouseEvent("mousemove");
+	}
+	,offTrail: function() {
+		return this.offMouseEvent("mousemove","trail");
+	}
+	,offUp: function() {
+		return this.offMouseEvent("mouseup");
+	}
+	,click: function(x,y) {
+		return this.trigger("click",x,y);
+	}
+	,down: function(x,y) {
+		return this.trigger("mousedown",x,y);
+	}
+	,move: function(x0,y0,x1,y1,delta) {
+		if(delta == null) delta = 9.0;
+		var dist = Math.sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
+		var steps = Math.ceil(dist / delta);
+		var x;
+		var y;
+		var step;
+		var _g = 0;
+		while(_g < steps) {
+			var i = _g++;
+			step = i / steps;
+			x = thx.core.Floats.interpolate(step,x0,x1);
+			y = thx.core.Floats.interpolate(step,y0,y1);
+			this.trigger("mousemove",x,y);
+			this.trigger("trail",x,y);
+		}
+		return this;
+	}
+	,up: function(x,y) {
+		return this.trigger("mouseup",x,y);
+	}
+	,onMouseEvent: function(type,name,callback) {
+		var _g = this;
+		if(null == name) name = type;
+		this.offMouseEvent(type,name);
+		var listener = function(e) {
+			var rect = _g.canvas.getBoundingClientRect();
+			_g.trigger(name,e.clientX - rect.left,e.clientY - rect.top);
+		};
+		this.events.h["$" + name] = { callback : callback, listener : listener};
+		if(!MiniCanvas.isNode()) this.canvas.addEventListener(type,listener,false);
+		return this;
+	}
+	,offMouseEvent: function(type,name) {
+		if(null == name) name = type;
+		var item = this.events.h["$" + name];
+		if(null == item) return this;
+		this.events.remove(name);
+		if(!MiniCanvas.isNode()) this.canvas.removeEventListener(type,item.listener,false);
+		return this;
+	}
+	,trigger: function(name,x,y) {
+		var item = this.events.h["$" + name];
+		if(null == item) return this;
+		item.callback({ mini : this, x : x, y : y});
 		return this;
 	}
 	,initBrowser: function() {
@@ -901,7 +1003,13 @@ haxe.ds.StringMap = function() {
 haxe.ds.StringMap.__name__ = true;
 haxe.ds.StringMap.__interfaces__ = [haxe.IMap];
 haxe.ds.StringMap.prototype = {
-	__class__: haxe.ds.StringMap
+	remove: function(key) {
+		key = "$" + key;
+		if(!this.h.hasOwnProperty(key)) return false;
+		delete(this.h[key]);
+		return true;
+	}
+	,__class__: haxe.ds.StringMap
 };
 var js = {};
 js.Boot = function() { };
