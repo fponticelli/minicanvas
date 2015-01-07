@@ -207,6 +207,15 @@ class MiniCanvas {
   }
 
   // interaction
+  public function onClick(callback : MiniCanvasEvent -> Void)
+    return onMouseEvent("click", callback);
+
+  public function offClick()
+    return offMouseEvent("click");
+
+  public function click(x : Float, y : Float)
+    return trigger("click", x, y);
+
 
   // interaction internals
   function onMouseEvent(type : String, ?name : String, callback : MiniCanvasEvent -> Void) {
