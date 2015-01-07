@@ -31,7 +31,7 @@ class MiniCanvas {
     this.width = width;
     this.height = height;
     processScale();
-    if(isNode()) {
+    if(isNode) {
       initNode();
     } else {
       initBrowser();
@@ -41,7 +41,7 @@ class MiniCanvas {
   }
 
   function processScale() {
-    scaleMode = null != scaleMode ? scaleMode : isNode() ? defaultNodeScaleMode : defaultBrowserScaleMode;
+    scaleMode = null != scaleMode ? scaleMode : isNode ? defaultNodeScaleMode : defaultBrowserScaleMode;
     switch scaleMode {
       case Auto:
         var ratio = devicePixelRatio() / backingStoreRatio();
@@ -61,7 +61,7 @@ class MiniCanvas {
     deltaTime = Timer.time() - startTime;
     if(!displayGenerationTime)
       trace('generated "$name" in ${deltaTime.roundTo(2)}ms');
-    if(isNode()) {
+    if(isNode) {
       save(name);
     } else {
       append(name);
@@ -290,7 +290,7 @@ class MiniCanvas {
       callback : callback,
       listener : listener
     });
-    if(!isNode()) {
+    if(isBrowser) {
       canvas.addEventListener(type, listener, false);
     }
     return this;
@@ -301,7 +301,7 @@ class MiniCanvas {
     var item = events.get(name);
     if(null == item) return this;
     events.remove(name);
-    if(!isNode()) {
+    if(isBrowser) {
       canvas.removeEventListener(type, item.listener, false);
     }
     return this;
@@ -319,8 +319,8 @@ class MiniCanvas {
   }
 
   // platform specific
-  public static function isNode() : Bool
-    return untyped __js__("typeof module !== 'undefined' && module.exports");
+  public static var isNode(default, null) : Bool = untyped __js__("typeof module !== 'undefined' && module.exports");
+  public static var isBrowser(default, null) : Bool = !isNode;
 
   function initBrowser() {
     canvas = js.Browser.document.createCanvasElement();
