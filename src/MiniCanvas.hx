@@ -122,7 +122,7 @@ class MiniCanvas {
     return this;
   }
 
-  public function dot(x : Float, y : Float, ?radius = 4.0, ?color : RGBA) {
+  public function dot(x : Float, y : Float, ?radius = 3.0, ?color : RGBA) {
     ctx.beginPath();
     ctx.fillStyle = color.or(("#cc3300" : RGBA)).toCSS3();
     ctx.arc(x, y, radius, 0, Math.PI * 2, true);
