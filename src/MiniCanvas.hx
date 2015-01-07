@@ -278,6 +278,12 @@ class MiniCanvas {
   }
 }
 
+typedef MiniCanvasEvent = {
+  mini : MiniCanvas,
+  x : Float,
+  y : Float
+}
+
 enum ScaleMode {
   NoScale;
   Auto;
