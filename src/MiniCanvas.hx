@@ -216,6 +216,27 @@ class MiniCanvas {
   public function onMove(callback : MiniCanvasEvent -> Void)
     return onMouseEvent("mousemove", callback);
 
+  public function onTrail(callback : TrailEvent -> Void) {
+    var first = true,
+        x0 = 0.0,
+        y0 = 0.0,
+        x1, y1,
+        listener = function(e : MiniCanvas.MiniCanvasEvent) {
+          if(first) {
+            x0 = e.x;
+            y0 = e.y;
+            first = false;
+          } else {
+            x1 = e.x;
+            y1 = e.y;
+            callback({ mini : this, x0 : x0, y0 : y0, x1 : x1, y1 : y1 });
+            x0 = x1;
+            y0 = y1;
+          }
+        };
+    return onMouseEvent("mousemove", "trail", listener);
+  }
+
   public function onUp(callback : MiniCanvasEvent -> Void)
     return onMouseEvent("mouseup", callback);
 
@@ -227,6 +248,9 @@ class MiniCanvas {
 
   public function offMove()
     return offMouseEvent("mousemove");
+
+  public function offTrail()
+    return offMouseEvent("mousemove", "trail");
 
   public function offUp()
     return offMouseEvent("mouseup");
@@ -251,6 +275,8 @@ class MiniCanvas {
     return this;
   }
 
+  public function up(x : Float, y : Float)
+    return trigger("mouseup", x, y);
 
   // interaction internals
   function onMouseEvent(type : String, ?name : String, callback : MiniCanvasEvent -> Void) {
