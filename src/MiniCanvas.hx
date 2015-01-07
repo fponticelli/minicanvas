@@ -130,25 +130,21 @@ class MiniCanvas {
     return this;
   }
 
-  public function lineHorizontal(offset : Float, ?weight = 1.0, ?color : RGBA) {
+  public function line(x0 : Float, y0 : Float, x1 : Float, y1 : Float, ?weight = 1.0, ?color : RGBA) {
     ctx.lineWidth = weight;
     ctx.strokeStyle = color.or((Color.black : RGBA)).toCSS3();
     ctx.beginPath();
-    ctx.moveTo(0, offset);
-    ctx.lineTo(width, offset);
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(x1, y1);
     ctx.stroke();
     return this;
   }
 
-  public function lineVertical(offset : Float, ?weight = 1.0, ?color : RGBA) {
-    ctx.lineWidth = weight;
-    ctx.strokeStyle = color.or((Color.black : RGBA)).toCSS3();
-    ctx.beginPath();
-    ctx.moveTo(offset, 0);
-    ctx.lineTo(offset, height);
-    ctx.stroke();
-    return this;
-  }
+  public function lineHorizontal(offset : Float, ?weight = 1.0, ?color : RGBA)
+    return line(0, offset, width, offset, weight, color);
+
+  public function lineVertical(offset : Float, ?weight = 1.0, ?color : RGBA)
+    return line(offset, 0, offset, height, weight, color);
 
   public function gridHorizontal(dy = 10.0, ?weight = 1.0, ?color : RGBA, oy = 0.0) {
     if(dy == 0) throw 'invalid argument dy, should be different from zero';
