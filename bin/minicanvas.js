@@ -108,9 +108,9 @@ HxOverrides.iter = function(a) {
 var Main = function() { };
 Main.__name__ = true;
 Main.main = function() {
-	MiniCanvas.displayGenerationTime = true;
-	MiniCanvas.create(200,200).checkboard().display("checkboard");
-	MiniCanvas.create(200,200).checkboard().box(function(x,y) {
+	minicanvas.MiniCanvas.displayGenerationTime = true;
+	minicanvas.MiniCanvas.create(200,200).checkboard().display("checkboard");
+	minicanvas.MiniCanvas.create(200,200).checkboard().box(function(x,y) {
 		var this1 = thx.color._HSLA.HSLA_Impl_.create(x * 360,1,y,0.75);
 		var this2;
 		this2 = (function($this) {
@@ -121,7 +121,7 @@ Main.main = function() {
 		}(this));
 		return thx.color._RGBA.RGBA_Impl_.fromFloats([this2[0],this2[1],this2[2],this2[3]]);
 	}).display("rainbowAlpha");
-	MiniCanvas.create(200,200).box(function(x1,y1) {
+	minicanvas.MiniCanvas.create(200,200).box(function(x1,y1) {
 		var this3 = thx.color._HSL.HSL_Impl_.create(x1 * 360,1,y1);
 		var this4;
 		var this5;
@@ -139,7 +139,7 @@ Main.main = function() {
 		}(this));
 		return thx.color._RGBA.RGBA_Impl_.fromFloats([this4[0],this4[1],this4[2],this4[3]]);
 	}).display("rainbow");
-	MiniCanvas.create(200,20).gradientHorizontal(function(x2) {
+	minicanvas.MiniCanvas.create(200,20).gradientHorizontal(function(x2) {
 		var this6 = thx.color._HSV.HSV_Impl_.create(x2 * 360,1,1);
 		var this7;
 		var this8;
@@ -199,7 +199,7 @@ Main.main = function() {
 		}(this));
 		return thx.color._RGBA.RGBA_Impl_.fromFloats([this7[0],this7[1],this7[2],this7[3]]);
 	}).display("gradientHorizontal");
-	MiniCanvas.create(20,200).gradientVertical(function(y2) {
+	minicanvas.MiniCanvas.create(20,200).gradientVertical(function(y2) {
 		var this9 = thx.color._HSV.HSV_Impl_.create(y2 * 360,1,1);
 		var this10;
 		var this11;
@@ -261,7 +261,7 @@ Main.main = function() {
 	}).display("gradientVertical");
 	var red = thx.color._HSL.HSL_Impl_.create(340,0.5,0.5);
 	var green = thx.color._HSL.HSL_Impl_.create(120,0.5,0.5);
-	MiniCanvas.create(200,90).palette([[(function($this) {
+	minicanvas.MiniCanvas.create(200,90).palette([[(function($this) {
 		var $r;
 		var this12;
 		{
@@ -402,431 +402,14 @@ Main.main = function() {
 		$r = thx.color._RGBA.RGBA_Impl_.fromFloats([this29[0],this29[1],this29[2],this29[3]]);
 		return $r;
 	}(this))]]).display("palette");
-	MiniCanvas.create(200,200).grid().cross().display("grid");
-	MiniCanvas.create(200,200).checkboard().onMove(function(e) {
+	minicanvas.MiniCanvas.create(200,200).grid().cross().display("grid");
+	minicanvas.MiniCanvas.create(200,200).checkboard().onMove(function(e) {
 		e.mini.dot(e.x,e.y);
 	}).onTrail(function(e1) {
 		e1.mini.line(e1.x0,e1.y0,e1.x1,e1.y1);
 	}).click(20,30).move(20,30,150,10).move(150,10,5,190).display("events");
 };
 Math.__name__ = true;
-var ScaleMode = { __ename__ : true, __constructs__ : ["NoScale","Auto","Scaled"] };
-ScaleMode.NoScale = ["NoScale",0];
-ScaleMode.NoScale.__enum__ = ScaleMode;
-ScaleMode.Auto = ["Auto",1];
-ScaleMode.Auto.__enum__ = ScaleMode;
-ScaleMode.Scaled = function(v) { var $x = ["Scaled",2,v]; $x.__enum__ = ScaleMode; return $x; };
-var MiniCanvas = function(width,height,scaleMode) {
-	this.scaleMode = scaleMode;
-	this.width = width;
-	this.height = height;
-	this.processScale();
-	if(MiniCanvas.isNode) this.initNode(); else this.initBrowser();
-	this.startTime = performance.now();
-	this.events = new haxe.ds.StringMap();
-};
-MiniCanvas.__name__ = true;
-MiniCanvas.create = function(width,height,scaleMode) {
-	return new MiniCanvas(width,height,scaleMode);
-};
-MiniCanvas.devicePixelRatio = function() {
-	return window.devicePixelRatio || 1;
-};
-MiniCanvas.backingStoreRatio = function() {
-	if(MiniCanvas._backingStoreRatio == 0) {
-		var canvas;
-		var _this = window.document;
-		canvas = _this.createElement("canvas");
-		var context = canvas.getContext("2d");
-		MiniCanvas._backingStoreRatio = (function(c) {
-        return c.webkitBackingStorePixelRatio ||
-          c.mozBackingStorePixelRatio ||
-          c.msBackingStorePixelRatio ||
-          c.oBackingStorePixelRatio ||
-          c.backingStorePixelRatio || 1;
-        })(context);
-	}
-	return MiniCanvas._backingStoreRatio;
-};
-MiniCanvas.prototype = {
-	processScale: function() {
-		if(null != this.scaleMode) this.scaleMode = this.scaleMode; else if(MiniCanvas.isNode) this.scaleMode = MiniCanvas.defaultNodeScaleMode; else this.scaleMode = MiniCanvas.defaultBrowserScaleMode;
-		var _g = this.scaleMode;
-		switch(_g[1]) {
-		case 1:
-			var ratio = MiniCanvas.devicePixelRatio() / MiniCanvas.backingStoreRatio();
-			if(ratio != 1) this.scaleMode = ScaleMode.Scaled(ratio); else this.scaleMode = ScaleMode.NoScale;
-			break;
-		default:
-		}
-	}
-	,clear: function() {
-		this.ctx.clearRect(0,0,this.width,this.height);
-	}
-	,display: function(name) {
-		this.deltaTime = performance.now() - this.startTime;
-		if(!MiniCanvas.displayGenerationTime) console.log("generated \"" + name + "\" in " + thx.core.Floats.roundTo(this.deltaTime,2) + "ms");
-		if(MiniCanvas.isNode) this.save(name); else this.append(name);
-		return this;
-	}
-	,fill: function(color) {
-		this.ctx.fillStyle = "rgba(" + (color >> 16 & 255) + "," + (color >> 8 & 255) + "," + (color & 255) + "," + (color >> 24 & 255) / 255 + ")";
-		this.ctx.fillRect(0,0,this.width,this.height);
-	}
-	,box: function(handler) {
-		var _g1 = 0;
-		var _g = this.width;
-		while(_g1 < _g) {
-			var x = _g1++;
-			var _g3 = 0;
-			var _g2 = this.height;
-			while(_g3 < _g2) {
-				var y = _g3++;
-				var this1 = handler(x / this.width,y / this.height);
-				this.ctx.fillStyle = "rgba(" + (this1 >> 16 & 255) + "," + (this1 >> 8 & 255) + "," + (this1 & 255) + "," + (this1 >> 24 & 255) / 255 + ")";
-				this.ctx.fillRect(x,y,1,1);
-			}
-		}
-		return this;
-	}
-	,checkboard: function(size,light,dark) {
-		if(size == null) size = 8;
-		var cols = Math.ceil(this.width / size);
-		var rows = Math.ceil(this.height / size);
-		var slight;
-		var this1;
-		if(null == light) {
-			var this2 = thx.color.Color.white;
-			this1 = thx.color._RGBA.RGBA_Impl_.fromInts([this2 >> 16 & 255,this2 >> 8 & 255,this2 & 255,255]);
-		} else this1 = light;
-		slight = "rgba(" + (this1 >> 16 & 255) + "," + (this1 >> 8 & 255) + "," + (this1 & 255) + "," + (this1 >> 24 & 255) / 255 + ")";
-		var sdark;
-		var this3;
-		if(null == dark) {
-			var this4 = thx.color.Color.lightgrey;
-			this3 = thx.color._RGBA.RGBA_Impl_.fromInts([this4 >> 16 & 255,this4 >> 8 & 255,this4 & 255,255]);
-		} else this3 = dark;
-		sdark = "rgba(" + (this3 >> 16 & 255) + "," + (this3 >> 8 & 255) + "," + (this3 & 255) + "," + (this3 >> 24 & 255) / 255 + ")";
-		var _g = 0;
-		while(_g < cols) {
-			var c = _g++;
-			var _g1 = 0;
-			while(_g1 < rows) {
-				var r = _g1++;
-				if(c % 2 != r % 2) this.ctx.fillStyle = slight; else this.ctx.fillStyle = sdark;
-				this.ctx.fillRect(c * size,r * size,size,size);
-			}
-		}
-		return this;
-	}
-	,palette: function(colors,padding,margin) {
-		if(margin == null) margin = 0.0;
-		if(padding == null) padding = 2.0;
-		var rows = colors.length;
-		var h = (this.height - 2 * margin - (rows - 1) * padding) / rows;
-		var py = margin;
-		var _g = 0;
-		while(_g < colors.length) {
-			var row = colors[_g];
-			++_g;
-			var cols = row.length;
-			var w = (this.width - 2 * margin - (cols - 1) * padding) / cols;
-			var px = margin;
-			var _g1 = 0;
-			while(_g1 < row.length) {
-				var col = row[_g1];
-				++_g1;
-				this.ctx.fillStyle = "rgba(" + (col >> 16 & 255) + "," + (col >> 8 & 255) + "," + (col & 255) + "," + (col >> 24 & 255) / 255 + ")";
-				this.ctx.fillRect(px,py,w,h);
-				px += w + padding;
-			}
-			py += h + padding;
-		}
-		return this;
-	}
-	,cross: function(ox,oy,weight,color) {
-		if(weight == null) weight = 1.0;
-		if(null == ox) ox = this.width / 2;
-		if(null == oy) oy = this.height / 2;
-		this.lineHorizontal(oy,weight,color);
-		this.lineVertical(ox,weight,color);
-		return this;
-	}
-	,dot: function(x,y,radius,color) {
-		if(radius == null) radius = 3.0;
-		this.ctx.beginPath();
-		var this1;
-		var t;
-		var _0 = color;
-		if(null == _0) t = null; else t = _0;
-		if(t != null) this1 = t; else this1 = thx.color._RGBA.RGBA_Impl_.fromString("#cc3300");
-		this.ctx.fillStyle = "rgba(" + (this1 >> 16 & 255) + "," + (this1 >> 8 & 255) + "," + (this1 & 255) + "," + (this1 >> 24 & 255) / 255 + ")";
-		this.ctx.arc(x,y,radius,0,Math.PI * 2,true);
-		this.ctx.fill();
-		return this;
-	}
-	,line: function(x0,y0,x1,y1,weight,color) {
-		if(weight == null) weight = 1.0;
-		this.ctx.lineWidth = weight;
-		var this1;
-		var t;
-		var _0 = color;
-		if(null == _0) t = null; else t = _0;
-		if(t != null) this1 = t; else {
-			var this2 = thx.color.Color.black;
-			this1 = thx.color._RGBA.RGBA_Impl_.fromInts([this2 >> 16 & 255,this2 >> 8 & 255,this2 & 255,255]);
-		}
-		this.ctx.strokeStyle = "rgba(" + (this1 >> 16 & 255) + "," + (this1 >> 8 & 255) + "," + (this1 & 255) + "," + (this1 >> 24 & 255) / 255 + ")";
-		this.ctx.beginPath();
-		this.ctx.moveTo(x0,y0);
-		this.ctx.lineTo(x1,y1);
-		this.ctx.stroke();
-		return this;
-	}
-	,lineHorizontal: function(offset,weight,color) {
-		if(weight == null) weight = 1.0;
-		return this.line(0,offset,this.width,offset,weight,color);
-	}
-	,lineVertical: function(offset,weight,color) {
-		if(weight == null) weight = 1.0;
-		return this.line(offset,0,offset,this.height,weight,color);
-	}
-	,gridHorizontal: function(dy,weight,color,oy) {
-		if(oy == null) oy = 0.0;
-		if(weight == null) weight = 1.0;
-		if(dy == null) dy = 10.0;
-		if(dy == 0) throw "invalid argument dy, should be different from zero";
-		if(null == color) {
-			var this1 = thx.color.Color.lightgrey;
-			color = thx.color._RGBA.RGBA_Impl_.fromInts([this1 >> 16 & 255,this1 >> 8 & 255,this1 & 255,255]);
-		}
-		var py = oy % dy;
-		while(py - weight / 2 <= this.height) {
-			this.lineHorizontal(py,weight,color);
-			py += dy;
-		}
-		return this;
-	}
-	,gridVertical: function(dx,weight,color,ox) {
-		if(ox == null) ox = 0.0;
-		if(weight == null) weight = 1.0;
-		if(dx == null) dx = 10.0;
-		if(dx == 0) throw "invalid argument dx, should be different from zero";
-		if(null == color) {
-			var this1 = thx.color.Color.lightgrey;
-			color = thx.color._RGBA.RGBA_Impl_.fromInts([this1 >> 16 & 255,this1 >> 8 & 255,this1 & 255,255]);
-		}
-		var px = ox % dx;
-		while(px - weight / 2 <= this.width) {
-			this.lineVertical(px,weight,color);
-			px += dx;
-		}
-		return this;
-	}
-	,grid: function(dx,dy,weight,color,ox,oy) {
-		if(oy == null) oy = 0.0;
-		if(ox == null) ox = 0.0;
-		if(weight == null) weight = 1.0;
-		if(dy == null) dy = 10.0;
-		if(dx == null) dx = 10.0;
-		this.gridHorizontal(dy,weight,color,oy);
-		this.gridVertical(dx,weight,color,ox);
-		return this;
-	}
-	,gradientHorizontal: function(handler) {
-		var _g1 = 0;
-		var _g = this.width;
-		while(_g1 < _g) {
-			var x = _g1++;
-			var this1 = handler(x / this.width);
-			this.ctx.fillStyle = "rgba(" + (this1 >> 16 & 255) + "," + (this1 >> 8 & 255) + "," + (this1 & 255) + "," + (this1 >> 24 & 255) / 255 + ")";
-			this.ctx.fillRect(x,0,1,this.height);
-		}
-		return this;
-	}
-	,gradientVertical: function(handler) {
-		var _g1 = 0;
-		var _g = this.height;
-		while(_g1 < _g) {
-			var y = _g1++;
-			var this1 = handler(y / this.height);
-			this.ctx.fillStyle = "rgba(" + (this1 >> 16 & 255) + "," + (this1 >> 8 & 255) + "," + (this1 & 255) + "," + (this1 >> 24 & 255) / 255 + ")";
-			this.ctx.fillRect(0,y,this.width,1);
-		}
-		return this;
-	}
-	,context: function(callback) {
-		callback(this.ctx,this.width,this.height);
-		return this;
-	}
-	,sample: function(name,callback) {
-		this.context(callback);
-		this.display(name);
-		return this;
-	}
-	,onClick: function(callback) {
-		return this.onMouseEvent("click",null,callback);
-	}
-	,onDown: function(callback) {
-		return this.onMouseEvent("mousedown",null,callback);
-	}
-	,onMove: function(callback) {
-		return this.onMouseEvent("mousemove",null,callback);
-	}
-	,onTrail: function(callback) {
-		var _g = this;
-		var first = true;
-		var x0 = 0.0;
-		var y0 = 0.0;
-		var x1;
-		var y1;
-		var listener = function(e) {
-			if(first) {
-				x0 = e.x;
-				y0 = e.y;
-				first = false;
-			} else {
-				x1 = e.x;
-				y1 = e.y;
-				callback({ mini : _g, x0 : x0, y0 : y0, x1 : x1, y1 : y1});
-				x0 = x1;
-				y0 = y1;
-			}
-		};
-		return this.onMouseEvent("mousemove","trail",listener);
-	}
-	,onUp: function(callback) {
-		return this.onMouseEvent("mouseup",null,callback);
-	}
-	,offClick: function() {
-		return this.offMouseEvent("click");
-	}
-	,offDown: function() {
-		return this.offMouseEvent("mousedown");
-	}
-	,offMove: function() {
-		return this.offMouseEvent("mousemove");
-	}
-	,offTrail: function() {
-		return this.offMouseEvent("mousemove","trail");
-	}
-	,offUp: function() {
-		return this.offMouseEvent("mouseup");
-	}
-	,click: function(x,y) {
-		return this.trigger("click",x,y);
-	}
-	,down: function(x,y) {
-		return this.trigger("mousedown",x,y);
-	}
-	,move: function(x0,y0,x1,y1,delta) {
-		if(delta == null) delta = 9.0;
-		var dist = Math.sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
-		var steps = Math.ceil(dist / delta);
-		var x;
-		var y;
-		var step;
-		var _g = 0;
-		while(_g < steps) {
-			var i = _g++;
-			step = i / steps;
-			x = thx.core.Floats.interpolate(step,x0,x1);
-			y = thx.core.Floats.interpolate(step,y0,y1);
-			this.trigger("mousemove",x,y);
-			this.trigger("trail",x,y);
-		}
-		return this;
-	}
-	,up: function(x,y) {
-		return this.trigger("mouseup",x,y);
-	}
-	,onMouseEvent: function(type,name,callback) {
-		var _g = this;
-		if(null == name) name = type;
-		this.offMouseEvent(type,name);
-		var listener = function(e) {
-			var rect = _g.canvas.getBoundingClientRect();
-			_g.trigger(name,e.clientX - rect.left,e.clientY - rect.top);
-		};
-		this.events.h["$" + name] = { callback : callback, listener : listener};
-		if(MiniCanvas.isBrowser) this.canvas.addEventListener(type,listener,false);
-		return this;
-	}
-	,offMouseEvent: function(type,name) {
-		if(null == name) name = type;
-		var item = this.events.h["$" + name];
-		if(null == item) return this;
-		this.events.remove(name);
-		if(MiniCanvas.isBrowser) this.canvas.removeEventListener(type,item.listener,false);
-		return this;
-	}
-	,trigger: function(name,x,y) {
-		var item = this.events.h["$" + name];
-		if(null == item) return this;
-		item.callback({ mini : this, x : x, y : y});
-		return this;
-	}
-	,initBrowser: function() {
-		var _this = window.document;
-		this.canvas = _this.createElement("canvas");
-		{
-			var _g = this.scaleMode;
-			switch(_g[1]) {
-			case 2:
-				var v = _g[2];
-				this.canvas.width = Math.round(this.width * v);
-				this.canvas.height = Math.round(this.height * v);
-				this.canvas.style.width = "" + this.width + "px";
-				this.canvas.style.height = "" + this.height + "px";
-				this.ctx = this.canvas.getContext("2d");
-				this.ctx.scale(v,v);
-				break;
-			default:
-				this.canvas.width = this.width;
-				this.canvas.height = this.height;
-				this.ctx = this.canvas.getContext("2d");
-			}
-		}
-	}
-	,append: function(name) {
-		var figure = window.document.createElement("figure");
-		var caption = window.document.createElement("figcaption");
-		figure.className = "minicanvas";
-		figure.appendChild(this.canvas);
-		caption.innerHTML = thx.core.Strings.humanize(name) + (MiniCanvas.displayGenerationTime?" <span class=\"info\">(" + thx.core.Floats.roundTo(this.deltaTime,2) + "ms)</span>":"");
-		figure.appendChild(caption);
-		MiniCanvas.parentNode.appendChild(figure);
-	}
-	,save: function(name) {
-		var fs = require("fs");
-		var out = fs.createWriteStream("" + MiniCanvas.imagePath + "/" + name + ".png");
-		var stream = this.canvas.pngStream();
-		stream.on("data",function(chunk) {
-			out.write(chunk);
-		});
-		stream.on("end",function(_) {
-			console.log("saved " + name + ".png");
-		});
-	}
-	,initNode: function() {
-		var Canvas = require("canvas");
-		{
-			var _g = this.scaleMode;
-			switch(_g[1]) {
-			case 2:
-				var v = _g[2];
-				this.canvas = new Canvas(this.width * v,this.height * v);
-				this.ctx = this.canvas.getContext("2d");
-				this.ctx.scale(v,v);
-				break;
-			default:
-				this.canvas = new Canvas(this.width,this.height);
-				this.ctx = this.canvas.getContext("2d");
-			}
-		}
-	}
-	,__class__: MiniCanvas
-};
 var Std = function() { };
 Std.__name__ = true;
 Std.string = function(s) {
@@ -1144,6 +727,424 @@ js.Boot.__isNativeObj = function(o) {
 };
 js.Boot.__resolveNativeClass = function(name) {
 	if(typeof window != "undefined") return window[name]; else return global[name];
+};
+var minicanvas = {};
+minicanvas.ScaleMode = { __ename__ : true, __constructs__ : ["NoScale","Auto","Scaled"] };
+minicanvas.ScaleMode.NoScale = ["NoScale",0];
+minicanvas.ScaleMode.NoScale.__enum__ = minicanvas.ScaleMode;
+minicanvas.ScaleMode.Auto = ["Auto",1];
+minicanvas.ScaleMode.Auto.__enum__ = minicanvas.ScaleMode;
+minicanvas.ScaleMode.Scaled = function(v) { var $x = ["Scaled",2,v]; $x.__enum__ = minicanvas.ScaleMode; return $x; };
+minicanvas.MiniCanvas = function(width,height,scaleMode) {
+	this.scaleMode = scaleMode;
+	this.width = width;
+	this.height = height;
+	this.processScale();
+	if(minicanvas.MiniCanvas.isNode) this.initNode(); else this.initBrowser();
+	this.startTime = performance.now();
+	this.events = new haxe.ds.StringMap();
+};
+minicanvas.MiniCanvas.__name__ = true;
+minicanvas.MiniCanvas.create = function(width,height,scaleMode) {
+	return new minicanvas.MiniCanvas(width,height,scaleMode);
+};
+minicanvas.MiniCanvas.devicePixelRatio = function() {
+	return window.devicePixelRatio || 1;
+};
+minicanvas.MiniCanvas.backingStoreRatio = function() {
+	if(minicanvas.MiniCanvas._backingStoreRatio == 0) {
+		var canvas;
+		var _this = window.document;
+		canvas = _this.createElement("canvas");
+		var context = canvas.getContext("2d");
+		minicanvas.MiniCanvas._backingStoreRatio = (function(c) {
+        return c.webkitBackingStorePixelRatio ||
+          c.mozBackingStorePixelRatio ||
+          c.msBackingStorePixelRatio ||
+          c.oBackingStorePixelRatio ||
+          c.backingStorePixelRatio || 1;
+        })(context);
+	}
+	return minicanvas.MiniCanvas._backingStoreRatio;
+};
+minicanvas.MiniCanvas.prototype = {
+	processScale: function() {
+		if(null != this.scaleMode) this.scaleMode = this.scaleMode; else if(minicanvas.MiniCanvas.isNode) this.scaleMode = minicanvas.MiniCanvas.defaultNodeScaleMode; else this.scaleMode = minicanvas.MiniCanvas.defaultBrowserScaleMode;
+		var _g = this.scaleMode;
+		switch(_g[1]) {
+		case 1:
+			var ratio = minicanvas.MiniCanvas.devicePixelRatio() / minicanvas.MiniCanvas.backingStoreRatio();
+			if(ratio != 1) this.scaleMode = minicanvas.ScaleMode.Scaled(ratio); else this.scaleMode = minicanvas.ScaleMode.NoScale;
+			break;
+		default:
+		}
+	}
+	,clear: function() {
+		this.ctx.clearRect(0,0,this.width,this.height);
+	}
+	,display: function(name) {
+		this.deltaTime = performance.now() - this.startTime;
+		if(!minicanvas.MiniCanvas.displayGenerationTime) console.log("generated \"" + name + "\" in " + thx.core.Floats.roundTo(this.deltaTime,2) + "ms");
+		if(minicanvas.MiniCanvas.isNode) this.save(name); else this.append(name);
+		return this;
+	}
+	,fill: function(color) {
+		this.ctx.fillStyle = "rgba(" + (color >> 16 & 255) + "," + (color >> 8 & 255) + "," + (color & 255) + "," + (color >> 24 & 255) / 255 + ")";
+		this.ctx.fillRect(0,0,this.width,this.height);
+	}
+	,box: function(handler) {
+		var _g1 = 0;
+		var _g = this.width;
+		while(_g1 < _g) {
+			var x = _g1++;
+			var _g3 = 0;
+			var _g2 = this.height;
+			while(_g3 < _g2) {
+				var y = _g3++;
+				var this1 = handler(x / this.width,y / this.height);
+				this.ctx.fillStyle = "rgba(" + (this1 >> 16 & 255) + "," + (this1 >> 8 & 255) + "," + (this1 & 255) + "," + (this1 >> 24 & 255) / 255 + ")";
+				this.ctx.fillRect(x,y,1,1);
+			}
+		}
+		return this;
+	}
+	,checkboard: function(size,light,dark) {
+		if(size == null) size = 8;
+		var cols = Math.ceil(this.width / size);
+		var rows = Math.ceil(this.height / size);
+		var slight;
+		var this1;
+		if(null == light) {
+			var this2 = thx.color.Color.white;
+			this1 = thx.color._RGBA.RGBA_Impl_.fromInts([this2 >> 16 & 255,this2 >> 8 & 255,this2 & 255,255]);
+		} else this1 = light;
+		slight = "rgba(" + (this1 >> 16 & 255) + "," + (this1 >> 8 & 255) + "," + (this1 & 255) + "," + (this1 >> 24 & 255) / 255 + ")";
+		var sdark;
+		var this3;
+		if(null == dark) {
+			var this4 = thx.color.Color.lightgrey;
+			this3 = thx.color._RGBA.RGBA_Impl_.fromInts([this4 >> 16 & 255,this4 >> 8 & 255,this4 & 255,255]);
+		} else this3 = dark;
+		sdark = "rgba(" + (this3 >> 16 & 255) + "," + (this3 >> 8 & 255) + "," + (this3 & 255) + "," + (this3 >> 24 & 255) / 255 + ")";
+		var _g = 0;
+		while(_g < cols) {
+			var c = _g++;
+			var _g1 = 0;
+			while(_g1 < rows) {
+				var r = _g1++;
+				if(c % 2 != r % 2) this.ctx.fillStyle = slight; else this.ctx.fillStyle = sdark;
+				this.ctx.fillRect(c * size,r * size,size,size);
+			}
+		}
+		return this;
+	}
+	,palette: function(colors,padding,margin) {
+		if(margin == null) margin = 0.0;
+		if(padding == null) padding = 2.0;
+		var rows = colors.length;
+		var h = (this.height - 2 * margin - (rows - 1) * padding) / rows;
+		var py = margin;
+		var _g = 0;
+		while(_g < colors.length) {
+			var row = colors[_g];
+			++_g;
+			var cols = row.length;
+			var w = (this.width - 2 * margin - (cols - 1) * padding) / cols;
+			var px = margin;
+			var _g1 = 0;
+			while(_g1 < row.length) {
+				var col = row[_g1];
+				++_g1;
+				this.ctx.fillStyle = "rgba(" + (col >> 16 & 255) + "," + (col >> 8 & 255) + "," + (col & 255) + "," + (col >> 24 & 255) / 255 + ")";
+				this.ctx.fillRect(px,py,w,h);
+				px += w + padding;
+			}
+			py += h + padding;
+		}
+		return this;
+	}
+	,cross: function(ox,oy,weight,color) {
+		if(weight == null) weight = 1.0;
+		if(null == ox) ox = this.width / 2;
+		if(null == oy) oy = this.height / 2;
+		this.lineHorizontal(oy,weight,color);
+		this.lineVertical(ox,weight,color);
+		return this;
+	}
+	,dot: function(x,y,radius,color) {
+		if(radius == null) radius = 3.0;
+		this.ctx.beginPath();
+		var this1;
+		var t;
+		var _0 = color;
+		if(null == _0) t = null; else t = _0;
+		if(t != null) this1 = t; else this1 = thx.color._RGBA.RGBA_Impl_.fromString("#cc3300");
+		this.ctx.fillStyle = "rgba(" + (this1 >> 16 & 255) + "," + (this1 >> 8 & 255) + "," + (this1 & 255) + "," + (this1 >> 24 & 255) / 255 + ")";
+		this.ctx.arc(x,y,radius,0,Math.PI * 2,true);
+		this.ctx.fill();
+		return this;
+	}
+	,line: function(x0,y0,x1,y1,weight,color) {
+		if(weight == null) weight = 1.0;
+		this.ctx.lineWidth = weight;
+		var this1;
+		var t;
+		var _0 = color;
+		if(null == _0) t = null; else t = _0;
+		if(t != null) this1 = t; else {
+			var this2 = thx.color.Color.black;
+			this1 = thx.color._RGBA.RGBA_Impl_.fromInts([this2 >> 16 & 255,this2 >> 8 & 255,this2 & 255,255]);
+		}
+		this.ctx.strokeStyle = "rgba(" + (this1 >> 16 & 255) + "," + (this1 >> 8 & 255) + "," + (this1 & 255) + "," + (this1 >> 24 & 255) / 255 + ")";
+		this.ctx.beginPath();
+		this.ctx.moveTo(x0,y0);
+		this.ctx.lineTo(x1,y1);
+		this.ctx.stroke();
+		return this;
+	}
+	,lineHorizontal: function(offset,weight,color) {
+		if(weight == null) weight = 1.0;
+		return this.line(0,offset,this.width,offset,weight,color);
+	}
+	,lineVertical: function(offset,weight,color) {
+		if(weight == null) weight = 1.0;
+		return this.line(offset,0,offset,this.height,weight,color);
+	}
+	,gridHorizontal: function(dy,weight,color,oy) {
+		if(oy == null) oy = 0.0;
+		if(weight == null) weight = 1.0;
+		if(dy == null) dy = 10.0;
+		if(dy == 0) throw "invalid argument dy, should be different from zero";
+		if(null == color) {
+			var this1 = thx.color.Color.lightgrey;
+			color = thx.color._RGBA.RGBA_Impl_.fromInts([this1 >> 16 & 255,this1 >> 8 & 255,this1 & 255,255]);
+		}
+		var py = oy % dy;
+		while(py - weight / 2 <= this.height) {
+			this.lineHorizontal(py,weight,color);
+			py += dy;
+		}
+		return this;
+	}
+	,gridVertical: function(dx,weight,color,ox) {
+		if(ox == null) ox = 0.0;
+		if(weight == null) weight = 1.0;
+		if(dx == null) dx = 10.0;
+		if(dx == 0) throw "invalid argument dx, should be different from zero";
+		if(null == color) {
+			var this1 = thx.color.Color.lightgrey;
+			color = thx.color._RGBA.RGBA_Impl_.fromInts([this1 >> 16 & 255,this1 >> 8 & 255,this1 & 255,255]);
+		}
+		var px = ox % dx;
+		while(px - weight / 2 <= this.width) {
+			this.lineVertical(px,weight,color);
+			px += dx;
+		}
+		return this;
+	}
+	,grid: function(dx,dy,weight,color,ox,oy) {
+		if(oy == null) oy = 0.0;
+		if(ox == null) ox = 0.0;
+		if(weight == null) weight = 1.0;
+		if(dy == null) dy = 10.0;
+		if(dx == null) dx = 10.0;
+		this.gridHorizontal(dy,weight,color,oy);
+		this.gridVertical(dx,weight,color,ox);
+		return this;
+	}
+	,gradientHorizontal: function(handler) {
+		var _g1 = 0;
+		var _g = this.width;
+		while(_g1 < _g) {
+			var x = _g1++;
+			var this1 = handler(x / this.width);
+			this.ctx.fillStyle = "rgba(" + (this1 >> 16 & 255) + "," + (this1 >> 8 & 255) + "," + (this1 & 255) + "," + (this1 >> 24 & 255) / 255 + ")";
+			this.ctx.fillRect(x,0,1,this.height);
+		}
+		return this;
+	}
+	,gradientVertical: function(handler) {
+		var _g1 = 0;
+		var _g = this.height;
+		while(_g1 < _g) {
+			var y = _g1++;
+			var this1 = handler(y / this.height);
+			this.ctx.fillStyle = "rgba(" + (this1 >> 16 & 255) + "," + (this1 >> 8 & 255) + "," + (this1 & 255) + "," + (this1 >> 24 & 255) / 255 + ")";
+			this.ctx.fillRect(0,y,this.width,1);
+		}
+		return this;
+	}
+	,context: function(callback) {
+		callback(this.ctx,this.width,this.height);
+		return this;
+	}
+	,sample: function(name,callback) {
+		this.context(callback);
+		this.display(name);
+		return this;
+	}
+	,onClick: function(callback) {
+		return this.onMouseEvent("click",null,callback);
+	}
+	,onDown: function(callback) {
+		return this.onMouseEvent("mousedown",null,callback);
+	}
+	,onMove: function(callback) {
+		return this.onMouseEvent("mousemove",null,callback);
+	}
+	,onTrail: function(callback) {
+		var _g = this;
+		var first = true;
+		var x0 = 0.0;
+		var y0 = 0.0;
+		var x1;
+		var y1;
+		var listener = function(e) {
+			if(first) {
+				x0 = e.x;
+				y0 = e.y;
+				first = false;
+			} else {
+				x1 = e.x;
+				y1 = e.y;
+				callback({ mini : _g, x0 : x0, y0 : y0, x1 : x1, y1 : y1});
+				x0 = x1;
+				y0 = y1;
+			}
+		};
+		return this.onMouseEvent("mousemove","trail",listener);
+	}
+	,onUp: function(callback) {
+		return this.onMouseEvent("mouseup",null,callback);
+	}
+	,offClick: function() {
+		return this.offMouseEvent("click");
+	}
+	,offDown: function() {
+		return this.offMouseEvent("mousedown");
+	}
+	,offMove: function() {
+		return this.offMouseEvent("mousemove");
+	}
+	,offTrail: function() {
+		return this.offMouseEvent("mousemove","trail");
+	}
+	,offUp: function() {
+		return this.offMouseEvent("mouseup");
+	}
+	,click: function(x,y) {
+		return this.trigger("click",x,y);
+	}
+	,down: function(x,y) {
+		return this.trigger("mousedown",x,y);
+	}
+	,move: function(x0,y0,x1,y1,delta) {
+		if(delta == null) delta = 9.0;
+		var dist = Math.sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
+		var steps = Math.ceil(dist / delta);
+		var x;
+		var y;
+		var step;
+		var _g = 0;
+		while(_g < steps) {
+			var i = _g++;
+			step = i / steps;
+			x = thx.core.Floats.interpolate(step,x0,x1);
+			y = thx.core.Floats.interpolate(step,y0,y1);
+			this.trigger("mousemove",x,y);
+			this.trigger("trail",x,y);
+		}
+		return this;
+	}
+	,up: function(x,y) {
+		return this.trigger("mouseup",x,y);
+	}
+	,onMouseEvent: function(type,name,callback) {
+		var _g = this;
+		if(null == name) name = type;
+		this.offMouseEvent(type,name);
+		var listener = function(e) {
+			var rect = _g.canvas.getBoundingClientRect();
+			_g.trigger(name,e.clientX - rect.left,e.clientY - rect.top);
+		};
+		this.events.h["$" + name] = { callback : callback, listener : listener};
+		if(minicanvas.MiniCanvas.isBrowser) this.canvas.addEventListener(type,listener,false);
+		return this;
+	}
+	,offMouseEvent: function(type,name) {
+		if(null == name) name = type;
+		var item = this.events.h["$" + name];
+		if(null == item) return this;
+		this.events.remove(name);
+		if(minicanvas.MiniCanvas.isBrowser) this.canvas.removeEventListener(type,item.listener,false);
+		return this;
+	}
+	,trigger: function(name,x,y) {
+		var item = this.events.h["$" + name];
+		if(null == item) return this;
+		item.callback({ mini : this, x : x, y : y});
+		return this;
+	}
+	,initBrowser: function() {
+		var _this = window.document;
+		this.canvas = _this.createElement("canvas");
+		{
+			var _g = this.scaleMode;
+			switch(_g[1]) {
+			case 2:
+				var v = _g[2];
+				this.canvas.width = Math.round(this.width * v);
+				this.canvas.height = Math.round(this.height * v);
+				this.canvas.style.width = "" + this.width + "px";
+				this.canvas.style.height = "" + this.height + "px";
+				this.ctx = this.canvas.getContext("2d");
+				this.ctx.scale(v,v);
+				break;
+			default:
+				this.canvas.width = this.width;
+				this.canvas.height = this.height;
+				this.ctx = this.canvas.getContext("2d");
+			}
+		}
+	}
+	,append: function(name) {
+		var figure = window.document.createElement("figure");
+		var caption = window.document.createElement("figcaption");
+		figure.className = "minicanvas";
+		figure.appendChild(this.canvas);
+		caption.innerHTML = thx.core.Strings.humanize(name) + (minicanvas.MiniCanvas.displayGenerationTime?" <span class=\"info\">(" + thx.core.Floats.roundTo(this.deltaTime,2) + "ms)</span>":"");
+		figure.appendChild(caption);
+		minicanvas.MiniCanvas.parentNode.appendChild(figure);
+	}
+	,save: function(name) {
+		var fs = require("fs");
+		var out = fs.createWriteStream("" + minicanvas.MiniCanvas.imagePath + "/" + name + ".png");
+		var stream = this.canvas.pngStream();
+		stream.on("data",function(chunk) {
+			out.write(chunk);
+		});
+		stream.on("end",function(_) {
+			console.log("saved " + name + ".png");
+		});
+	}
+	,initNode: function() {
+		var Canvas = require("canvas");
+		{
+			var _g = this.scaleMode;
+			switch(_g[1]) {
+			case 2:
+				var v = _g[2];
+				this.canvas = new Canvas(this.width * v,this.height * v);
+				this.ctx = this.canvas.getContext("2d");
+				this.ctx.scale(v,v);
+				break;
+			default:
+				this.canvas = new Canvas(this.width,this.height);
+				this.ctx = this.canvas.getContext("2d");
+			}
+		}
+	}
+	,__class__: minicanvas.MiniCanvas
 };
 var thx = {};
 thx.color = {};
@@ -6136,15 +6137,15 @@ if(typeof(scope.performance.now) == "undefined") {
 	};
 	scope.performance.now = now;
 }
-MiniCanvas.defaultNodeScaleMode = ScaleMode.NoScale;
-MiniCanvas.defaultBrowserScaleMode = ScaleMode.Auto;
-MiniCanvas.displayGenerationTime = false;
-MiniCanvas.imagePath = "images";
-MiniCanvas.parentNode = typeof document != 'undefined' && document.body;
-MiniCanvas.isNode = typeof module !== 'undefined' && module.exports;
-MiniCanvas.isBrowser = !MiniCanvas.isNode;
-MiniCanvas._backingStoreRatio = 0;
 js.Boot.__toStr = {}.toString;
+minicanvas.MiniCanvas.defaultNodeScaleMode = minicanvas.ScaleMode.NoScale;
+minicanvas.MiniCanvas.defaultBrowserScaleMode = minicanvas.ScaleMode.Auto;
+minicanvas.MiniCanvas.displayGenerationTime = false;
+minicanvas.MiniCanvas.imagePath = "images";
+minicanvas.MiniCanvas.parentNode = typeof document != 'undefined' && document.body;
+minicanvas.MiniCanvas.isNode = typeof module !== 'undefined' && module.exports;
+minicanvas.MiniCanvas.isBrowser = !minicanvas.MiniCanvas.isNode;
+minicanvas.MiniCanvas._backingStoreRatio = 0;
 thx.color._Grey.Grey_Impl_.black = 0;
 thx.color._Grey.Grey_Impl_.white = 1;
 thx.color.parse.ColorParser.parser = new thx.color.parse.ColorParser();

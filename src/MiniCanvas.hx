@@ -1,0 +1,1 @@
+typedef MiniCanvas = minicanvas.MiniCanvas;

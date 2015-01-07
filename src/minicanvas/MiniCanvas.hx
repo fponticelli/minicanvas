@@ -1,3 +1,5 @@
+package minicanvas;
+
 import js.html.CanvasElement;
 import js.html.CanvasRenderingContext2D;
 import js.html.Element;
