@@ -216,6 +216,9 @@ class MiniCanvas {
   public function onMove(callback : MiniCanvasEvent -> Void)
     return onMouseEvent("mousemove", callback);
 
+  public function onUp(callback : MiniCanvasEvent -> Void)
+    return onMouseEvent("mouseup", callback);
+
   public function offClick()
     return offMouseEvent("click");
 
@@ -224,6 +227,9 @@ class MiniCanvas {
 
   public function offMove()
     return offMouseEvent("mousemove");
+
+  public function offUp()
+    return offMouseEvent("mouseup");
 
   public function click(x : Float, y : Float)
     return trigger("click", x, y);
@@ -365,6 +371,14 @@ typedef MiniCanvasEvent = {
   mini : MiniCanvas,
   x : Float,
   y : Float
+}
+
+typedef TrailEvent = {
+  mini : MiniCanvas,
+  x0 : Float,
+  y0 : Float,
+  x1 : Float,
+  y1 : Float
 }
 
 enum ScaleMode {
