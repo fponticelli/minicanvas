@@ -50,6 +50,10 @@ class MiniCanvas {
     };
   }
 
+  public function clear() {
+    ctx.clearRect(0, 0, width, height);
+  }
+
   public function display(name : String) {
     deltaTime = Timer.time() - startTime;
     if(!displayGenerationTime)
@@ -60,6 +64,11 @@ class MiniCanvas {
       append(name);
     }
     return this;
+  }
+
+  public function fill(color : RGBA) {
+    ctx.fillStyle = color.toCSS3();
+    ctx.fillRect(0, 0, width, height);
   }
 
   // utilities
@@ -110,6 +119,14 @@ class MiniCanvas {
     if(null == oy) oy = height / 2;
     lineHorizontal(oy, weight, color);
     lineVertical(ox, weight, color);
+    return this;
+  }
+
+  public function dot(x : Float, y : Float, ?radius = 4.0, ?color : RGBA) {
+    ctx.beginPath();
+    ctx.fillStyle = color.or(("#cc3300" : RGBA)).toCSS3();
+    ctx.arc(x, y, radius, 0, Math.PI * 2, true);
+    ctx.fill();
     return this;
   }
 
