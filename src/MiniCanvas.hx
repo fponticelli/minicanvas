@@ -26,7 +26,11 @@ class MiniCanvas {
   var deltaTime : Float;
   var events : Map<String, { callback : MiniCanvasEvent -> Void, listener : MouseEvent -> Void }>;
 
-  public function new(width : Int, height : Int, ?scaleMode : ScaleMode) {
+  public static function create(width : Int, height : Int, ?scaleMode : ScaleMode) {
+    return new MiniCanvas(width, height, scaleMode);
+  }
+
+  function new(width : Int, height : Int, ?scaleMode : ScaleMode) {
     this.scaleMode = scaleMode;
     this.width = width;
     this.height = height;
