@@ -210,11 +210,20 @@ class MiniCanvas {
   public function onClick(callback : MiniCanvasEvent -> Void)
     return onMouseEvent("click", callback);
 
+  public function onDown(callback : MiniCanvasEvent -> Void)
+    return onMouseEvent("mousedown", callback);
+
   public function offClick()
     return offMouseEvent("click");
 
+  public function offDown()
+    return offMouseEvent("mousedown");
+
   public function click(x : Float, y : Float)
     return trigger("click", x, y);
+
+  public function down(x : Float, y : Float)
+    return trigger("mousedown", x, y);
 
 
   // interaction internals
