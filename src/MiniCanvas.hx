@@ -213,17 +213,37 @@ class MiniCanvas {
   public function onDown(callback : MiniCanvasEvent -> Void)
     return onMouseEvent("mousedown", callback);
 
+  public function onMove(callback : MiniCanvasEvent -> Void)
+    return onMouseEvent("mousemove", callback);
+
   public function offClick()
     return offMouseEvent("click");
 
   public function offDown()
     return offMouseEvent("mousedown");
 
+  public function offMove()
+    return offMouseEvent("mousemove");
+
   public function click(x : Float, y : Float)
     return trigger("click", x, y);
 
   public function down(x : Float, y : Float)
     return trigger("mousedown", x, y);
+
+  public function move(x0 : Float, y0 : Float, x1 : Float, y1 : Float, ?delta = 9.0) {
+    var dist  = Math.sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0)),
+        steps = Math.ceil(dist / delta),
+        x, y, step;
+    for(i in 0...steps) {
+      step = i / steps;
+      x = step.interpolate(x0, x1);
+      y = step.interpolate(y0, y1);
+      trigger("mousemove", x, y);
+      trigger("trail", x, y);
+    }
+    return this;
+  }
 
 
   // interaction internals
