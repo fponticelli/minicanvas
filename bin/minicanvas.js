@@ -1061,8 +1061,8 @@ minicanvas.MiniCanvas.prototype = {
 			_g.trigger(name,e.clientX - rect.left,e.clientY - rect.top);
 		};
 		this.events.h["$" + name] = { callback : function(e1) {
-			callback(e1);
 			_g.storeFrame();
+			callback(e1);
 		}, listener : listener};
 		if(this.isBrowser) this.canvas.addEventListener(type,listener,false);
 		return this;
@@ -1082,16 +1082,16 @@ minicanvas.MiniCanvas.prototype = {
 		return this;
 	}
 	,getDevicePixelRatio: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 322, className : "minicanvas.MiniCanvas", methodName : "getDevicePixelRatio"});
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 323, className : "minicanvas.MiniCanvas", methodName : "getDevicePixelRatio"});
 	}
 	,getBackingStoreRatio: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 325, className : "minicanvas.MiniCanvas", methodName : "getBackingStoreRatio"});
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 326, className : "minicanvas.MiniCanvas", methodName : "getBackingStoreRatio"});
 	}
 	,init: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 328, className : "minicanvas.MiniCanvas", methodName : "init"});
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 329, className : "minicanvas.MiniCanvas", methodName : "init"});
 	}
 	,nativeDisplay: function(name) {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 331, className : "minicanvas.MiniCanvas", methodName : "nativeDisplay"});
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 332, className : "minicanvas.MiniCanvas", methodName : "nativeDisplay"});
 	}
 	,processScale: function() {
 		var _g = this.scaleMode;
