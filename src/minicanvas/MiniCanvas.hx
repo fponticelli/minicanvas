@@ -193,34 +193,8 @@ class MiniCanvas {
     return this;
   }
 
-  // protected methods that need override
-  function getDevicePixelRatio() : Float
-    return throw new AbstractMethod();
 
-  function getBackingStoreRatio() : Float
-    return throw new AbstractMethod();
-
-  function init()
-    throw new AbstractMethod();
-
-  function nativeDisplay(name : String)
-    throw new AbstractMethod();
-
-  // private methods
-  function processScale() {
-    switch scaleMode {
-      case Auto:
-        var ratio = getDevicePixelRatio() / getBackingStoreRatio();
-        if(ratio != 1)
-          scaleMode = Scaled(ratio);
-        else
-          scaleMode = NoScale;
-      case _: // do nothing;
-    };
   }
-
-  // utilities
-
 
   // interaction
   public function onClick(callback : MiniCanvasEvent -> Void)
@@ -332,6 +306,32 @@ class MiniCanvas {
       y : y
     });
     return this;
+  }
+
+  // protected methods that need override
+  function getDevicePixelRatio() : Float
+    return throw new AbstractMethod();
+
+  function getBackingStoreRatio() : Float
+    return throw new AbstractMethod();
+
+  function init()
+    throw new AbstractMethod();
+
+  function nativeDisplay(name : String)
+    throw new AbstractMethod();
+
+  // private methods
+  function processScale() {
+    switch scaleMode {
+      case Auto:
+        var ratio = getDevicePixelRatio() / getBackingStoreRatio();
+        if(ratio != 1)
+          scaleMode = Scaled(ratio);
+        else
+          scaleMode = NoScale;
+      case _: // do nothing;
+    };
   }
 }
 
