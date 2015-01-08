@@ -51,15 +51,24 @@ class Main {
 
     MiniCanvas.create(200, 200)
       .checkboard()
+      .onDown(function(e) {
+        e.mini.dot(e.x, e.y, 6, Color.blue);
+      })
+      .onUp(function(e) {
+        e.mini.dot(e.x, e.y, 8, Color.green);
+      })
       .onMove(function(e) {
         e.mini.dot(e.x, e.y);
       })
       .onTrail(function(e) {
         e.mini.line(e.x0, e.y0, e.x1, e.y1);
       })
-      .click(20, 30)
+      .down(20, 30)
       .move(20, 30, 150, 10)
-      .move(150, 10, 5, 190)
+      .sleep(20)
+      .move(150, 10, 25, 180)
+      .up(25, 180)
+      .sleep(40)
       .display("events");
   }
 }

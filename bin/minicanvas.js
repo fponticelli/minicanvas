@@ -404,11 +404,25 @@ Main.main = function() {
 		return $r;
 	}(this))]]).display("palette");
 	minicanvas.MiniCanvas.create(200,200).grid().cross().display("grid");
-	minicanvas.MiniCanvas.create(200,200).checkboard().onMove(function(e) {
-		e.mini.dot(e.x,e.y);
-	}).onTrail(function(e1) {
-		e1.mini.line(e1.x0,e1.y0,e1.x1,e1.y1);
-	}).click(20,30).move(20,30,150,10).move(150,10,5,190).display("events");
+	minicanvas.MiniCanvas.create(200,200).checkboard().onDown(function(e) {
+		e.mini.dot(e.x,e.y,6,(function($this) {
+			var $r;
+			var this32 = thx.color.Color.blue;
+			$r = thx.color._RGBA.RGBA_Impl_.fromInts([this32 >> 16 & 255,this32 >> 8 & 255,this32 & 255,255]);
+			return $r;
+		}(this)));
+	}).onUp(function(e1) {
+		e1.mini.dot(e1.x,e1.y,8,(function($this) {
+			var $r;
+			var this33 = thx.color.Color.green;
+			$r = thx.color._RGBA.RGBA_Impl_.fromInts([this33 >> 16 & 255,this33 >> 8 & 255,this33 & 255,255]);
+			return $r;
+		}(this)));
+	}).onMove(function(e2) {
+		e2.mini.dot(e2.x,e2.y);
+	}).onTrail(function(e3) {
+		e3.mini.line(e3.x0,e3.y0,e3.x1,e3.y1);
+	}).down(20,30).move(20,30,150,10).sleep(20).move(150,10,25,180).up(25,180).sleep(40).display("events");
 };
 Math.__name__ = true;
 var Std = function() { };
@@ -952,27 +966,15 @@ minicanvas.MiniCanvas.prototype = {
 		this.display(name);
 		return this;
 	}
-	,getDevicePixelRatio: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 198, className : "minicanvas.MiniCanvas", methodName : "getDevicePixelRatio"});
+	,storeFrame: function() {
 	}
-	,getBackingStoreRatio: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 201, className : "minicanvas.MiniCanvas", methodName : "getBackingStoreRatio"});
-	}
-	,init: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 204, className : "minicanvas.MiniCanvas", methodName : "init"});
-	}
-	,nativeDisplay: function(name) {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 207, className : "minicanvas.MiniCanvas", methodName : "nativeDisplay"});
-	}
-	,processScale: function() {
-		var _g = this.scaleMode;
-		switch(_g[1]) {
-		case 1:
-			var ratio = this.getDevicePixelRatio() / this.getBackingStoreRatio();
-			if(ratio != 1) this.scaleMode = minicanvas.ScaleMode.Scaled(ratio); else this.scaleMode = minicanvas.ScaleMode.NoScale;
-			break;
-		default:
+	,sleep: function(frames) {
+		var _g = 0;
+		while(_g < frames) {
+			var i = _g++;
+			this.storeFrame();
 		}
+		return this;
 	}
 	,onClick: function(callback) {
 		return this.onMouseEvent("click",null,callback);
@@ -1058,7 +1060,10 @@ minicanvas.MiniCanvas.prototype = {
 			var rect = _g.canvas.getBoundingClientRect();
 			_g.trigger(name,e.clientX - rect.left,e.clientY - rect.top);
 		};
-		this.events.h["$" + name] = { callback : callback, listener : listener};
+		this.events.h["$" + name] = { callback : function(e1) {
+			callback(e1);
+			_g.storeFrame();
+		}, listener : listener};
 		if(this.isBrowser) this.canvas.addEventListener(type,listener,false);
 		return this;
 	}
@@ -1075,6 +1080,28 @@ minicanvas.MiniCanvas.prototype = {
 		if(null == item) return this;
 		item.callback({ mini : this, x : x, y : y});
 		return this;
+	}
+	,getDevicePixelRatio: function() {
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 322, className : "minicanvas.MiniCanvas", methodName : "getDevicePixelRatio"});
+	}
+	,getBackingStoreRatio: function() {
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 325, className : "minicanvas.MiniCanvas", methodName : "getBackingStoreRatio"});
+	}
+	,init: function() {
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 328, className : "minicanvas.MiniCanvas", methodName : "init"});
+	}
+	,nativeDisplay: function(name) {
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 331, className : "minicanvas.MiniCanvas", methodName : "nativeDisplay"});
+	}
+	,processScale: function() {
+		var _g = this.scaleMode;
+		switch(_g[1]) {
+		case 1:
+			var ratio = this.getDevicePixelRatio() / this.getBackingStoreRatio();
+			if(ratio != 1) this.scaleMode = minicanvas.ScaleMode.Scaled(ratio); else this.scaleMode = minicanvas.ScaleMode.NoScale;
+			break;
+		default:
+		}
 	}
 	,__class__: minicanvas.MiniCanvas
 };
@@ -1157,6 +1184,7 @@ minicanvas.BrowserCanvas.prototype = $extend(minicanvas.MiniCanvas.prototype,{
 	,__class__: minicanvas.BrowserCanvas
 });
 minicanvas.NodeCanvas = function(width,height,scaleMode) {
+	this.hasFrames = false;
 	this.isNode = true;
 	this.isBrowser = false;
 	if(null == scaleMode) scaleMode = minicanvas.NodeCanvas.defaultScaleMode;
@@ -1169,15 +1197,15 @@ minicanvas.NodeCanvas.create = function(width,height,scaleMode) {
 minicanvas.NodeCanvas.__super__ = minicanvas.MiniCanvas;
 minicanvas.NodeCanvas.prototype = $extend(minicanvas.MiniCanvas.prototype,{
 	save: function(name) {
-		var fs = require("fs");
-		var out = fs.createWriteStream("" + minicanvas.NodeCanvas.imagePath + "/" + name + ".png");
-		var stream = this.canvas.pngStream();
-		stream.on("data",function(chunk) {
-			out.write(chunk);
+		var encoder = this.ensureEncoder();
+		encoder.addFrame(this.ctx);
+		encoder.save(name,function(file) {
+			console.log("saved " + file);
 		});
-		stream.on("end",function(_) {
-			console.log("saved " + name + ".png");
-		});
+	}
+	,storeFrame: function() {
+		this.hasFrames = true;
+		this.ensureEncoder().addFrame(this.ctx);
 	}
 	,init: function() {
 		var Canvas = require("canvas");
@@ -1205,8 +1233,63 @@ minicanvas.NodeCanvas.prototype = $extend(minicanvas.MiniCanvas.prototype,{
 	,nativeDisplay: function(name) {
 		this.save(name);
 	}
+	,ensureEncoder: function() {
+		if(null != this.encoder) return this.encoder;
+		if(this.hasFrames) return this.encoder = new minicanvas.node.GifEncoder(this.width,this.height); else return this.encoder = new minicanvas.node.PNGEncoder(this.canvas);
+	}
 	,__class__: minicanvas.NodeCanvas
 });
+minicanvas.node = {};
+minicanvas.node.IEncoder = function() { };
+minicanvas.node.IEncoder.__name__ = true;
+minicanvas.node.IEncoder.prototype = {
+	__class__: minicanvas.node.IEncoder
+};
+minicanvas.node.GifEncoder = function(width,height) {
+	this.encoder = (function(w, h, self) {
+      var GIFEncoder = require('gifencoder'),
+          encoder = new GIFEncoder(w, h);
+      self.stream = encoder.createReadStream();
+      encoder.start();
+      encoder.setRepeat(0);
+      encoder.setDelay(50);
+      encoder.setQuality(10);
+      return encoder;
+    })(width,height,this);
+};
+minicanvas.node.GifEncoder.__name__ = true;
+minicanvas.node.GifEncoder.__interfaces__ = [minicanvas.node.IEncoder];
+minicanvas.node.GifEncoder.prototype = {
+	addFrame: function(ctx) {
+		this.encoder.addFrame(ctx);
+	}
+	,save: function(name,callback) {
+		this.stream.pipe(require("fs").createWriteStream("" + minicanvas.NodeCanvas.imagePath + "/" + name + ".gif"));
+		callback("" + name + ".gif");
+	}
+	,__class__: minicanvas.node.GifEncoder
+};
+minicanvas.node.PNGEncoder = function(canvas) {
+	this.canvas = canvas;
+};
+minicanvas.node.PNGEncoder.__name__ = true;
+minicanvas.node.PNGEncoder.__interfaces__ = [minicanvas.node.IEncoder];
+minicanvas.node.PNGEncoder.prototype = {
+	addFrame: function(ctx) {
+	}
+	,save: function(name,callback) {
+		var fs = require("fs");
+		var out = fs.createWriteStream("" + minicanvas.NodeCanvas.imagePath + "/" + name + ".png");
+		var stream = this.canvas.pngStream();
+		stream.on("data",function(chunk) {
+			out.write(chunk);
+		});
+		stream.on("end",function(_) {
+			callback("" + name + ".png");
+		});
+	}
+	,__class__: minicanvas.node.PNGEncoder
+};
 var thx = {};
 thx.color = {};
 thx.color._CIELCh = {};
