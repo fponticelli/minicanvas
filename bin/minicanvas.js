@@ -1,5 +1,6 @@
 (function () { "use strict";
 var console = (1,eval)('this').console || {log:function(){}};
+var $estr = function() { return js.Boot.__string_rec(this,''); };
 function $extend(from, fields) {
 	function Inherit() {} Inherit.prototype = from; var proto = new Inherit();
 	for (var name in fields) proto[name] = fields[name];
@@ -479,11 +480,12 @@ StringTools.hex = function(n,digits) {
 var haxe = {};
 haxe.StackItem = { __ename__ : true, __constructs__ : ["CFunction","Module","FilePos","Method","LocalFunction"] };
 haxe.StackItem.CFunction = ["CFunction",0];
+haxe.StackItem.CFunction.toString = $estr;
 haxe.StackItem.CFunction.__enum__ = haxe.StackItem;
-haxe.StackItem.Module = function(m) { var $x = ["Module",1,m]; $x.__enum__ = haxe.StackItem; return $x; };
-haxe.StackItem.FilePos = function(s,file,line) { var $x = ["FilePos",2,s,file,line]; $x.__enum__ = haxe.StackItem; return $x; };
-haxe.StackItem.Method = function(classname,method) { var $x = ["Method",3,classname,method]; $x.__enum__ = haxe.StackItem; return $x; };
-haxe.StackItem.LocalFunction = function(v) { var $x = ["LocalFunction",4,v]; $x.__enum__ = haxe.StackItem; return $x; };
+haxe.StackItem.Module = function(m) { var $x = ["Module",1,m]; $x.__enum__ = haxe.StackItem; $x.toString = $estr; return $x; };
+haxe.StackItem.FilePos = function(s,file,line) { var $x = ["FilePos",2,s,file,line]; $x.__enum__ = haxe.StackItem; $x.toString = $estr; return $x; };
+haxe.StackItem.Method = function(classname,method) { var $x = ["Method",3,classname,method]; $x.__enum__ = haxe.StackItem; $x.toString = $estr; return $x; };
+haxe.StackItem.LocalFunction = function(v) { var $x = ["LocalFunction",4,v]; $x.__enum__ = haxe.StackItem; $x.toString = $estr; return $x; };
 haxe.CallStack = function() { };
 haxe.CallStack.__name__ = true;
 haxe.CallStack.callStack = function() {
@@ -729,55 +731,38 @@ js.Boot.__resolveNativeClass = function(name) {
 	if(typeof window != "undefined") return window[name]; else return global[name];
 };
 var minicanvas = {};
-minicanvas.ScaleMode = { __ename__ : true, __constructs__ : ["NoScale","Auto","Scaled"] };
-minicanvas.ScaleMode.NoScale = ["NoScale",0];
-minicanvas.ScaleMode.NoScale.__enum__ = minicanvas.ScaleMode;
-minicanvas.ScaleMode.Auto = ["Auto",1];
-minicanvas.ScaleMode.Auto.__enum__ = minicanvas.ScaleMode;
-minicanvas.ScaleMode.Scaled = function(v) { var $x = ["Scaled",2,v]; $x.__enum__ = minicanvas.ScaleMode; return $x; };
 minicanvas.MiniCanvas = function(width,height,scaleMode) {
 	this.scaleMode = scaleMode;
 	this.width = width;
 	this.height = height;
 	this.processScale();
-	if(minicanvas.MiniCanvas.isNode) this.initNode(); else this.initBrowser();
 	this.startTime = performance.now();
 	this.events = new haxe.ds.StringMap();
+	this.init();
 };
 minicanvas.MiniCanvas.__name__ = true;
+minicanvas.MiniCanvas.envIsNode = function() {
+	return typeof module !== 'undefined' && module.exports;
+};
 minicanvas.MiniCanvas.create = function(width,height,scaleMode) {
-	return new minicanvas.MiniCanvas(width,height,scaleMode);
-};
-minicanvas.MiniCanvas.devicePixelRatio = function() {
-	return window.devicePixelRatio || 1;
-};
-minicanvas.MiniCanvas.backingStoreRatio = function() {
-	if(minicanvas.MiniCanvas._backingStoreRatio == 0) {
-		var canvas;
-		var _this = window.document;
-		canvas = _this.createElement("canvas");
-		var context = canvas.getContext("2d");
-		minicanvas.MiniCanvas._backingStoreRatio = (function(c) {
-        return c.webkitBackingStorePixelRatio ||
-          c.mozBackingStorePixelRatio ||
-          c.msBackingStorePixelRatio ||
-          c.oBackingStorePixelRatio ||
-          c.backingStorePixelRatio || 1;
-        })(context);
-	}
-	return minicanvas.MiniCanvas._backingStoreRatio;
+	if(minicanvas.MiniCanvas.envIsNode()) return new minicanvas.NodeCanvas(width,height,scaleMode); else return new minicanvas.BrowserCanvas(width,height,scaleMode);
 };
 minicanvas.MiniCanvas.prototype = {
 	processScale: function() {
-		if(null != this.scaleMode) this.scaleMode = this.scaleMode; else if(minicanvas.MiniCanvas.isNode) this.scaleMode = minicanvas.MiniCanvas.defaultNodeScaleMode; else this.scaleMode = minicanvas.MiniCanvas.defaultBrowserScaleMode;
 		var _g = this.scaleMode;
 		switch(_g[1]) {
 		case 1:
-			var ratio = minicanvas.MiniCanvas.devicePixelRatio() / minicanvas.MiniCanvas.backingStoreRatio();
+			var ratio = this.getDevicePixelRatio() / this.getBackingStoreRatio();
 			if(ratio != 1) this.scaleMode = minicanvas.ScaleMode.Scaled(ratio); else this.scaleMode = minicanvas.ScaleMode.NoScale;
 			break;
 		default:
 		}
+	}
+	,getDevicePixelRatio: function() {
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 61, className : "minicanvas.MiniCanvas", methodName : "getDevicePixelRatio"});
+	}
+	,getBackingStoreRatio: function() {
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 64, className : "minicanvas.MiniCanvas", methodName : "getBackingStoreRatio"});
 	}
 	,clear: function() {
 		this.ctx.clearRect(0,0,this.width,this.height);
@@ -785,8 +770,14 @@ minicanvas.MiniCanvas.prototype = {
 	,display: function(name) {
 		this.deltaTime = performance.now() - this.startTime;
 		if(!minicanvas.MiniCanvas.displayGenerationTime) console.log("generated \"" + name + "\" in " + thx.core.Floats.roundTo(this.deltaTime,2) + "ms");
-		if(minicanvas.MiniCanvas.isNode) this.save(name); else this.append(name);
+		this.nativeDisplay(name);
 		return this;
+	}
+	,init: function() {
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 78, className : "minicanvas.MiniCanvas", methodName : "init"});
+	}
+	,nativeDisplay: function(name) {
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 81, className : "minicanvas.MiniCanvas", methodName : "nativeDisplay"});
 	}
 	,fill: function(color) {
 		this.ctx.fillStyle = "rgba(" + (color >> 16 & 255) + "," + (color >> 8 & 255) + "," + (color & 255) + "," + (color >> 24 & 255) / 255 + ")";
@@ -1068,7 +1059,7 @@ minicanvas.MiniCanvas.prototype = {
 			_g.trigger(name,e.clientX - rect.left,e.clientY - rect.top);
 		};
 		this.events.h["$" + name] = { callback : callback, listener : listener};
-		if(minicanvas.MiniCanvas.isBrowser) this.canvas.addEventListener(type,listener,false);
+		if(this.isBrowser) this.canvas.addEventListener(type,listener,false);
 		return this;
 	}
 	,offMouseEvent: function(type,name) {
@@ -1076,7 +1067,7 @@ minicanvas.MiniCanvas.prototype = {
 		var item = this.events.h["$" + name];
 		if(null == item) return this;
 		this.events.remove(name);
-		if(minicanvas.MiniCanvas.isBrowser) this.canvas.removeEventListener(type,item.listener,false);
+		if(this.isBrowser) this.canvas.removeEventListener(type,item.listener,false);
 		return this;
 	}
 	,trigger: function(name,x,y) {
@@ -1085,7 +1076,48 @@ minicanvas.MiniCanvas.prototype = {
 		item.callback({ mini : this, x : x, y : y});
 		return this;
 	}
-	,initBrowser: function() {
+	,__class__: minicanvas.MiniCanvas
+};
+minicanvas.ScaleMode = { __ename__ : true, __constructs__ : ["NoScale","Auto","Scaled"] };
+minicanvas.ScaleMode.NoScale = ["NoScale",0];
+minicanvas.ScaleMode.NoScale.toString = $estr;
+minicanvas.ScaleMode.NoScale.__enum__ = minicanvas.ScaleMode;
+minicanvas.ScaleMode.Auto = ["Auto",1];
+minicanvas.ScaleMode.Auto.toString = $estr;
+minicanvas.ScaleMode.Auto.__enum__ = minicanvas.ScaleMode;
+minicanvas.ScaleMode.Scaled = function(v) { var $x = ["Scaled",2,v]; $x.__enum__ = minicanvas.ScaleMode; $x.toString = $estr; return $x; };
+minicanvas.BrowserCanvas = function(width,height,scaleMode) {
+	this.isNode = false;
+	this.isBrowser = true;
+	if(null == scaleMode) scaleMode = minicanvas.BrowserCanvas.defaultScaleMode;
+	minicanvas.MiniCanvas.call(this,width,height,scaleMode);
+};
+minicanvas.BrowserCanvas.__name__ = true;
+minicanvas.BrowserCanvas.devicePixelRatio = function() {
+	return window.devicePixelRatio || 1;
+};
+minicanvas.BrowserCanvas.backingStoreRatio = function() {
+	if(minicanvas.BrowserCanvas._backingStoreRatio == 0) {
+		var canvas;
+		var _this = window.document;
+		canvas = _this.createElement("canvas");
+		var context = canvas.getContext("2d");
+		minicanvas.BrowserCanvas._backingStoreRatio = (function(c) {
+        return c.webkitBackingStorePixelRatio ||
+          c.mozBackingStorePixelRatio ||
+          c.msBackingStorePixelRatio ||
+          c.oBackingStorePixelRatio ||
+          c.backingStorePixelRatio || 1;
+        })(context);
+	}
+	return minicanvas.BrowserCanvas._backingStoreRatio;
+};
+minicanvas.BrowserCanvas.__super__ = minicanvas.MiniCanvas;
+minicanvas.BrowserCanvas.prototype = $extend(minicanvas.MiniCanvas.prototype,{
+	nativeDisplay: function(name) {
+		this.append(name);
+	}
+	,init: function() {
 		var _this = window.document;
 		this.canvas = _this.createElement("canvas");
 		{
@@ -1114,11 +1146,40 @@ minicanvas.MiniCanvas.prototype = {
 		figure.appendChild(this.canvas);
 		caption.innerHTML = thx.core.Strings.humanize(name) + (minicanvas.MiniCanvas.displayGenerationTime?" <span class=\"info\">(" + thx.core.Floats.roundTo(this.deltaTime,2) + "ms)</span>":"");
 		figure.appendChild(caption);
-		minicanvas.MiniCanvas.parentNode.appendChild(figure);
+		minicanvas.BrowserCanvas.parentNode.appendChild(figure);
+	}
+	,getDevicePixelRatio: function() {
+		return minicanvas.BrowserCanvas.devicePixelRatio();
+	}
+	,getBackingStoreRatio: function() {
+		return minicanvas.BrowserCanvas.backingStoreRatio();
+	}
+	,__class__: minicanvas.BrowserCanvas
+});
+minicanvas.NodeCanvas = function(width,height,scaleMode) {
+	this.isNode = true;
+	this.isBrowser = false;
+	if(null == scaleMode) scaleMode = minicanvas.NodeCanvas.defaultScaleMode;
+	minicanvas.MiniCanvas.call(this,width,height,scaleMode);
+};
+minicanvas.NodeCanvas.__name__ = true;
+minicanvas.NodeCanvas.create = function(width,height,scaleMode) {
+	return new minicanvas.MiniCanvas(width,height,scaleMode);
+};
+minicanvas.NodeCanvas.__super__ = minicanvas.MiniCanvas;
+minicanvas.NodeCanvas.prototype = $extend(minicanvas.MiniCanvas.prototype,{
+	nativeDisplay: function(name) {
+		this.save(name);
+	}
+	,getDevicePixelRatio: function() {
+		return 1.0;
+	}
+	,getBackingStoreRatio: function() {
+		return 1.0;
 	}
 	,save: function(name) {
 		var fs = require("fs");
-		var out = fs.createWriteStream("" + minicanvas.MiniCanvas.imagePath + "/" + name + ".png");
+		var out = fs.createWriteStream("" + minicanvas.NodeCanvas.imagePath + "/" + name + ".png");
 		var stream = this.canvas.pngStream();
 		stream.on("data",function(chunk) {
 			out.write(chunk);
@@ -1127,7 +1188,7 @@ minicanvas.MiniCanvas.prototype = {
 			console.log("saved " + name + ".png");
 		});
 	}
-	,initNode: function() {
+	,init: function() {
 		var Canvas = require("canvas");
 		{
 			var _g = this.scaleMode;
@@ -1144,8 +1205,8 @@ minicanvas.MiniCanvas.prototype = {
 			}
 		}
 	}
-	,__class__: minicanvas.MiniCanvas
-};
+	,__class__: minicanvas.NodeCanvas
+});
 var thx = {};
 thx.color = {};
 thx.color._CIELCh = {};
@@ -4450,12 +4511,12 @@ thx.color.parse.ColorInfo.prototype = {
 	,__class__: thx.color.parse.ColorInfo
 };
 thx.color.parse.ChannelInfo = { __ename__ : true, __constructs__ : ["CIPercent","CIFloat","CIDegree","CIInt8","CIInt","CIBool"] };
-thx.color.parse.ChannelInfo.CIPercent = function(value) { var $x = ["CIPercent",0,value]; $x.__enum__ = thx.color.parse.ChannelInfo; return $x; };
-thx.color.parse.ChannelInfo.CIFloat = function(value) { var $x = ["CIFloat",1,value]; $x.__enum__ = thx.color.parse.ChannelInfo; return $x; };
-thx.color.parse.ChannelInfo.CIDegree = function(value) { var $x = ["CIDegree",2,value]; $x.__enum__ = thx.color.parse.ChannelInfo; return $x; };
-thx.color.parse.ChannelInfo.CIInt8 = function(value) { var $x = ["CIInt8",3,value]; $x.__enum__ = thx.color.parse.ChannelInfo; return $x; };
-thx.color.parse.ChannelInfo.CIInt = function(value) { var $x = ["CIInt",4,value]; $x.__enum__ = thx.color.parse.ChannelInfo; return $x; };
-thx.color.parse.ChannelInfo.CIBool = function(value) { var $x = ["CIBool",5,value]; $x.__enum__ = thx.color.parse.ChannelInfo; return $x; };
+thx.color.parse.ChannelInfo.CIPercent = function(value) { var $x = ["CIPercent",0,value]; $x.__enum__ = thx.color.parse.ChannelInfo; $x.toString = $estr; return $x; };
+thx.color.parse.ChannelInfo.CIFloat = function(value) { var $x = ["CIFloat",1,value]; $x.__enum__ = thx.color.parse.ChannelInfo; $x.toString = $estr; return $x; };
+thx.color.parse.ChannelInfo.CIDegree = function(value) { var $x = ["CIDegree",2,value]; $x.__enum__ = thx.color.parse.ChannelInfo; $x.toString = $estr; return $x; };
+thx.color.parse.ChannelInfo.CIInt8 = function(value) { var $x = ["CIInt8",3,value]; $x.__enum__ = thx.color.parse.ChannelInfo; $x.toString = $estr; return $x; };
+thx.color.parse.ChannelInfo.CIInt = function(value) { var $x = ["CIInt",4,value]; $x.__enum__ = thx.color.parse.ChannelInfo; $x.toString = $estr; return $x; };
+thx.color.parse.ChannelInfo.CIBool = function(value) { var $x = ["CIBool",5,value]; $x.__enum__ = thx.color.parse.ChannelInfo; $x.toString = $estr; return $x; };
 thx.core = {};
 thx.core.Arrays = function() { };
 thx.core.Arrays.__name__ = true;
@@ -5220,6 +5281,7 @@ thx.core.Ints.wrapCircular = function(v,max) {
 };
 thx.core.Nil = { __ename__ : true, __constructs__ : ["nil"] };
 thx.core.Nil.nil = ["nil",0];
+thx.core.Nil.nil.toString = $estr;
 thx.core.Nil.nil.__enum__ = thx.core.Nil;
 thx.core.Nulls = function() { };
 thx.core.Nulls.__name__ = true;
@@ -5637,6 +5699,14 @@ thx.core._Tuple.Tuple6_Impl_.toString = function(this1) {
 	return "Tuple6(" + Std.string(this1._0) + "," + Std.string(this1._1) + "," + Std.string(this1._2) + "," + Std.string(this1._3) + "," + Std.string(this1._4) + "," + Std.string(this1._5) + ")";
 };
 thx.core.error = {};
+thx.core.error.AbstractMethod = function(posInfo) {
+	thx.core.Error.call(this,"method " + posInfo.className + "." + posInfo.methodName + "() is abstract",null,posInfo);
+};
+thx.core.error.AbstractMethod.__name__ = true;
+thx.core.error.AbstractMethod.__super__ = thx.core.Error;
+thx.core.error.AbstractMethod.prototype = $extend(thx.core.Error.prototype,{
+	__class__: thx.core.error.AbstractMethod
+});
 thx.core.error.NullArgument = function(message,posInfo) {
 	thx.core.Error.call(this,message,null,posInfo);
 };
@@ -6138,14 +6208,12 @@ if(typeof(scope.performance.now) == "undefined") {
 	scope.performance.now = now;
 }
 js.Boot.__toStr = {}.toString;
-minicanvas.MiniCanvas.defaultNodeScaleMode = minicanvas.ScaleMode.NoScale;
-minicanvas.MiniCanvas.defaultBrowserScaleMode = minicanvas.ScaleMode.Auto;
 minicanvas.MiniCanvas.displayGenerationTime = false;
-minicanvas.MiniCanvas.imagePath = "images";
-minicanvas.MiniCanvas.parentNode = typeof document != 'undefined' && document.body;
-minicanvas.MiniCanvas.isNode = typeof module !== 'undefined' && module.exports;
-minicanvas.MiniCanvas.isBrowser = !minicanvas.MiniCanvas.isNode;
-minicanvas.MiniCanvas._backingStoreRatio = 0;
+minicanvas.BrowserCanvas.defaultScaleMode = minicanvas.ScaleMode.Auto;
+minicanvas.BrowserCanvas.parentNode = typeof document != 'undefined' && document.body;
+minicanvas.BrowserCanvas._backingStoreRatio = 0;
+minicanvas.NodeCanvas.defaultScaleMode = minicanvas.ScaleMode.NoScale;
+minicanvas.NodeCanvas.imagePath = "images";
 thx.color._Grey.Grey_Impl_.black = 0;
 thx.color._Grey.Grey_Impl_.white = 1;
 thx.color.parse.ColorParser.parser = new thx.color.parse.ColorParser();
