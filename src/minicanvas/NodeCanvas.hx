@@ -8,6 +8,9 @@ import thx.color.*;
 using thx.core.Floats;
 using thx.core.Strings;
 import js.html.MouseEvent;
+import minicanvas.node.GifEncoder;
+import minicanvas.node.IEncoder;
+import minicanvas.node.PNGEncoder;
 import thx.core.Timer;
 using thx.core.Nulls;
 import minicanvas.MiniCanvas;
@@ -28,13 +31,16 @@ class NodeCanvas extends MiniCanvas {
     super(width, height, scaleMode);
   }
 
-  public function save(name : String) untyped {
-    var fs = require('fs'),
-        out = fs.createWriteStream('$imagePath/$name.png'),
-        stream = canvas.pngStream();
+  public function save(name : String) {
+    var encoder = ensureEncoder();
+    encoder.addFrame(ctx);
+    encoder.save(name, function(file) untyped console.log('saved $file'));
+  }
 
-    stream.on('data', function(chunk) out.write(chunk));
-    stream.on('end', function(_) console.log('saved $name.png'));
+  var hasFrames = false;
+  override public function storeFrame() {
+    hasFrames = true;
+    ensureEncoder().addFrame(ctx);
   }
 
   // platform specific
@@ -56,4 +62,15 @@ class NodeCanvas extends MiniCanvas {
 
   override function nativeDisplay(name : String)
     save(name);
+
+  var encoder : IEncoder;
+  function ensureEncoder() : IEncoder {
+    if(null != encoder)
+      return encoder;
+    if(hasFrames) {
+      return encoder = new GifEncoder(width, height);
+    } else {
+      return encoder = new PNGEncoder(canvas);
+    }
+  }
 }
