@@ -45,27 +45,6 @@ class MiniCanvas {
     init();
   }
 
-  function processScale() {
-    switch scaleMode {
-      case Auto:
-        var ratio = getDevicePixelRatio() / getBackingStoreRatio();
-        if(ratio != 1)
-          scaleMode = Scaled(ratio);
-        else
-          scaleMode = NoScale;
-      case _: // do nothing;
-    };
-  }
-
-  function getDevicePixelRatio() : Float
-    return throw new AbstractMethod();
-
-  function getBackingStoreRatio() : Float
-    return throw new AbstractMethod();
-
-  public function clear()
-    ctx.clearRect(0, 0, width, height);
-
   public function display(name : String) {
     deltaTime = Timer.time() - startTime;
     if(!displayGenerationTime)
@@ -74,18 +53,7 @@ class MiniCanvas {
     return this;
   }
 
-  function init()
-    throw new AbstractMethod();
-
-  function nativeDisplay(name : String)
-    throw new AbstractMethod();
-
-  // utilities
-  public function fill(color : RGBA) {
-    ctx.fillStyle = color.toCSS3();
-    ctx.fillRect(0, 0, width, height);
-  }
-
+  // drawing
   public function box(handler : Float -> Float -> RGBA) {
     for(x in 0...width) {
       for(y in 0...height) {
@@ -110,21 +78,11 @@ class MiniCanvas {
     return this;
   }
 
-  public function palette(colors : Array<Array<RGBA>>, ?padding = 2.0, ?margin = 0.0) {
-    var rows = colors.length,
-        h    = (height - 2 * margin - (rows - 1) * padding) / rows,
-        py   = margin;
-    for(row in colors) {
-      var cols = row.length,
-          w    = (width - 2 * margin - (cols - 1) * padding) / cols,
-          px   = margin;
-      for(col in row) {
-        ctx.fillStyle = col.toCSS3();
-        ctx.fillRect(px, py, w, h);
-        px += w + padding;
-      }
-      py += h + padding;
-    }
+  public function clear()
+    ctx.clearRect(0, 0, width, height);
+
+  public function context(callback : CanvasRenderingContext2D -> Int -> Int -> Void) {
+    callback(ctx, width, height);
     return this;
   }
 
@@ -144,21 +102,16 @@ class MiniCanvas {
     return this;
   }
 
-  public function line(x0 : Float, y0 : Float, x1 : Float, y1 : Float, ?weight = 1.0, ?color : RGBA) {
-    ctx.lineWidth = weight;
-    ctx.strokeStyle = color.or((Color.black : RGBA)).toCSS3();
-    ctx.beginPath();
-    ctx.moveTo(x0, y0);
-    ctx.lineTo(x1, y1);
-    ctx.stroke();
-    return this;
+  public function fill(color : RGBA) {
+    ctx.fillStyle = color.toCSS3();
+    ctx.fillRect(0, 0, width, height);
   }
 
-  public function lineHorizontal(offset : Float, ?weight = 1.0, ?color : RGBA)
-    return line(0, offset, width, offset, weight, color);
-
-  public function lineVertical(offset : Float, ?weight = 1.0, ?color : RGBA)
-    return line(offset, 0, offset, height, weight, color);
+  public function grid(dx = 10.0, dy = 10.0, ?weight = 1.0, ?color : RGBA, ox = 0.0, oy = 0.0) {
+    gridHorizontal(dy, weight, color, oy);
+    gridVertical(dx, weight, color, ox);
+    return this;
+  }
 
   public function gridHorizontal(dy = 10.0, ?weight = 1.0, ?color : RGBA, oy = 0.0) {
     if(dy == 0) throw 'invalid argument dy, should be different from zero';
@@ -184,12 +137,6 @@ class MiniCanvas {
     return this;
   }
 
-  public function grid(dx = 10.0, dy = 10.0, ?weight = 1.0, ?color : RGBA, ox = 0.0, oy = 0.0) {
-    gridHorizontal(dy, weight, color, oy);
-    gridVertical(dx, weight, color, ox);
-    return this;
-  }
-
   public function gradientHorizontal(handler : Float -> RGBA) {
     for(x in 0...width) {
       ctx.fillStyle = handler(x/width).toCSS3();
@@ -206,8 +153,37 @@ class MiniCanvas {
     return this;
   }
 
-  public function context(callback : CanvasRenderingContext2D -> Int -> Int -> Void) {
-    callback(ctx, width, height);
+  public function line(x0 : Float, y0 : Float, x1 : Float, y1 : Float, ?weight = 1.0, ?color : RGBA) {
+    ctx.lineWidth = weight;
+    ctx.strokeStyle = color.or((Color.black : RGBA)).toCSS3();
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(x1, y1);
+    ctx.stroke();
+    return this;
+  }
+
+  public function lineHorizontal(offset : Float, ?weight = 1.0, ?color : RGBA)
+    return line(0, offset, width, offset, weight, color);
+
+  public function lineVertical(offset : Float, ?weight = 1.0, ?color : RGBA)
+    return line(offset, 0, offset, height, weight, color);
+
+  public function palette(colors : Array<Array<RGBA>>, ?padding = 2.0, ?margin = 0.0) {
+    var rows = colors.length,
+        h    = (height - 2 * margin - (rows - 1) * padding) / rows,
+        py   = margin;
+    for(row in colors) {
+      var cols = row.length,
+          w    = (width - 2 * margin - (cols - 1) * padding) / cols,
+          px   = margin;
+      for(col in row) {
+        ctx.fillStyle = col.toCSS3();
+        ctx.fillRect(px, py, w, h);
+        px += w + padding;
+      }
+      py += h + padding;
+    }
     return this;
   }
 
@@ -216,6 +192,35 @@ class MiniCanvas {
     display(name);
     return this;
   }
+
+  // protected methods that need override
+  function getDevicePixelRatio() : Float
+    return throw new AbstractMethod();
+
+  function getBackingStoreRatio() : Float
+    return throw new AbstractMethod();
+
+  function init()
+    throw new AbstractMethod();
+
+  function nativeDisplay(name : String)
+    throw new AbstractMethod();
+
+  // private methods
+  function processScale() {
+    switch scaleMode {
+      case Auto:
+        var ratio = getDevicePixelRatio() / getBackingStoreRatio();
+        if(ratio != 1)
+          scaleMode = Scaled(ratio);
+        else
+          scaleMode = NoScale;
+      case _: // do nothing;
+    };
+  }
+
+  // utilities
+
 
   // interaction
   public function onClick(callback : MiniCanvasEvent -> Void)

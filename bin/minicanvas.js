@@ -748,40 +748,11 @@ minicanvas.MiniCanvas.create = function(width,height,scaleMode) {
 	if(minicanvas.MiniCanvas.envIsNode()) return new minicanvas.NodeCanvas(width,height,scaleMode); else return new minicanvas.BrowserCanvas(width,height,scaleMode);
 };
 minicanvas.MiniCanvas.prototype = {
-	processScale: function() {
-		var _g = this.scaleMode;
-		switch(_g[1]) {
-		case 1:
-			var ratio = this.getDevicePixelRatio() / this.getBackingStoreRatio();
-			if(ratio != 1) this.scaleMode = minicanvas.ScaleMode.Scaled(ratio); else this.scaleMode = minicanvas.ScaleMode.NoScale;
-			break;
-		default:
-		}
-	}
-	,getDevicePixelRatio: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 61, className : "minicanvas.MiniCanvas", methodName : "getDevicePixelRatio"});
-	}
-	,getBackingStoreRatio: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 64, className : "minicanvas.MiniCanvas", methodName : "getBackingStoreRatio"});
-	}
-	,clear: function() {
-		this.ctx.clearRect(0,0,this.width,this.height);
-	}
-	,display: function(name) {
+	display: function(name) {
 		this.deltaTime = performance.now() - this.startTime;
 		if(!minicanvas.MiniCanvas.displayGenerationTime) console.log("generated \"" + name + "\" in " + thx.core.Floats.roundTo(this.deltaTime,2) + "ms");
 		this.nativeDisplay(name);
 		return this;
-	}
-	,init: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 78, className : "minicanvas.MiniCanvas", methodName : "init"});
-	}
-	,nativeDisplay: function(name) {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 81, className : "minicanvas.MiniCanvas", methodName : "nativeDisplay"});
-	}
-	,fill: function(color) {
-		this.ctx.fillStyle = "rgba(" + (color >> 16 & 255) + "," + (color >> 8 & 255) + "," + (color & 255) + "," + (color >> 24 & 255) / 255 + ")";
-		this.ctx.fillRect(0,0,this.width,this.height);
 	}
 	,box: function(handler) {
 		var _g1 = 0;
@@ -829,29 +800,11 @@ minicanvas.MiniCanvas.prototype = {
 		}
 		return this;
 	}
-	,palette: function(colors,padding,margin) {
-		if(margin == null) margin = 0.0;
-		if(padding == null) padding = 2.0;
-		var rows = colors.length;
-		var h = (this.height - 2 * margin - (rows - 1) * padding) / rows;
-		var py = margin;
-		var _g = 0;
-		while(_g < colors.length) {
-			var row = colors[_g];
-			++_g;
-			var cols = row.length;
-			var w = (this.width - 2 * margin - (cols - 1) * padding) / cols;
-			var px = margin;
-			var _g1 = 0;
-			while(_g1 < row.length) {
-				var col = row[_g1];
-				++_g1;
-				this.ctx.fillStyle = "rgba(" + (col >> 16 & 255) + "," + (col >> 8 & 255) + "," + (col & 255) + "," + (col >> 24 & 255) / 255 + ")";
-				this.ctx.fillRect(px,py,w,h);
-				px += w + padding;
-			}
-			py += h + padding;
-		}
+	,clear: function() {
+		this.ctx.clearRect(0,0,this.width,this.height);
+	}
+	,context: function(callback) {
+		callback(this.ctx,this.width,this.height);
 		return this;
 	}
 	,cross: function(ox,oy,weight,color) {
@@ -875,31 +828,19 @@ minicanvas.MiniCanvas.prototype = {
 		this.ctx.fill();
 		return this;
 	}
-	,line: function(x0,y0,x1,y1,weight,color) {
+	,fill: function(color) {
+		this.ctx.fillStyle = "rgba(" + (color >> 16 & 255) + "," + (color >> 8 & 255) + "," + (color & 255) + "," + (color >> 24 & 255) / 255 + ")";
+		this.ctx.fillRect(0,0,this.width,this.height);
+	}
+	,grid: function(dx,dy,weight,color,ox,oy) {
+		if(oy == null) oy = 0.0;
+		if(ox == null) ox = 0.0;
 		if(weight == null) weight = 1.0;
-		this.ctx.lineWidth = weight;
-		var this1;
-		var t;
-		var _0 = color;
-		if(null == _0) t = null; else t = _0;
-		if(t != null) this1 = t; else {
-			var this2 = thx.color.Color.black;
-			this1 = thx.color._RGBA.RGBA_Impl_.fromInts([this2 >> 16 & 255,this2 >> 8 & 255,this2 & 255,255]);
-		}
-		this.ctx.strokeStyle = "rgba(" + (this1 >> 16 & 255) + "," + (this1 >> 8 & 255) + "," + (this1 & 255) + "," + (this1 >> 24 & 255) / 255 + ")";
-		this.ctx.beginPath();
-		this.ctx.moveTo(x0,y0);
-		this.ctx.lineTo(x1,y1);
-		this.ctx.stroke();
+		if(dy == null) dy = 10.0;
+		if(dx == null) dx = 10.0;
+		this.gridHorizontal(dy,weight,color,oy);
+		this.gridVertical(dx,weight,color,ox);
 		return this;
-	}
-	,lineHorizontal: function(offset,weight,color) {
-		if(weight == null) weight = 1.0;
-		return this.line(0,offset,this.width,offset,weight,color);
-	}
-	,lineVertical: function(offset,weight,color) {
-		if(weight == null) weight = 1.0;
-		return this.line(offset,0,offset,this.height,weight,color);
 	}
 	,gridHorizontal: function(dy,weight,color,oy) {
 		if(oy == null) oy = 0.0;
@@ -933,16 +874,6 @@ minicanvas.MiniCanvas.prototype = {
 		}
 		return this;
 	}
-	,grid: function(dx,dy,weight,color,ox,oy) {
-		if(oy == null) oy = 0.0;
-		if(ox == null) ox = 0.0;
-		if(weight == null) weight = 1.0;
-		if(dy == null) dy = 10.0;
-		if(dx == null) dx = 10.0;
-		this.gridHorizontal(dy,weight,color,oy);
-		this.gridVertical(dx,weight,color,ox);
-		return this;
-	}
 	,gradientHorizontal: function(handler) {
 		var _g1 = 0;
 		var _g = this.width;
@@ -965,14 +896,83 @@ minicanvas.MiniCanvas.prototype = {
 		}
 		return this;
 	}
-	,context: function(callback) {
-		callback(this.ctx,this.width,this.height);
+	,line: function(x0,y0,x1,y1,weight,color) {
+		if(weight == null) weight = 1.0;
+		this.ctx.lineWidth = weight;
+		var this1;
+		var t;
+		var _0 = color;
+		if(null == _0) t = null; else t = _0;
+		if(t != null) this1 = t; else {
+			var this2 = thx.color.Color.black;
+			this1 = thx.color._RGBA.RGBA_Impl_.fromInts([this2 >> 16 & 255,this2 >> 8 & 255,this2 & 255,255]);
+		}
+		this.ctx.strokeStyle = "rgba(" + (this1 >> 16 & 255) + "," + (this1 >> 8 & 255) + "," + (this1 & 255) + "," + (this1 >> 24 & 255) / 255 + ")";
+		this.ctx.beginPath();
+		this.ctx.moveTo(x0,y0);
+		this.ctx.lineTo(x1,y1);
+		this.ctx.stroke();
+		return this;
+	}
+	,lineHorizontal: function(offset,weight,color) {
+		if(weight == null) weight = 1.0;
+		return this.line(0,offset,this.width,offset,weight,color);
+	}
+	,lineVertical: function(offset,weight,color) {
+		if(weight == null) weight = 1.0;
+		return this.line(offset,0,offset,this.height,weight,color);
+	}
+	,palette: function(colors,padding,margin) {
+		if(margin == null) margin = 0.0;
+		if(padding == null) padding = 2.0;
+		var rows = colors.length;
+		var h = (this.height - 2 * margin - (rows - 1) * padding) / rows;
+		var py = margin;
+		var _g = 0;
+		while(_g < colors.length) {
+			var row = colors[_g];
+			++_g;
+			var cols = row.length;
+			var w = (this.width - 2 * margin - (cols - 1) * padding) / cols;
+			var px = margin;
+			var _g1 = 0;
+			while(_g1 < row.length) {
+				var col = row[_g1];
+				++_g1;
+				this.ctx.fillStyle = "rgba(" + (col >> 16 & 255) + "," + (col >> 8 & 255) + "," + (col & 255) + "," + (col >> 24 & 255) / 255 + ")";
+				this.ctx.fillRect(px,py,w,h);
+				px += w + padding;
+			}
+			py += h + padding;
+		}
 		return this;
 	}
 	,sample: function(name,callback) {
 		this.context(callback);
 		this.display(name);
 		return this;
+	}
+	,getDevicePixelRatio: function() {
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 198, className : "minicanvas.MiniCanvas", methodName : "getDevicePixelRatio"});
+	}
+	,getBackingStoreRatio: function() {
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 201, className : "minicanvas.MiniCanvas", methodName : "getBackingStoreRatio"});
+	}
+	,init: function() {
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 204, className : "minicanvas.MiniCanvas", methodName : "init"});
+	}
+	,nativeDisplay: function(name) {
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 207, className : "minicanvas.MiniCanvas", methodName : "nativeDisplay"});
+	}
+	,processScale: function() {
+		var _g = this.scaleMode;
+		switch(_g[1]) {
+		case 1:
+			var ratio = this.getDevicePixelRatio() / this.getBackingStoreRatio();
+			if(ratio != 1) this.scaleMode = minicanvas.ScaleMode.Scaled(ratio); else this.scaleMode = minicanvas.ScaleMode.NoScale;
+			break;
+		default:
+		}
 	}
 	,onClick: function(callback) {
 		return this.onMouseEvent("click",null,callback);
@@ -1114,8 +1114,14 @@ minicanvas.BrowserCanvas.backingStoreRatio = function() {
 };
 minicanvas.BrowserCanvas.__super__ = minicanvas.MiniCanvas;
 minicanvas.BrowserCanvas.prototype = $extend(minicanvas.MiniCanvas.prototype,{
-	nativeDisplay: function(name) {
-		this.append(name);
+	append: function(name) {
+		var figure = window.document.createElement("figure");
+		var caption = window.document.createElement("figcaption");
+		figure.className = "minicanvas";
+		figure.appendChild(this.canvas);
+		caption.innerHTML = thx.core.Strings.humanize(name) + (minicanvas.MiniCanvas.displayGenerationTime?" <span class=\"info\">(" + thx.core.Floats.roundTo(this.deltaTime,2) + "ms)</span>":"");
+		figure.appendChild(caption);
+		minicanvas.BrowserCanvas.parentNode.appendChild(figure);
 	}
 	,init: function() {
 		var _this = window.document;
@@ -1139,20 +1145,14 @@ minicanvas.BrowserCanvas.prototype = $extend(minicanvas.MiniCanvas.prototype,{
 			}
 		}
 	}
-	,append: function(name) {
-		var figure = window.document.createElement("figure");
-		var caption = window.document.createElement("figcaption");
-		figure.className = "minicanvas";
-		figure.appendChild(this.canvas);
-		caption.innerHTML = thx.core.Strings.humanize(name) + (minicanvas.MiniCanvas.displayGenerationTime?" <span class=\"info\">(" + thx.core.Floats.roundTo(this.deltaTime,2) + "ms)</span>":"");
-		figure.appendChild(caption);
-		minicanvas.BrowserCanvas.parentNode.appendChild(figure);
-	}
 	,getDevicePixelRatio: function() {
 		return minicanvas.BrowserCanvas.devicePixelRatio();
 	}
 	,getBackingStoreRatio: function() {
 		return minicanvas.BrowserCanvas.backingStoreRatio();
+	}
+	,nativeDisplay: function(name) {
+		this.append(name);
 	}
 	,__class__: minicanvas.BrowserCanvas
 });
@@ -1168,16 +1168,7 @@ minicanvas.NodeCanvas.create = function(width,height,scaleMode) {
 };
 minicanvas.NodeCanvas.__super__ = minicanvas.MiniCanvas;
 minicanvas.NodeCanvas.prototype = $extend(minicanvas.MiniCanvas.prototype,{
-	nativeDisplay: function(name) {
-		this.save(name);
-	}
-	,getDevicePixelRatio: function() {
-		return 1.0;
-	}
-	,getBackingStoreRatio: function() {
-		return 1.0;
-	}
-	,save: function(name) {
+	save: function(name) {
 		var fs = require("fs");
 		var out = fs.createWriteStream("" + minicanvas.NodeCanvas.imagePath + "/" + name + ".png");
 		var stream = this.canvas.pngStream();
@@ -1204,6 +1195,15 @@ minicanvas.NodeCanvas.prototype = $extend(minicanvas.MiniCanvas.prototype,{
 				this.ctx = this.canvas.getContext("2d");
 			}
 		}
+	}
+	,getDevicePixelRatio: function() {
+		return 1.0;
+	}
+	,getBackingStoreRatio: function() {
+		return 1.0;
+	}
+	,nativeDisplay: function(name) {
+		this.save(name);
 	}
 	,__class__: minicanvas.NodeCanvas
 });
@@ -6209,9 +6209,9 @@ if(typeof(scope.performance.now) == "undefined") {
 }
 js.Boot.__toStr = {}.toString;
 minicanvas.MiniCanvas.displayGenerationTime = false;
+minicanvas.BrowserCanvas._backingStoreRatio = 0;
 minicanvas.BrowserCanvas.defaultScaleMode = minicanvas.ScaleMode.Auto;
 minicanvas.BrowserCanvas.parentNode = typeof document != 'undefined' && document.body;
-minicanvas.BrowserCanvas._backingStoreRatio = 0;
 minicanvas.NodeCanvas.defaultScaleMode = minicanvas.ScaleMode.NoScale;
 minicanvas.NodeCanvas.imagePath = "images";
 thx.color._Grey.Grey_Impl_.black = 0;

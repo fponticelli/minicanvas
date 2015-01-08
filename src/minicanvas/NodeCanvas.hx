@@ -28,13 +28,6 @@ class NodeCanvas extends MiniCanvas {
     super(width, height, scaleMode);
   }
 
-  // platform specific
-  override function nativeDisplay(name : String)
-    save(name);
-
-  override function getDevicePixelRatio() return 1.0;
-  override function getBackingStoreRatio() return 1.0;
-
   public function save(name : String) untyped {
     var fs = require('fs'),
         out = fs.createWriteStream('$imagePath/$name.png'),
@@ -44,6 +37,7 @@ class NodeCanvas extends MiniCanvas {
     stream.on('end', function(_) console.log('saved $name.png'));
   }
 
+  // platform specific
   override function init() untyped {
     var Canvas =  require("canvas");
     switch scaleMode {
@@ -56,4 +50,10 @@ class NodeCanvas extends MiniCanvas {
         ctx = canvas.getContext2d();
     };
   }
+
+  override function getDevicePixelRatio() return 1.0;
+  override function getBackingStoreRatio() return 1.0;
+
+  override function nativeDisplay(name : String)
+    save(name);
 }
