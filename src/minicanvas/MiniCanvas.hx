@@ -193,7 +193,13 @@ class MiniCanvas {
     return this;
   }
 
+  // animation
+  public function storeFrame() {}
 
+  public function sleep(frames : Int) {
+    for(i in 0...frames)
+      storeFrame();
+    return this;
   }
 
   // interaction
@@ -277,7 +283,11 @@ class MiniCanvas {
       trigger(name, e.clientX - rect.left, e.clientY - rect.top);
     };
     events.set(name, {
-      callback : callback,
+      callback : function(e) {
+        // TODO sequence seems not right in generated gif
+        storeFrame();
+        callback(e);
+      },
       listener : listener
     });
     if(isBrowser) {
