@@ -212,6 +212,20 @@ class MiniCanvas {
     return interaction;
   }
 
+  public function animateNode(?x : Float, ?y : Float) {
+    if(isNode)
+      return animate(x, y);
+    else
+      return new Interaction(this);
+  }
+
+  public function animateBrowser(?x : Float, ?y : Float) {
+    if(isBrowser)
+      return animate(x, y);
+    else
+      return new Interaction(this);
+  }
+
   function beforeAnimate() {}
   function afterAnimate() {}
 
