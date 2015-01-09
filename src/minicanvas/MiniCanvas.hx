@@ -199,9 +199,6 @@ class MiniCanvas {
   // animation
   public function storeFrame() return this;
 
-  public function sleep(frames : Int) {
-    for(i in 0...frames)
-      storeFrame();
     return this;
   }
 
