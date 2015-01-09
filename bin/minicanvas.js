@@ -425,8 +425,7 @@ Main.main = function() {
 			var this112 = thx.color.Color.blue;
 			$r = thx.color._RGBA.RGBA_Impl_.fromInts([this112 >> 16 & 255,this112 >> 8 & 255,this112 & 255,255]);
 			return $r;
-		}(this)));
-		e.mini.onMove(function(e1) {
+		}(this))).onMove(function(e1) {
 			e1.mini.dot(e1.x,e1.y);
 		}).onTrail(function(e2) {
 			e2.mini.line(e2.x0,e2.y0,e2.x1,e2.y1);
