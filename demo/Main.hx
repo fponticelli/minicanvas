@@ -59,24 +59,19 @@ class Main {
       })
       .onUp(function(e) {
         e.mini
-          .dot(e.x, e.y, 8, Color.green)
+          .dot(e.x, e.y, 8, Color.aquamarine)
           .offMove()
           .offTrail();
       })
-      .animate(function(mini) {
-        mini
-          .down(30, 170)
-          .up(40, 30)
-          .sleep(10)
-          .down(25, 25)
-          .move(100, 90)
-          .up(165, 20)
-          .sleep(10)
-          .down(150, 30)
-          .up(165, 170)
-          .sleep(40)
-        ;
-      })
+      .animate()
+      .down(30, 170)
+      .up(40, 30).sleep(10)
+      .down(25, 25)
+      .move(100, 90)
+      .up(165, 20).sleep(10)
+      .down(150, 30)
+      .up(165, 170).sleep(40)
+      .done()
       .display("events");
   }
 }

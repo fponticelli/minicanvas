@@ -435,13 +435,11 @@ Main.main = function() {
 	}).onUp(function(e3) {
 		e3.mini.dot(e3.x,e3.y,8,(function($this) {
 			var $r;
-			var this113 = thx.color.Color.green;
+			var this113 = thx.color.Color.aquamarine;
 			$r = thx.color._RGBA.RGBA_Impl_.fromInts([this113 >> 16 & 255,this113 >> 8 & 255,this113 & 255,255]);
 			return $r;
 		}(this))).offMove().offTrail();
-	}).animate(function(mini) {
-		mini.down(30,170).up(40,30).sleep(10).down(25,25).move(100,90).up(165,20).sleep(10).down(150,30).up(165,170).sleep(40);
-	}).display("events");
+	}).animate().down(30,170).up(40,30).sleep(10).down(25,25).move(100,90).up(165,20).sleep(10).down(150,30).up(165,170).sleep(40).done().display("events");
 };
 Math.__name__ = true;
 var Std = function() { };
@@ -990,7 +988,8 @@ minicanvas.MiniCanvas.prototype = {
 	,storeFrame: function() {
 		return this;
 	}
-	,animate: function(callback,x,y) {
+	,animate: function(x,y) {
+		var _g = this;
 		var interaction = new minicanvas.CanvasInteraction(this,(function($this) {
 			var $r;
 			var t;
@@ -1009,12 +1008,12 @@ minicanvas.MiniCanvas.prototype = {
 			}
 			$r = t1 != null?t1:$this.height;
 			return $r;
-		}(this)));
+		}(this)),function(stack) {
+			_g.resolveStack(stack,$bind(_g,_g.afterAnimate));
+			_g.storeFrame();
+		});
 		this.beforeAnimate();
-		callback(interaction);
-		this.storeFrame();
-		this.resolveStack(interaction.stack,$bind(this,this.afterAnimate));
-		return this;
+		return interaction;
 	}
 	,beforeAnimate: function() {
 	}
@@ -1117,16 +1116,16 @@ minicanvas.MiniCanvas.prototype = {
 		return this;
 	}
 	,getDevicePixelRatio: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 330, className : "minicanvas.MiniCanvas", methodName : "getDevicePixelRatio"});
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 333, className : "minicanvas.MiniCanvas", methodName : "getDevicePixelRatio"});
 	}
 	,getBackingStoreRatio: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 333, className : "minicanvas.MiniCanvas", methodName : "getBackingStoreRatio"});
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 336, className : "minicanvas.MiniCanvas", methodName : "getBackingStoreRatio"});
 	}
 	,init: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 336, className : "minicanvas.MiniCanvas", methodName : "init"});
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 339, className : "minicanvas.MiniCanvas", methodName : "init"});
 	}
 	,nativeDisplay: function(name) {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 339, className : "minicanvas.MiniCanvas", methodName : "nativeDisplay"});
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 342, className : "minicanvas.MiniCanvas", methodName : "nativeDisplay"});
 	}
 	,processScale: function() {
 		var _g = this.scaleMode;
@@ -1234,11 +1233,12 @@ minicanvas.BrowserCanvas.prototype = $extend(minicanvas.MiniCanvas.prototype,{
 	}
 	,__class__: minicanvas.BrowserCanvas
 });
-minicanvas.CanvasInteraction = function(mini,x,y) {
+minicanvas.CanvasInteraction = function(mini,x,y,done) {
 	this.mini = mini;
 	this.x = x;
 	this.y = y;
 	this.stack = [];
+	this._done = done;
 };
 minicanvas.CanvasInteraction.__name__ = true;
 minicanvas.CanvasInteraction.prototype = {
@@ -1300,6 +1300,10 @@ minicanvas.CanvasInteraction.prototype = {
 			});
 		}
 		return this;
+	}
+	,done: function() {
+		this._done(this.stack);
+		return this.mini;
 	}
 	,__class__: minicanvas.CanvasInteraction
 };
