@@ -55,14 +55,12 @@ class Main {
         e.mini
           .dot(e.x, e.y, 6, Color.blue)
           .onMove(function(e) e.mini.dot(e.x, e.y))
-          .onTrail(function(e) e.mini.line(e.x0, e.y0, e.x1, e.y1))
-      )
+          .onTrail(function(e) e.mini.line(e.x0, e.y0, e.x1, e.y1)))
       .onUp(function(e)
         e.mini
           .dot(e.x, e.y, 8, Color.aquamarine)
           .offMove()
-          .offTrail()
-      )
+          .offTrail())
       .animate()
       .down(30, 170)
       .up(40, 30).sleep(10)
