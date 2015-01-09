@@ -76,4 +76,18 @@ class BrowserCanvas extends MiniCanvas {
 
   override function nativeDisplay(name : String)
     append(name);
+
+  override function beforeAnimate() {
+    untyped this.canvas.style.pointerEvents = "none";
+  }
+  override function afterAnimate() {
+    untyped this.canvas.style.pointerEvents = "auto";
+  }
+
+  override function resolveStack(stack : Array<Void -> Void>, done : Void -> Void) {
+    if(stack.length == 0) return done();
+    stack.shift()();
+    storeFrame();
+    Timer.delay(resolveStack.bind(stack, done), 50);
+  }
 }
