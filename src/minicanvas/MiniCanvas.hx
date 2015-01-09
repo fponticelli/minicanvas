@@ -283,11 +283,7 @@ class MiniCanvas {
       trigger(name, e.clientX - rect.left, e.clientY - rect.top);
     };
     events.set(name, {
-      callback : function(e) {
-        // TODO sequence seems not right in generated gif
-        storeFrame();
-        callback(e);
-      },
+      callback : callback,
       listener : listener
     });
     if(isBrowser) {
