@@ -257,17 +257,11 @@ class MiniCanvas {
   public function down(x : Float, y : Float)
     return trigger("mousedown", x, y);
 
-  public function move(x0 : Float, y0 : Float, x1 : Float, y1 : Float, ?delta = 9.0) {
-    var dist  = Math.sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0)),
-        steps = Math.ceil(dist / delta),
-        x, y, step;
-    for(i in 0...steps) {
-      step = i / steps;
-      x = step.interpolate(x0, x1);
-      y = step.interpolate(y0, y1);
-      trigger("mousemove", x, y);
-      trigger("trail", x, y);
-    }
+  public function move(x : Float, y : Float) {
+    if(x < 0 || x > width || y < 0 || y > height)
+      return this;
+    trigger("mousemove", x, y);
+    trigger("trail", x, y);
     return this;
   }
 
