@@ -53,12 +53,12 @@ class Main {
       .checkboard()
       .onDown(function(e)
         e.mini
-          .dot(e.x, e.y, 6, Color.blue)
+          .dot(e.x, e.y, 6, "#0066CC")
           .onMove(function(e) e.mini.dot(e.x, e.y))
           .onTrail(function(e) e.mini.line(e.x0, e.y0, e.x1, e.y1)))
       .onUp(function(e)
         e.mini
-          .dot(e.x, e.y, 8, Color.aquamarine)
+          .dot(e.x, e.y, 8, "#33CC33")
           .offMove()
           .offTrail())
       .animate()
