@@ -199,7 +199,7 @@ class MiniCanvas {
   // animation
   public function storeFrame() return this;
 
-  public function animate(?x : Float, ?y : Float) {
+  public function animate(?x : Float, ?y : Float) : Interaction {
     var interaction = new CanvasInteraction(
       this,
       (x).or(width / 2),
