@@ -6,6 +6,7 @@ using thx.core.Arrays;
 class GifEncoder implements IEncoder {
   var encoder : Dynamic;
   var stream : Dynamic;
+  var frames = 0;
   public function new(width : Int, height : Int) {
     encoder = untyped __js__("(function(w, h, self) {
       var GIFEncoder = require('gifencoder'),
@@ -21,6 +22,7 @@ class GifEncoder implements IEncoder {
 
   public function addFrame(ctx : CanvasRenderingContext2D) : Void {
     encoder.addFrame(ctx);
+    frames++;
   }
 
   public function save(name : String, callback : String -> Void) : Void {
@@ -28,6 +30,6 @@ class GifEncoder implements IEncoder {
     stream.pipe(untyped require('fs')
       .createWriteStream('${minicanvas.NodeCanvas.imagePath}/$name.gif'));
     // TODO wire asynchronously
-    callback('$name.gif');
+    callback('$name.gif (frames $frames)');
   }
 }
