@@ -12,7 +12,6 @@ import thx.core.Timer;
 using thx.core.Nulls;
 import thx.core.error.AbstractMethod;
 
-@:access(minicanvas.CanvasInteraction.stack)
 class MiniCanvas {
   public static var displayGenerationTime = false;
 
@@ -200,13 +199,17 @@ class MiniCanvas {
   // animation
   public function storeFrame() return this;
 
-  public function animate(callback : CanvasInteraction -> Void, ?x : Float, ?y : Float) {
-    var interaction = new CanvasInteraction(this, (x).or(width / 2), (y).or(height));
+  public function animate(?x : Float, ?y : Float) {
+    var interaction = new CanvasInteraction(
+      this,
+      (x).or(width / 2),
+      (y).or(height),
+      function(stack) {
+        resolveStack(stack, afterAnimate);
+        storeFrame();
+      });
     beforeAnimate();
-    callback(interaction);
-    storeFrame();
-    resolveStack(interaction.stack, afterAnimate);
-    return this;
+    return interaction;
   }
 
   function beforeAnimate() {}

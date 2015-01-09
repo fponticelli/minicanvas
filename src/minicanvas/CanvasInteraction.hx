@@ -7,11 +7,13 @@ class CanvasInteraction {
   var x : Float;
   var y : Float;
   var stack : Array<Void -> Void>;
-  public function new(mini : MiniCanvas, x : Float, y : Float) {
+  var _done : Array<Void -> Void> -> Void;
+  public function new(mini : MiniCanvas, x : Float, y : Float, done : Array<Void -> Void> -> Void) {
     this.mini = mini;
     this.x = x;
     this.y = y;
     this.stack = [];
+    this._done = done;
   }
 
   public function click(x : Float, y : Float) {
@@ -55,5 +57,10 @@ class CanvasInteraction {
     for(i in 0...frames)
       stack.push(function(){});
     return this;
+  }
+
+  public function done() {
+    _done(stack);
+    return mini;
   }
 }
