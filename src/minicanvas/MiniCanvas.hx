@@ -67,8 +67,8 @@ class MiniCanvas {
   public function checkboard(?size : Float = 8, ?light : RGBA, ?dark : RGBA) {
     var cols   = (width / size).ceil(),
         rows   = (height / size).ceil(),
-        slight = (null == light ? (Color.white : RGBA) : light).toCSS3(),
-        sdark  = (null == dark  ? (Color.lightgrey : RGBA) : dark).toCSS3();
+        slight = (null == light ? ("#ffffff" : RGBA) : light).toCSS3(),
+        sdark  = (null == dark  ? ("#cccccc" : RGBA) : dark).toCSS3();
     for(c in 0...cols) {
       for(r in 0...rows) {
         ctx.fillStyle = c % 2 != r % 2 ? slight : sdark;
@@ -119,7 +119,7 @@ class MiniCanvas {
   public function gridHorizontal(?dy = 10.0, ?weight = 1.0, ?color : RGBA, ?oy = 0.0) {
     if(dy == 0) throw 'invalid argument dy, should be different from zero';
     if(null == color)
-      color = (Color.lightgrey : RGBA);
+      color = ("#cccccc" : RGBA);
     var py = oy % dy;
     while(py - weight / 2 <= height) {
       lineHorizontal(py, weight, color);
@@ -131,7 +131,7 @@ class MiniCanvas {
   public function gridVertical(?dx = 10.0, ?weight = 1.0, ?color : RGBA, ?ox = 0.0) {
     if(dx == 0) throw 'invalid argument dx, should be different from zero';
     if(null == color)
-      color = (Color.lightgrey : RGBA);
+      color = ("#cccccc" : RGBA);
     var px = ox % dx;
     while(px - weight / 2 <= width) {
       lineVertical(px, weight, color);
@@ -158,7 +158,7 @@ class MiniCanvas {
 
   public function line(x0 : Float, y0 : Float, x1 : Float, y1 : Float, ?weight = 1.0, ?color : RGBA) {
     ctx.lineWidth = weight;
-    ctx.strokeStyle = color.or((Color.black : RGBA)).toCSS3();
+    ctx.strokeStyle = color.or(("#000000" : RGBA)).toCSS3();
     ctx.beginPath();
     ctx.moveTo(x0, y0);
     ctx.lineTo(x1, y1);
