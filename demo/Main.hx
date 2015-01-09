@@ -51,18 +51,29 @@ class Main {
 
     MiniCanvas.create(200, 200)
       .checkboard()
-      .onDown(function(e)  e.mini.dot(e.x, e.y, 6, Color.blue))
-      .onUp(function(e)    e.mini.dot(e.x, e.y, 8, Color.green))
-      .onMove(function(e)  e.mini.dot(e.x, e.y))
-      .onTrail(function(e) e.mini.line(e.x0, e.y0, e.x1, e.y1))
+      .onDown(function(e) {
+        e.mini.dot(e.x, e.y, 6, Color.blue);
+        e.mini
+          .onMove(function(e) e.mini.dot(e.x, e.y))
+          .onTrail(function(e) e.mini.line(e.x0, e.y0, e.x1, e.y1));
+      })
+      .onUp(function(e) {
+        e.mini
+          .dot(e.x, e.y, 8, Color.green)
+          .offMove()
+          .offTrail();
+      })
       .animate(function(mini) {
         mini
-          .sleep(20)
-          .down(20, 30)
-          .sleep(20)
-          .move(150, 10)
-          .move(25, 180)
-          .up(25, 180)
+          .down(30, 170)
+          .up(40, 30)
+          .sleep(10)
+          .down(25, 25)
+          .move(100, 90)
+          .up(165, 20)
+          .sleep(10)
+          .down(150, 30)
+          .up(165, 170)
           .sleep(40)
         ;
       })
