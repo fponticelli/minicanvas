@@ -4,3 +4,5 @@
 -cp demo
 -lib thx.core
 -lib thx.color
+-dce full
+#-D analyzer
