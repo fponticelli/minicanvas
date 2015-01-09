@@ -78,8 +78,10 @@ class MiniCanvas {
     return this;
   }
 
-  public function clear()
+  public function clear() {
     ctx.clearRect(0, 0, width, height);
+    return this;
+  }
 
   public function context(callback : CanvasRenderingContext2D -> Int -> Int -> Void) {
     callback(ctx, width, height);
@@ -105,15 +107,16 @@ class MiniCanvas {
   public function fill(color : RGBA) {
     ctx.fillStyle = color.toCSS3();
     ctx.fillRect(0, 0, width, height);
+    return this;
   }
 
-  public function grid(dx = 10.0, dy = 10.0, ?weight = 1.0, ?color : RGBA, ox = 0.0, oy = 0.0) {
+  public function grid(?dx = 10.0, ?dy = 10.0, ?weight = 1.0, ?color : RGBA, ?ox = 0.0, ?oy = 0.0) {
     gridHorizontal(dy, weight, color, oy);
     gridVertical(dx, weight, color, ox);
     return this;
   }
 
-  public function gridHorizontal(dy = 10.0, ?weight = 1.0, ?color : RGBA, oy = 0.0) {
+  public function gridHorizontal(?dy = 10.0, ?weight = 1.0, ?color : RGBA, ?oy = 0.0) {
     if(dy == 0) throw 'invalid argument dy, should be different from zero';
     if(null == color)
       color = (Color.lightgrey : RGBA);
@@ -125,7 +128,7 @@ class MiniCanvas {
     return this;
   }
 
-  public function gridVertical(dx = 10.0, ?weight = 1.0, ?color : RGBA, ox = 0.0) {
+  public function gridVertical(?dx = 10.0, ?weight = 1.0, ?color : RGBA, ?ox = 0.0) {
     if(dx == 0) throw 'invalid argument dx, should be different from zero';
     if(null == color)
       color = (Color.lightgrey : RGBA);
@@ -194,7 +197,7 @@ class MiniCanvas {
   }
 
   // animation
-  public function storeFrame() {}
+  public function storeFrame() return this;
 
   public function sleep(frames : Int) {
     for(i in 0...frames)

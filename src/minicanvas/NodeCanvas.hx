@@ -41,6 +41,7 @@ class NodeCanvas extends MiniCanvas {
   override public function storeFrame() {
     hasFrames = true;
     ensureEncoder().addFrame(ctx);
+    return this;
   }
 
   // platform specific
