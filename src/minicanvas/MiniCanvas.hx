@@ -190,6 +190,19 @@ class MiniCanvas {
     return this;
   }
 
+  public function rect(x0 : Float, y0 : Float, x1 : Float, y1 : Float, ?weight = 1.0, ?lineColor : RGBA, ?fillColor : RGBA) {
+    if(null != fillColor) {
+      ctx.fillStyle = fillColor.toCSS3();
+      ctx.fillRect(x0, y0, x1 - x0, y1 - y0);
+    }
+    if(null != lineColor) {
+      ctx.lineWidth = weight;
+      ctx.strokeStyle = lineColor.toCSS3();
+      ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
+    }
+    return this;
+  }
+
   public function sample(name : String, callback : CanvasRenderingContext2D -> Int -> Int -> Void) {
     context(callback);
     display(name);
