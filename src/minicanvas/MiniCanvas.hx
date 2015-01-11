@@ -12,6 +12,7 @@ import thx.core.Timer;
 using thx.core.Nulls;
 import thx.core.error.AbstractMethod;
 
+@:expose
 class MiniCanvas {
   public static var displayGenerationTime = false;
 
@@ -70,8 +71,8 @@ class MiniCanvas {
   public function checkboard(?size : Float = 8, ?light : RGBA, ?dark : RGBA) {
     var cols   = (width / size).ceil(),
         rows   = (height / size).ceil(),
-        slight = (null == light ? ("#ffffff" : RGBA) : light).toCSS3(),
-        sdark  = (null == dark  ? ("#cccccc" : RGBA) : dark).toCSS3();
+        slight = (null == light ? (0xFFFFFFFF : RGBA) : light).toCSS3(),
+        sdark  = (null == dark  ? (0xCCCCCCFF : RGBA) : dark).toCSS3();
     for(c in 0...cols) {
       for(r in 0...rows) {
         ctx.fillStyle = c % 2 != r % 2 ? slight : sdark;
@@ -101,7 +102,7 @@ class MiniCanvas {
 
   public function dot(x : Float, y : Float, ?radius = 3.0, ?color : RGBA) {
     ctx.beginPath();
-    ctx.fillStyle = color.or(("#cc3300" : RGBA)).toCSS3();
+    ctx.fillStyle = color.or((0xCC3300FF : RGBA)).toCSS3();
     ctx.arc(x, y, radius, 0, Math.PI * 2, true);
     ctx.fill();
     return this;
@@ -139,7 +140,7 @@ class MiniCanvas {
   public function gridHorizontal(?dy = 10.0, ?weight = 1.0, ?color : RGBA, ?oy = 0.0) {
     if(dy == 0) throw 'invalid argument dy, should be different from zero';
     if(null == color)
-      color = ("#cccccc" : RGBA);
+      color = (0xCCCCCCFF : RGBA);
     var py = oy % dy;
     while(py - weight / 2 <= height) {
       lineHorizontal(py, weight, color);
@@ -151,7 +152,7 @@ class MiniCanvas {
   public function gridVertical(?dx = 10.0, ?weight = 1.0, ?color : RGBA, ?ox = 0.0) {
     if(dx == 0) throw 'invalid argument dx, should be different from zero';
     if(null == color)
-      color = ("#cccccc" : RGBA);
+      color = (0xCCCCCCFF : RGBA);
     var px = ox % dx;
     while(px - weight / 2 <= width) {
       lineVertical(px, weight, color);
@@ -178,7 +179,7 @@ class MiniCanvas {
 
   public function line(x0 : Float, y0 : Float, x1 : Float, y1 : Float, ?weight = 1.0, ?color : RGBA) {
     ctx.lineWidth = weight;
-    ctx.strokeStyle = color.or(("#000000" : RGBA)).toCSS3();
+    ctx.strokeStyle = color.or((0x000000FF : RGBA)).toCSS3();
     ctx.beginPath();
     ctx.moveTo(x0, y0);
     ctx.lineTo(x1, y1);
