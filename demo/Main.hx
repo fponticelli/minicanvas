@@ -6,6 +6,7 @@ class Main {
 
     MiniCanvas.create(200, 200)
       .checkboard()
+      .rect(20, 20, 180, 180, 2, 0xCC7700CC, 0x00CC7766)
       .display("checkboard");
 
     MiniCanvas.create(200, 200)
