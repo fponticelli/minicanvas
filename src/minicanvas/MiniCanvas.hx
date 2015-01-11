@@ -82,6 +82,24 @@ class MiniCanvas {
     return this;
   }
 
+  public function circle(x : Float, y : Float, radius : Float, ?weight = 1.0, ?lineColor : RGBA, ?fillColor : RGBA) {
+    if(null != fillColor || null != lineColor)
+      ctx.beginPath();
+    if(null != fillColor)
+      ctx.fillStyle = fillColor.toCSS3();
+    if(null != lineColor) {
+      ctx.strokeStyle = lineColor.toCSS3();
+      ctx.lineWidth = weight;
+    }
+
+    ctx.arc(x, y, radius, 0, Math.PI * 2, true);
+
+    if(null != fillColor)
+      ctx.fill();
+    if(null != lineColor)
+      ctx.stroke();
+  }
+
   public function clear() {
     ctx.clearRect(0, 0, width, height);
     return this;
