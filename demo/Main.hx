@@ -11,6 +11,11 @@ class Main {
       .display("checkboard");
 
     MiniCanvas.create(200, 200)
+      .checkboard(40)
+      .dotGrid(10, 10, 1, 0xBBBBBBFF)
+      .display("dotgrid");
+
+    MiniCanvas.create(200, 200)
       .checkboard()
       .box(function(x, y) : RGBA
         return HSLA.create(x * 360, 1, y, 0.75))

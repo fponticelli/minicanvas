@@ -1,7 +1,6 @@
 (function ($hx_exports) { "use strict";
 $hx_exports.minicanvas = $hx_exports.minicanvas || {};
 var console = (1,eval)('this').console || {log:function(){}};
-var $estr = function() { return js.Boot.__string_rec(this,''); };
 function $extend(from, fields) {
 	function Inherit() {} Inherit.prototype = from; var proto = new Inherit();
 	for (var name in fields) proto[name] = fields[name];
@@ -45,6 +44,7 @@ var Main = function() { };
 Main.main = function() {
 	minicanvas.MiniCanvas.displayGenerationTime = true;
 	minicanvas.MiniCanvas.create(200,200).checkboard().border(2,255).rect(20,20,180,180,2,-864616244,13399910).display("checkboard");
+	minicanvas.MiniCanvas.create(200,200).checkboard(40).dotGrid(10,10,1,-1145324545).display("dotgrid");
 	minicanvas.MiniCanvas.create(200,200).checkboard().box(function(x,y) {
 		return thx.color._HSLA.HSLA_Impl_.toRGBA(thx.color._HSLA.HSLA_Impl_.create(x * 360,1,y,0.75));
 	}).display("rainbowAlpha");
@@ -108,12 +108,11 @@ StringTools.replace = function(s,sub,by) {
 var haxe = {};
 haxe.StackItem = { __constructs__ : ["CFunction","Module","FilePos","Method","LocalFunction"] };
 haxe.StackItem.CFunction = ["CFunction",0];
-haxe.StackItem.CFunction.toString = $estr;
 haxe.StackItem.CFunction.__enum__ = haxe.StackItem;
-haxe.StackItem.Module = function(m) { var $x = ["Module",1,m]; $x.__enum__ = haxe.StackItem; $x.toString = $estr; return $x; };
-haxe.StackItem.FilePos = function(s,file,line) { var $x = ["FilePos",2,s,file,line]; $x.__enum__ = haxe.StackItem; $x.toString = $estr; return $x; };
-haxe.StackItem.Method = function(classname,method) { var $x = ["Method",3,classname,method]; $x.__enum__ = haxe.StackItem; $x.toString = $estr; return $x; };
-haxe.StackItem.LocalFunction = function(v) { var $x = ["LocalFunction",4,v]; $x.__enum__ = haxe.StackItem; $x.toString = $estr; return $x; };
+haxe.StackItem.Module = function(m) { var $x = ["Module",1,m]; $x.__enum__ = haxe.StackItem; return $x; };
+haxe.StackItem.FilePos = function(s,file,line) { var $x = ["FilePos",2,s,file,line]; $x.__enum__ = haxe.StackItem; return $x; };
+haxe.StackItem.Method = function(classname,method) { var $x = ["Method",3,classname,method]; $x.__enum__ = haxe.StackItem; return $x; };
+haxe.StackItem.LocalFunction = function(v) { var $x = ["LocalFunction",4,v]; $x.__enum__ = haxe.StackItem; return $x; };
 haxe.CallStack = function() { };
 haxe.CallStack.callStack = function() {
 	var oldValue = Error.prepareStackTrace;
@@ -304,6 +303,26 @@ minicanvas.MiniCanvas.prototype = {
 		}(this)));
 		this.ctx.arc(x,y,radius,0,Math.PI * 2,true);
 		this.ctx.fill();
+		return this;
+	}
+	,dotGrid: function(dx,dy,radius,color,ox,oy) {
+		if(oy == null) oy = 0.0;
+		if(ox == null) ox = 0.0;
+		if(radius == null) radius = 1.0;
+		if(dy == null) dy = 10.0;
+		if(dx == null) dx = 10.0;
+		if(dx == 0) throw "invalid argument dx, should be different from zero";
+		if(dy == 0) throw "invalid argument dy, should be different from zero";
+		if(null == color) color = thx.color._RGBA.RGBA_Impl_.fromString("#cccccc");
+		var py = oy % dy;
+		while(py - radius <= this.height) {
+			var px = ox % dx;
+			while(px - radius <= this.height) {
+				this.dot(px,py,radius,color);
+				px += dx;
+			}
+			py += dy;
+		}
 		return this;
 	}
 	,grid: function(dx,dy,weight,color,ox,oy) {
@@ -543,16 +562,16 @@ minicanvas.MiniCanvas.prototype = {
 		return this;
 	}
 	,getDevicePixelRatio: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 364, className : "minicanvas.MiniCanvas", methodName : "getDevicePixelRatio"});
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 381, className : "minicanvas.MiniCanvas", methodName : "getDevicePixelRatio"});
 	}
 	,getBackingStoreRatio: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 367, className : "minicanvas.MiniCanvas", methodName : "getBackingStoreRatio"});
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 384, className : "minicanvas.MiniCanvas", methodName : "getBackingStoreRatio"});
 	}
 	,init: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 370, className : "minicanvas.MiniCanvas", methodName : "init"});
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 387, className : "minicanvas.MiniCanvas", methodName : "init"});
 	}
 	,nativeDisplay: function(name) {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 373, className : "minicanvas.MiniCanvas", methodName : "nativeDisplay"});
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 390, className : "minicanvas.MiniCanvas", methodName : "nativeDisplay"});
 	}
 	,processScale: function() {
 		var _g = this.scaleMode;
@@ -567,12 +586,10 @@ minicanvas.MiniCanvas.prototype = {
 };
 minicanvas.ScaleMode = { __constructs__ : ["NoScale","Auto","Scaled"] };
 minicanvas.ScaleMode.NoScale = ["NoScale",0];
-minicanvas.ScaleMode.NoScale.toString = $estr;
 minicanvas.ScaleMode.NoScale.__enum__ = minicanvas.ScaleMode;
 minicanvas.ScaleMode.Auto = ["Auto",1];
-minicanvas.ScaleMode.Auto.toString = $estr;
 minicanvas.ScaleMode.Auto.__enum__ = minicanvas.ScaleMode;
-minicanvas.ScaleMode.Scaled = function(v) { var $x = ["Scaled",2,v]; $x.__enum__ = minicanvas.ScaleMode; $x.toString = $estr; return $x; };
+minicanvas.ScaleMode.Scaled = function(v) { var $x = ["Scaled",2,v]; $x.__enum__ = minicanvas.ScaleMode; return $x; };
 minicanvas.BrowserCanvas = function(width,height,scaleMode) {
 	this.isNode = false;
 	this.isBrowser = true;
@@ -1178,12 +1195,12 @@ thx.color.parse.ColorInfo = function(name,channels) {
 	this.channels = channels;
 };
 thx.color.parse.ChannelInfo = { __constructs__ : ["CIPercent","CIFloat","CIDegree","CIInt8","CIInt","CIBool"] };
-thx.color.parse.ChannelInfo.CIPercent = function(value) { var $x = ["CIPercent",0,value]; $x.__enum__ = thx.color.parse.ChannelInfo; $x.toString = $estr; return $x; };
-thx.color.parse.ChannelInfo.CIFloat = function(value) { var $x = ["CIFloat",1,value]; $x.__enum__ = thx.color.parse.ChannelInfo; $x.toString = $estr; return $x; };
-thx.color.parse.ChannelInfo.CIDegree = function(value) { var $x = ["CIDegree",2,value]; $x.__enum__ = thx.color.parse.ChannelInfo; $x.toString = $estr; return $x; };
-thx.color.parse.ChannelInfo.CIInt8 = function(value) { var $x = ["CIInt8",3,value]; $x.__enum__ = thx.color.parse.ChannelInfo; $x.toString = $estr; return $x; };
-thx.color.parse.ChannelInfo.CIInt = function(value) { var $x = ["CIInt",4,value]; $x.__enum__ = thx.color.parse.ChannelInfo; $x.toString = $estr; return $x; };
-thx.color.parse.ChannelInfo.CIBool = function(value) { var $x = ["CIBool",5,value]; $x.__enum__ = thx.color.parse.ChannelInfo; $x.toString = $estr; return $x; };
+thx.color.parse.ChannelInfo.CIPercent = function(value) { var $x = ["CIPercent",0,value]; $x.__enum__ = thx.color.parse.ChannelInfo; return $x; };
+thx.color.parse.ChannelInfo.CIFloat = function(value) { var $x = ["CIFloat",1,value]; $x.__enum__ = thx.color.parse.ChannelInfo; return $x; };
+thx.color.parse.ChannelInfo.CIDegree = function(value) { var $x = ["CIDegree",2,value]; $x.__enum__ = thx.color.parse.ChannelInfo; return $x; };
+thx.color.parse.ChannelInfo.CIInt8 = function(value) { var $x = ["CIInt8",3,value]; $x.__enum__ = thx.color.parse.ChannelInfo; return $x; };
+thx.color.parse.ChannelInfo.CIInt = function(value) { var $x = ["CIInt",4,value]; $x.__enum__ = thx.color.parse.ChannelInfo; return $x; };
+thx.color.parse.ChannelInfo.CIBool = function(value) { var $x = ["CIBool",5,value]; $x.__enum__ = thx.color.parse.ChannelInfo; return $x; };
 thx.core = {};
 thx.core.ArrayFloats = function() { };
 thx.core.ArrayFloats.resize = function(array,length,fill) {
