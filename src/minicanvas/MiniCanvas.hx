@@ -107,6 +107,23 @@ class MiniCanvas {
     return this;
   }
 
+  public function dotGrid(?dx = 10.0, ?dy = 10.0, ?radius = 1.0, ?color : RGBA, ?ox = 0.0, ?oy = 0.0) {
+    if(dx == 0) throw 'invalid argument dx, should be different from zero';
+    if(dy == 0) throw 'invalid argument dy, should be different from zero';
+    if(null == color)
+      color = (0xAAAAAAFF : RGBA);
+    var py = oy % dy;
+    while(py - radius <= height) {
+      var px = ox % dx;
+      while(px - radius <= height) {
+        dot(px, py, radius, color);
+        px += dx;
+      }
+      py += dy;
+    }
+    return this;
+  }
+
   public function fill(color : RGBA) {
     ctx.fillStyle = color.toCSS3();
     ctx.fillRect(0, 0, width, height);
