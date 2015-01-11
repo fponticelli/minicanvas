@@ -1,4 +1,5 @@
-(function () { "use strict";
+(function ($hx_exports) { "use strict";
+$hx_exports.minicanvas = $hx_exports.minicanvas || {};
 var console = (1,eval)('this').console || {log:function(){}};
 var $estr = function() { return js.Boot.__string_rec(this,''); };
 function $extend(from, fields) {
@@ -43,7 +44,7 @@ HxOverrides.substr = function(s,pos,len) {
 var Main = function() { };
 Main.main = function() {
 	minicanvas.MiniCanvas.displayGenerationTime = true;
-	minicanvas.MiniCanvas.create(200,200).checkboard().display("checkboard");
+	minicanvas.MiniCanvas.create(200,200).checkboard().border(2,255).rect(20,20,180,180,2,-864616244,13399910).display("checkboard");
 	minicanvas.MiniCanvas.create(200,200).checkboard().box(function(x,y) {
 		return thx.color._HSLA.HSLA_Impl_.toRGBA(thx.color._HSLA.HSLA_Impl_.create(x * 360,1,y,0.75));
 	}).display("rainbowAlpha");
@@ -65,18 +66,18 @@ Main.main = function() {
 		return $r;
 	}(this))),thx.color._HSL.HSL_Impl_.toRGBA(red),thx.color._HSL.HSL_Impl_.toRGBA((function($this) {
 		var $r;
-		var this2 = thx.color._HSL.HSL_Impl_.analogous(red);
-		$r = this2._1;
+		var this11 = thx.color._HSL.HSL_Impl_.analogous(red);
+		$r = this11._1;
 		return $r;
 	}(this)))],[thx.color._HSL.HSL_Impl_.toRGBA((function($this) {
 		var $r;
-		var this3 = thx.color._HSL.HSL_Impl_.split(green);
-		$r = this3._0;
+		var this12 = thx.color._HSL.HSL_Impl_.split(green);
+		$r = this12._0;
 		return $r;
 	}(this))),thx.color._HSL.HSL_Impl_.toRGBA(green),thx.color._HSL.HSL_Impl_.toRGBA((function($this) {
 		var $r;
-		var this4 = thx.color._HSL.HSL_Impl_.split(green);
-		$r = this4._1;
+		var this13 = thx.color._HSL.HSL_Impl_.split(green);
+		$r = this13._1;
 		return $r;
 	}(this)))]]).display("palette");
 	minicanvas.MiniCanvas.create(200,200).grid().cross().display("grid");
@@ -220,7 +221,7 @@ haxe.ds.StringMap.prototype = {
 	}
 };
 var minicanvas = {};
-minicanvas.MiniCanvas = function(width,height,scaleMode) {
+minicanvas.MiniCanvas = $hx_exports.minicanvas.MiniCanvas = function(width,height,scaleMode) {
 	this.scaleMode = scaleMode;
 	this.width = width;
 	this.height = height;
@@ -241,6 +242,11 @@ minicanvas.MiniCanvas.prototype = {
 		if(!minicanvas.MiniCanvas.displayGenerationTime) console.log("generated \"" + name + "\" in " + thx.core.Floats.roundTo(this.deltaTime,2) + "ms");
 		this.nativeDisplay(name);
 		return this;
+	}
+	,border: function(weight,color) {
+		if(color == null) color = 255;
+		if(weight == null) weight = 1.0;
+		return this.rect(weight / 2,weight / 2,this.width - weight / 2,this.height - weight / 2,weight,color);
 	}
 	,box: function(handler) {
 		var _g1 = 0;
@@ -408,6 +414,19 @@ minicanvas.MiniCanvas.prototype = {
 		}
 		return this;
 	}
+	,rect: function(x0,y0,x1,y1,weight,lineColor,fillColor) {
+		if(weight == null) weight = 1.0;
+		if(null != fillColor) {
+			this.ctx.fillStyle = thx.color._RGBA.RGBA_Impl_.toCSS3(fillColor);
+			this.ctx.fillRect(x0,y0,x1 - x0,y1 - y0);
+		}
+		if(null != lineColor) {
+			this.ctx.lineWidth = weight;
+			this.ctx.strokeStyle = thx.color._RGBA.RGBA_Impl_.toCSS3(lineColor);
+			this.ctx.strokeRect(x0,y0,x1 - x0,y1 - y0);
+		}
+		return this;
+	}
 	,storeFrame: function() {
 		return this;
 	}
@@ -524,16 +543,16 @@ minicanvas.MiniCanvas.prototype = {
 		return this;
 	}
 	,getDevicePixelRatio: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 347, className : "minicanvas.MiniCanvas", methodName : "getDevicePixelRatio"});
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 364, className : "minicanvas.MiniCanvas", methodName : "getDevicePixelRatio"});
 	}
 	,getBackingStoreRatio: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 350, className : "minicanvas.MiniCanvas", methodName : "getBackingStoreRatio"});
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 367, className : "minicanvas.MiniCanvas", methodName : "getBackingStoreRatio"});
 	}
 	,init: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 353, className : "minicanvas.MiniCanvas", methodName : "init"});
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 370, className : "minicanvas.MiniCanvas", methodName : "init"});
 	}
 	,nativeDisplay: function(name) {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 356, className : "minicanvas.MiniCanvas", methodName : "nativeDisplay"});
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 373, className : "minicanvas.MiniCanvas", methodName : "nativeDisplay"});
 	}
 	,processScale: function() {
 		var _g = this.scaleMode;
@@ -975,7 +994,7 @@ thx.color._RGB.RGB_Impl_.get_blue = function(this1) {
 thx.color._RGBA = {};
 thx.color._RGBA.RGBA_Impl_ = {};
 thx.color._RGBA.RGBA_Impl_.create = function(red,green,blue,alpha) {
-	return (alpha & 255) << 24 | (red & 255) << 16 | (green & 255) << 8 | blue & 255;
+	return (red & 255) << 24 | (green & 255) << 16 | (blue & 255) << 8 | alpha & 255;
 };
 thx.color._RGBA.RGBA_Impl_.fromFloats = function(arr) {
 	var ints = thx.core.ArrayFloats.resize(arr,4).map(function(_) {
@@ -1009,7 +1028,7 @@ thx.color._RGBA.RGBA_Impl_.toCSS3 = function(this1) {
 	return thx.color._RGBA.RGBA_Impl_.toString(this1);
 };
 thx.color._RGBA.RGBA_Impl_.toString = function(this1) {
-	return "rgba(" + (this1 >> 16 & 255) + "," + (this1 >> 8 & 255) + "," + (this1 & 255) + "," + (this1 >> 24 & 255) / 255 + ")";
+	return "rgba(" + (this1 >> 24 & 255) + "," + (this1 >> 16 & 255) + "," + (this1 >> 8 & 255) + "," + (this1 & 255) / 255 + ")";
 };
 thx.color._RGBX = {};
 thx.color._RGBX.RGBX_Impl_ = {};
@@ -1318,4 +1337,4 @@ thx.color.parse.ColorParser.isPureHex = new EReg("^([0-9a-f]{2}){3,4}$","i");
 thx.core.Floats.pattern_parse = new EReg("^(\\+|-)?\\d+(\\.\\d+)?(e-?\\d+)?$","");
 thx.core.Ints.pattern_parse = new EReg("^[+-]?(\\d+|0x[0-9A-F]+)$","i");
 Main.main();
-})();
+})(typeof window != "undefined" ? window : exports);

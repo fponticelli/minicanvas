@@ -54,6 +54,9 @@ class MiniCanvas {
   }
 
   // drawing
+  public function border(weight = 1.0, ?color : RGBA = 0x000000ff)
+    return rect(weight / 2, weight / 2, width - weight / 2, height - weight / 2, weight, color);
+
   public function box(handler : Float -> Float -> RGBA) {
     for(x in 0...width) {
       for(y in 0...height) {
