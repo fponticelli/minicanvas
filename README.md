@@ -5,6 +5,8 @@ Simple library to quickly generate canvas images (for the browser and for nodejs
 ```haxe
 MiniCanvas.create(200, 200)
   .checkboard()
+  .border(2, 0x000000FF)
+  .rect(20, 20, 180, 180, 2, 0xCC7700CC, 0x00CC7766)
   .display("checkboard");
 ```
 
