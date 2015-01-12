@@ -1,5 +1,6 @@
 package minicanvas;
 
+#if expose @:keep #end
 class Interaction {
   var mini : MiniCanvas;
   public function new(mini : MiniCanvas)

@@ -13,7 +13,7 @@ import thx.color.*;
 typedef RGBA = String;
 #end
 
-#if expose @:expose #end
+#if expose @:expose @:keep #end
 class MiniCanvas {
   public static var displayGenerationTime = false;
 
