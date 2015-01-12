@@ -1,5 +1,4 @@
-(function ($hx_exports) { "use strict";
-$hx_exports.minicanvas = $hx_exports.minicanvas || {};
+(function () { "use strict";
 var console = (1,eval)('this').console || {log:function(){}};
 function $extend(from, fields) {
 	function Inherit() {} Inherit.prototype = from; var proto = new Inherit();
@@ -40,9 +39,52 @@ HxOverrides.substr = function(s,pos,len) {
 	} else if(len < 0) len = s.length + len - pos;
 	return s.substr(pos,len);
 };
+HxOverrides.iter = function(a) {
+	return { cur : 0, arr : a, hasNext : function() {
+		return this.cur < this.arr.length;
+	}, next : function() {
+		return this.arr[this.cur++];
+	}};
+};
 var Main = function() { };
+Main.randomGraph = function(name,width,height,random) {
+	minicanvas.MiniCanvas.create(width,height).fill(-1).gridHorizontal(20).border(1)["with"](function(mini,w,h) {
+		var max = 0;
+		var min = h;
+		var avg = 0.0;
+		var map = new haxe.ds.IntMap();
+		var tot = Math.round(w * h * 0.5);
+		var r;
+		var v;
+		var _g = 0;
+		while(_g < tot) {
+			var i = _g++;
+			r = Math.floor(random() * w);
+			if(map.h.hasOwnProperty(r)) {
+				var value = v = map.h[r] + 1;
+				map.h[r] = value;
+			} else {
+				var value1 = v = 1;
+				map.h[r] = value1;
+			}
+			mini.dot(r + 0.5,h - v + 0.5,0.5,thx.color._Grey.Grey_Impl_.toRGBA(0.7 - v / h));
+			if(i % 200 == 0) mini.storeFrame();
+		}
+		var $it0 = map.keys();
+		while( $it0.hasNext() ) {
+			var k = $it0.next();
+			v = map.h[k];
+			avg += v;
+			if(v < min) min = v;
+			if(v > max) max = v;
+		}
+		avg = avg / w;
+		mini.storeFrame().lineHorizontal(Math.round(h - min) + 0.5,1,thx.color._RGB.RGB_Impl_.toRGBA(thx.color.Color.red)).storeFrame().lineHorizontal(Math.round(h - max) + 0.5,1,thx.color._RGB.RGB_Impl_.toRGBA(thx.color.Color.green)).storeFrame().lineHorizontal(Math.round(h - (max + min) / 2) + 0.5,1,thx.color._RGB.RGB_Impl_.toRGBA(thx.color.Color.cyan)).storeFrame().lineHorizontal(Math.round(h - avg) + 0.5,1,thx.color._RGB.RGB_Impl_.toRGBA(thx.color.Color.blue)).storeFrame(50);
+	}).display(name);
+};
 Main.main = function() {
 	minicanvas.MiniCanvas.displayGenerationTime = true;
+	Main.randomGraph("pseudoRandom",200,200,($_=new thx.math.random.PseudoRandom(),$bind($_,$_["float"])));
 	minicanvas.MiniCanvas.create(200,200).checkboard().border(2,255).rect(20,20,180,180,2,-864616244,13399910).display("checkboard");
 	minicanvas.MiniCanvas.create(200,200).checkboard(40).dotGrid(10,10,1,-1145324545).display("dotgrid");
 	minicanvas.MiniCanvas.create(200,200).checkboard().box(function(x,y) {
@@ -207,6 +249,19 @@ haxe.CallStack.makeStack = function(s) {
 };
 haxe.IMap = function() { };
 haxe.ds = {};
+haxe.ds.IntMap = function() {
+	this.h = { };
+};
+haxe.ds.IntMap.__interfaces__ = [haxe.IMap];
+haxe.ds.IntMap.prototype = {
+	keys: function() {
+		var a = [];
+		for( var key in this.h ) {
+		if(this.h.hasOwnProperty(key)) a.push(key | 0);
+		}
+		return HxOverrides.iter(a);
+	}
+};
 haxe.ds.StringMap = function() {
 	this.h = { };
 };
@@ -220,7 +275,7 @@ haxe.ds.StringMap.prototype = {
 	}
 };
 var minicanvas = {};
-minicanvas.MiniCanvas = $hx_exports.minicanvas.MiniCanvas = function(width,height,scaleMode) {
+minicanvas.MiniCanvas = function(width,height,scaleMode) {
 	this.scaleMode = scaleMode;
 	this.width = width;
 	this.height = height;
@@ -242,12 +297,16 @@ minicanvas.MiniCanvas.prototype = {
 		this.nativeDisplay(name);
 		return this;
 	}
-	,border: function(weight,color) {
+	,border: function(weight,color,ox,oy) {
+		if(oy == null) oy = 0.5;
+		if(ox == null) ox = 0.5;
 		if(color == null) color = 255;
 		if(weight == null) weight = 1.0;
 		return this.rect(weight / 2,weight / 2,this.width - weight / 2,this.height - weight / 2,weight,color);
 	}
-	,box: function(handler) {
+	,box: function(handler,ox,oy) {
+		if(oy == null) oy = 0.5;
+		if(ox == null) ox = 0.5;
 		var _g1 = 0;
 		var _g = this.width;
 		while(_g1 < _g) {
@@ -257,17 +316,19 @@ minicanvas.MiniCanvas.prototype = {
 			while(_g3 < _g2) {
 				var y = _g3++;
 				this.ctx.fillStyle = thx.color._RGBA.RGBA_Impl_.toCSS3(handler(x / this.width,y / this.height));
-				this.ctx.fillRect(x,y,1,1);
+				this.ctx.fillRect(x + ox,y + oy,1,1);
 			}
 		}
 		return this;
 	}
-	,checkboard: function(size,light,dark) {
+	,checkboard: function(size,light,dark,ox,oy) {
+		if(oy == null) oy = 0.5;
+		if(ox == null) ox = 0.5;
 		if(size == null) size = 8;
 		var cols = Math.ceil(this.width / size);
 		var rows = Math.ceil(this.height / size);
-		var slight = thx.color._RGBA.RGBA_Impl_.toCSS3(null == light?thx.color._RGBA.RGBA_Impl_.fromString("#ffffff"):light);
-		var sdark = thx.color._RGBA.RGBA_Impl_.toCSS3(null == dark?thx.color._RGBA.RGBA_Impl_.fromString("#cccccc"):dark);
+		var slight = thx.color._RGBA.RGBA_Impl_.toCSS3(null == light?-1:light);
+		var sdark = thx.color._RGBA.RGBA_Impl_.toCSS3(null == dark?-858993409:dark);
 		var _g = 0;
 		while(_g < cols) {
 			var c = _g++;
@@ -275,15 +336,15 @@ minicanvas.MiniCanvas.prototype = {
 			while(_g1 < rows) {
 				var r = _g1++;
 				if(c % 2 != r % 2) this.ctx.fillStyle = slight; else this.ctx.fillStyle = sdark;
-				this.ctx.fillRect(c * size,r * size,size,size);
+				this.ctx.fillRect(c * size + ox,r * size + oy,size,size);
 			}
 		}
 		return this;
 	}
 	,cross: function(ox,oy,weight,color) {
 		if(weight == null) weight = 1.0;
-		if(null == ox) ox = this.width / 2;
-		if(null == oy) oy = this.height / 2;
+		if(null == ox) ox = this.width / 2 + 0.5;
+		if(null == oy) oy = this.height / 2 + 0.5;
 		this.lineHorizontal(oy,weight,color);
 		this.lineVertical(ox,weight,color);
 		return this;
@@ -298,7 +359,7 @@ minicanvas.MiniCanvas.prototype = {
 				var _0 = color;
 				if(null == _0) t = null; else t = _0;
 			}
-			$r = t != null?t:thx.color._RGBA.RGBA_Impl_.fromString("#cc3300");
+			$r = t != null?t:-869072641;
 			return $r;
 		}(this)));
 		this.ctx.arc(x,y,radius,0,Math.PI * 2,true);
@@ -306,28 +367,33 @@ minicanvas.MiniCanvas.prototype = {
 		return this;
 	}
 	,dotGrid: function(dx,dy,radius,color,ox,oy) {
-		if(oy == null) oy = 0.0;
-		if(ox == null) ox = 0.0;
+		if(oy == null) oy = 0.5;
+		if(ox == null) ox = 0.5;
 		if(radius == null) radius = 1.0;
 		if(dy == null) dy = 10.0;
 		if(dx == null) dx = 10.0;
 		if(dx == 0) throw "invalid argument dx, should be different from zero";
 		if(dy == 0) throw "invalid argument dy, should be different from zero";
-		if(null == color) color = thx.color._RGBA.RGBA_Impl_.fromString("#cccccc");
+		if(null == color) color = -1431655681;
 		var py = oy % dy;
 		while(py - radius <= this.height) {
 			var px = ox % dx;
 			while(px - radius <= this.height) {
-				this.dot(px,py,radius,color);
+				this.dot(px + 0.5,py + 0.5,radius,color);
 				px += dx;
 			}
 			py += dy;
 		}
 		return this;
 	}
+	,fill: function(color) {
+		this.ctx.fillStyle = thx.color._RGBA.RGBA_Impl_.toCSS3(color);
+		this.ctx.fillRect(0,0,this.width,this.height);
+		return this;
+	}
 	,grid: function(dx,dy,weight,color,ox,oy) {
-		if(oy == null) oy = 0.0;
-		if(ox == null) ox = 0.0;
+		if(oy == null) oy = 0.5;
+		if(ox == null) ox = 0.5;
 		if(weight == null) weight = 1.0;
 		if(dy == null) dy = 10.0;
 		if(dx == null) dx = 10.0;
@@ -336,11 +402,11 @@ minicanvas.MiniCanvas.prototype = {
 		return this;
 	}
 	,gridHorizontal: function(dy,weight,color,oy) {
-		if(oy == null) oy = 0.0;
+		if(oy == null) oy = 0.5;
 		if(weight == null) weight = 1.0;
 		if(dy == null) dy = 10.0;
 		if(dy == 0) throw "invalid argument dy, should be different from zero";
-		if(null == color) color = thx.color._RGBA.RGBA_Impl_.fromString("#cccccc");
+		if(null == color) color = -858993409;
 		var py = oy % dy;
 		while(py - weight / 2 <= this.height) {
 			this.lineHorizontal(py,weight,color);
@@ -349,11 +415,11 @@ minicanvas.MiniCanvas.prototype = {
 		return this;
 	}
 	,gridVertical: function(dx,weight,color,ox) {
-		if(ox == null) ox = 0.0;
+		if(ox == null) ox = 0.5;
 		if(weight == null) weight = 1.0;
 		if(dx == null) dx = 10.0;
 		if(dx == 0) throw "invalid argument dx, should be different from zero";
-		if(null == color) color = thx.color._RGBA.RGBA_Impl_.fromString("#cccccc");
+		if(null == color) color = -858993409;
 		var px = ox % dx;
 		while(px - weight / 2 <= this.width) {
 			this.lineVertical(px,weight,color);
@@ -367,7 +433,7 @@ minicanvas.MiniCanvas.prototype = {
 		while(_g1 < _g) {
 			var x = _g1++;
 			this.ctx.fillStyle = thx.color._RGBA.RGBA_Impl_.toCSS3(handler(x / this.width));
-			this.ctx.fillRect(x,0,1,this.height);
+			this.ctx.fillRect(x + 0.5,0,1,this.height);
 		}
 		return this;
 	}
@@ -377,7 +443,7 @@ minicanvas.MiniCanvas.prototype = {
 		while(_g1 < _g) {
 			var y = _g1++;
 			this.ctx.fillStyle = thx.color._RGBA.RGBA_Impl_.toCSS3(handler(y / this.height));
-			this.ctx.fillRect(0,y,this.width,1);
+			this.ctx.fillRect(0,y + 0.5,this.width,1);
 		}
 		return this;
 	}
@@ -391,7 +457,7 @@ minicanvas.MiniCanvas.prototype = {
 				var _0 = color;
 				if(null == _0) t = null; else t = _0;
 			}
-			$r = t != null?t:thx.color._RGBA.RGBA_Impl_.fromString("#000000");
+			$r = t != null?t:255;
 			return $r;
 		}(this)));
 		this.ctx.beginPath();
@@ -413,14 +479,14 @@ minicanvas.MiniCanvas.prototype = {
 		if(padding == null) padding = 2.0;
 		var rows = colors.length;
 		var h = (this.height - 2 * margin - (rows - 1) * padding) / rows;
-		var py = margin;
+		var py = margin + 0.5;
 		var _g = 0;
 		while(_g < colors.length) {
 			var row = colors[_g];
 			++_g;
 			var cols = row.length;
 			var w = (this.width - 2 * margin - (cols - 1) * padding) / cols;
-			var px = margin;
+			var px = margin + 0.5;
 			var _g1 = 0;
 			while(_g1 < row.length) {
 				var col = row[_g1];
@@ -446,7 +512,8 @@ minicanvas.MiniCanvas.prototype = {
 		}
 		return this;
 	}
-	,storeFrame: function() {
+	,storeFrame: function(times) {
+		if(times == null) times = 1;
 		return this;
 	}
 	,animate: function(x,y) {
@@ -475,6 +542,10 @@ minicanvas.MiniCanvas.prototype = {
 		});
 		this.beforeAnimate();
 		return interaction;
+	}
+	,'with': function(callback) {
+		callback(this,this.width,this.height);
+		return this;
 	}
 	,beforeAnimate: function() {
 	}
@@ -562,16 +633,16 @@ minicanvas.MiniCanvas.prototype = {
 		return this;
 	}
 	,getDevicePixelRatio: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 381, className : "minicanvas.MiniCanvas", methodName : "getDevicePixelRatio"});
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 406, className : "minicanvas.MiniCanvas", methodName : "getDevicePixelRatio"});
 	}
 	,getBackingStoreRatio: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 384, className : "minicanvas.MiniCanvas", methodName : "getBackingStoreRatio"});
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 409, className : "minicanvas.MiniCanvas", methodName : "getBackingStoreRatio"});
 	}
 	,init: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 387, className : "minicanvas.MiniCanvas", methodName : "init"});
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 412, className : "minicanvas.MiniCanvas", methodName : "init"});
 	}
 	,nativeDisplay: function(name) {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 390, className : "minicanvas.MiniCanvas", methodName : "nativeDisplay"});
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 415, className : "minicanvas.MiniCanvas", methodName : "nativeDisplay"});
 	}
 	,processScale: function() {
 		var _g = this.scaleMode;
@@ -778,9 +849,15 @@ minicanvas.NodeCanvas.prototype = $extend(minicanvas.MiniCanvas.prototype,{
 			console.log("saved " + file);
 		});
 	}
-	,storeFrame: function() {
+	,storeFrame: function(times) {
+		if(times == null) times = 1;
 		this.hasFrames = true;
-		this.ensureEncoder().addFrame(this.ctx);
+		if(times <= 0) times = 1;
+		var _g = 0;
+		while(_g < times) {
+			var i = _g++;
+			this.ensureEncoder().addFrame(this.ctx);
+		}
 		return this;
 	}
 	,init: function() {
@@ -861,6 +938,18 @@ minicanvas.node.PNGEncoder.prototype = {
 };
 var thx = {};
 thx.color = {};
+thx.color.Color = function() { };
+thx.color._Grey = {};
+thx.color._Grey.Grey_Impl_ = {};
+thx.color._Grey.Grey_Impl_.toRGBA = function(this1) {
+	return thx.color._RGBXA.RGBXA_Impl_.toRGBA(thx.color._Grey.Grey_Impl_.toRGBXA(this1));
+};
+thx.color._Grey.Grey_Impl_.toRGBX = function(this1) {
+	return [this1,this1,this1];
+};
+thx.color._Grey.Grey_Impl_.toRGBXA = function(this1) {
+	return thx.color._RGBX.RGBX_Impl_.toRGBXA(thx.color._Grey.Grey_Impl_.toRGBX(this1));
+};
 thx.color._HSL = {};
 thx.color._HSL.HSL_Impl_ = {};
 thx.color._HSL.HSL_Impl_.create = function(hue,saturation,lightness) {
@@ -1298,6 +1387,17 @@ thx.core.error.AbstractMethod = function(posInfo) {
 thx.core.error.AbstractMethod.__super__ = thx.core.Error;
 thx.core.error.AbstractMethod.prototype = $extend(thx.core.Error.prototype,{
 });
+thx.math = {};
+thx.math.random = {};
+thx.math.random.PseudoRandom = function(seed) {
+	if(seed == null) seed = 1;
+	this.seed = seed;
+};
+thx.math.random.PseudoRandom.prototype = {
+	'float': function() {
+		return ((this.seed = this.seed * 48271.0 % 2147483647.0 | 0) & 1073741823) / 1073741823.0;
+	}
+};
 var $_, $fid = 0;
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $fid++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = function(){ return f.method.apply(f.scope, arguments); }; f.scope = o; f.method = m; o.hx__closures__[m.__id__] = f; } return f; }
 if(Array.prototype.map == null) Array.prototype.map = function(f) {
@@ -1310,6 +1410,392 @@ if(Array.prototype.map == null) Array.prototype.map = function(f) {
 	}
 	return a;
 };
+thx.color.Color.names = new haxe.ds.StringMap();
+var value = thx.color.Color.aliceblue = 15792383;
+thx.color.Color.names.h["$" + "aliceblue"] = value;
+thx.color.Color.names.h["$" + "alice blue"] = thx.color.Color.aliceblue;
+var value1 = thx.color.Color.antiquewhite = 16444375;
+thx.color.Color.names.h["$" + "antiquewhite"] = value1;
+thx.color.Color.names.h["$" + "antique white"] = thx.color.Color.antiquewhite;
+var value2 = thx.color.Color.aqua = 65535;
+thx.color.Color.names.h["$" + "aqua"] = value2;
+var value3 = thx.color.Color.aquamarine = 8388564;
+thx.color.Color.names.h["$" + "aquamarine"] = value3;
+var value4 = thx.color.Color.azure = 15794175;
+thx.color.Color.names.h["$" + "azure"] = value4;
+var value5 = thx.color.Color.beige = 16119260;
+thx.color.Color.names.h["$" + "beige"] = value5;
+var value6 = thx.color.Color.bisque = 16770244;
+thx.color.Color.names.h["$" + "bisque"] = value6;
+var value7 = thx.color.Color.black = 0;
+thx.color.Color.names.h["$" + "black"] = value7;
+var value8 = thx.color.Color.blanchedalmond = 16772045;
+thx.color.Color.names.h["$" + "blanchedalmond"] = value8;
+thx.color.Color.names.h["$" + "blanched almond"] = thx.color.Color.blanchedalmond;
+var value9 = thx.color.Color.blue = 255;
+thx.color.Color.names.h["$" + "blue"] = value9;
+var value10 = thx.color.Color.blueviolet = 9055202;
+thx.color.Color.names.h["$" + "blueviolet"] = value10;
+thx.color.Color.names.h["$" + "blue violet"] = thx.color.Color.blueviolet;
+var value11 = thx.color.Color.brown = 10824234;
+thx.color.Color.names.h["$" + "brown"] = value11;
+var value12 = thx.color.Color.burlywood = 14596231;
+thx.color.Color.names.h["$" + "burlywood"] = value12;
+thx.color.Color.names.h["$" + "burly wood"] = thx.color.Color.burlywood;
+var value13 = thx.color.Color.cadetblue = 6266528;
+thx.color.Color.names.h["$" + "cadetblue"] = value13;
+thx.color.Color.names.h["$" + "cadet blue"] = thx.color.Color.cadetblue;
+var value14 = thx.color.Color.chartreuse = 8388352;
+thx.color.Color.names.h["$" + "chartreuse"] = value14;
+thx.color.Color.names.h["$" + "chart reuse"] = thx.color.Color.chartreuse;
+var value15 = thx.color.Color.chocolate = 13789470;
+thx.color.Color.names.h["$" + "chocolate"] = value15;
+var value16 = thx.color.Color.coral = 16744272;
+thx.color.Color.names.h["$" + "coral"] = value16;
+var value17 = thx.color.Color.cornflowerblue = 6591981;
+thx.color.Color.names.h["$" + "cornflowerblue"] = value17;
+thx.color.Color.names.h["$" + "corn flower blue"] = thx.color.Color.cornflowerblue;
+var value18 = thx.color.Color.cornsilk = 16775388;
+thx.color.Color.names.h["$" + "cornsilk"] = value18;
+thx.color.Color.names.h["$" + "corn silk"] = thx.color.Color.cornsilk;
+var value19 = thx.color.Color.crimson = 14423100;
+thx.color.Color.names.h["$" + "crimson"] = value19;
+var value20 = thx.color.Color.cyan = 65535;
+thx.color.Color.names.h["$" + "cyan"] = value20;
+var value21 = thx.color.Color.darkblue = 139;
+thx.color.Color.names.h["$" + "darkblue"] = value21;
+thx.color.Color.names.h["$" + "dark blue"] = thx.color.Color.darkblue;
+var value22 = thx.color.Color.darkcyan = 35723;
+thx.color.Color.names.h["$" + "darkcyan"] = value22;
+thx.color.Color.names.h["$" + "dark cyan"] = thx.color.Color.darkcyan;
+var value23 = thx.color.Color.darkgoldenrod = 12092939;
+thx.color.Color.names.h["$" + "darkgoldenrod"] = value23;
+thx.color.Color.names.h["$" + "dark golden rod"] = thx.color.Color.darkgoldenrod;
+var value24 = thx.color.Color.darkgray = thx.color.Color.darkgrey = 11119017;
+thx.color.Color.names.h["$" + "darkgray"] = value24;
+thx.color.Color.names.h["$" + "dark gray"] = thx.color.Color.darkgray;
+thx.color.Color.names.h["$" + "darkgrey"] = thx.color.Color.darkgrey;
+thx.color.Color.names.h["$" + "dark grey"] = thx.color.Color.darkgrey;
+var value25 = thx.color.Color.darkgreen = 25600;
+thx.color.Color.names.h["$" + "darkgreen"] = value25;
+thx.color.Color.names.h["$" + "dark green"] = thx.color.Color.darkgreen;
+var value26 = thx.color.Color.darkkhaki = 12433259;
+thx.color.Color.names.h["$" + "darkkhaki"] = value26;
+thx.color.Color.names.h["$" + "dark khaki"] = thx.color.Color.darkkhaki;
+var value27 = thx.color.Color.darkmagenta = 9109643;
+thx.color.Color.names.h["$" + "darkmagenta"] = value27;
+thx.color.Color.names.h["$" + "dark magenta"] = thx.color.Color.darkmagenta;
+var value28 = thx.color.Color.darkolivegreen = 5597999;
+thx.color.Color.names.h["$" + "darkolivegreen"] = value28;
+thx.color.Color.names.h["$" + "dark olive green"] = thx.color.Color.darkolivegreen;
+var value29 = thx.color.Color.darkorange = 16747520;
+thx.color.Color.names.h["$" + "darkorange"] = value29;
+thx.color.Color.names.h["$" + "dark orange"] = thx.color.Color.darkorange;
+var value30 = thx.color.Color.darkorchid = 10040012;
+thx.color.Color.names.h["$" + "darkorchid"] = value30;
+thx.color.Color.names.h["$" + "dark orchid"] = thx.color.Color.darkorchid;
+var value31 = thx.color.Color.darkred = 9109504;
+thx.color.Color.names.h["$" + "darkred"] = value31;
+thx.color.Color.names.h["$" + "dark red"] = thx.color.Color.darkred;
+var value32 = thx.color.Color.darksalmon = 15308410;
+thx.color.Color.names.h["$" + "darksalmon"] = value32;
+thx.color.Color.names.h["$" + "dark salmon"] = thx.color.Color.darksalmon;
+var value33 = thx.color.Color.darkseagreen = 9419919;
+thx.color.Color.names.h["$" + "darkseagreen"] = value33;
+thx.color.Color.names.h["$" + "dark sea green"] = thx.color.Color.darkseagreen;
+var value34 = thx.color.Color.darkslateblue = 4734347;
+thx.color.Color.names.h["$" + "darkslateblue"] = value34;
+thx.color.Color.names.h["$" + "dark slate blue"] = thx.color.Color.darkslateblue;
+var value35 = thx.color.Color.darkslategray = thx.color.Color.darkslategrey = 3100495;
+thx.color.Color.names.h["$" + "darkslategray"] = value35;
+thx.color.Color.names.h["$" + "dark slate gray"] = thx.color.Color.darkslategray;
+thx.color.Color.names.h["$" + "darkslategrey"] = thx.color.Color.darkslategrey;
+thx.color.Color.names.h["$" + "dark slate grey"] = thx.color.Color.darkslategrey;
+var value36 = thx.color.Color.darkturquoise = 52945;
+thx.color.Color.names.h["$" + "darkturquoise"] = value36;
+thx.color.Color.names.h["$" + "dark turquoise"] = thx.color.Color.darkturquoise;
+var value37 = thx.color.Color.darkviolet = 9699539;
+thx.color.Color.names.h["$" + "darkviolet"] = value37;
+thx.color.Color.names.h["$" + "dark violet"] = thx.color.Color.darkviolet;
+var value38 = thx.color.Color.deeppink = 16716947;
+thx.color.Color.names.h["$" + "deeppink"] = value38;
+thx.color.Color.names.h["$" + "deep pink"] = thx.color.Color.deeppink;
+var value39 = thx.color.Color.deepskyblue = 49151;
+thx.color.Color.names.h["$" + "deepskyblue"] = value39;
+thx.color.Color.names.h["$" + "deep sky blue"] = thx.color.Color.deepskyblue;
+var value40 = thx.color.Color.dimgray = thx.color.Color.dimgrey = 6908265;
+thx.color.Color.names.h["$" + "dimgray"] = value40;
+thx.color.Color.names.h["$" + "dim gray"] = thx.color.Color.dimgray;
+thx.color.Color.names.h["$" + "dimgrey"] = thx.color.Color.dimgrey;
+thx.color.Color.names.h["$" + "dim grey"] = thx.color.Color.dimgrey;
+var value41 = thx.color.Color.dodgerblue = 2003199;
+thx.color.Color.names.h["$" + "dodgerblue"] = value41;
+thx.color.Color.names.h["$" + "dodger blue"] = thx.color.Color.dodgerblue;
+var value42 = thx.color.Color.firebrick = 11674146;
+thx.color.Color.names.h["$" + "firebrick"] = value42;
+thx.color.Color.names.h["$" + "fire brick"] = thx.color.Color.firebrick;
+var value43 = thx.color.Color.floralwhite = 16775920;
+thx.color.Color.names.h["$" + "floralwhite"] = value43;
+thx.color.Color.names.h["$" + "floral white"] = thx.color.Color.floralwhite;
+var value44 = thx.color.Color.forestgreen = 2263842;
+thx.color.Color.names.h["$" + "forestgreen"] = value44;
+thx.color.Color.names.h["$" + "forest green"] = thx.color.Color.forestgreen;
+var value45 = thx.color.Color.fuchsia = 16711935;
+thx.color.Color.names.h["$" + "fuchsia"] = value45;
+var value46 = thx.color.Color.gainsboro = 14474460;
+thx.color.Color.names.h["$" + "gainsboro"] = value46;
+var value47 = thx.color.Color.ghostwhite = 16316671;
+thx.color.Color.names.h["$" + "ghostwhite"] = value47;
+thx.color.Color.names.h["$" + "ghost white"] = thx.color.Color.ghostwhite;
+var value48 = thx.color.Color.gold = 16766720;
+thx.color.Color.names.h["$" + "gold"] = value48;
+var value49 = thx.color.Color.goldenrod = 14329120;
+thx.color.Color.names.h["$" + "goldenrod"] = value49;
+thx.color.Color.names.h["$" + "golden rod"] = thx.color.Color.goldenrod;
+var value50 = thx.color.Color.gray = thx.color.Color.grey = 8421504;
+thx.color.Color.names.h["$" + "gray"] = value50;
+thx.color.Color.names.h["$" + "grey"] = thx.color.Color.grey;
+var value51 = thx.color.Color.green = 32768;
+thx.color.Color.names.h["$" + "green"] = value51;
+var value52 = thx.color.Color.greenyellow = 11403055;
+thx.color.Color.names.h["$" + "greenyellow"] = value52;
+thx.color.Color.names.h["$" + "green yellow"] = thx.color.Color.greenyellow;
+var value53 = thx.color.Color.honeydew = 15794160;
+thx.color.Color.names.h["$" + "honeydew"] = value53;
+thx.color.Color.names.h["$" + "honey dew"] = thx.color.Color.honeydew;
+var value54 = thx.color.Color.hotpink = 16738740;
+thx.color.Color.names.h["$" + "hotpink"] = value54;
+thx.color.Color.names.h["$" + "hot pink"] = thx.color.Color.hotpink;
+var value55 = thx.color.Color.indianred = 13458524;
+thx.color.Color.names.h["$" + "indianred"] = value55;
+thx.color.Color.names.h["$" + "indian red"] = thx.color.Color.indianred;
+var value56 = thx.color.Color.indigo = 4915330;
+thx.color.Color.names.h["$" + "indigo"] = value56;
+var value57 = thx.color.Color.ivory = 16777200;
+thx.color.Color.names.h["$" + "ivory"] = value57;
+var value58 = thx.color.Color.khaki = 15787660;
+thx.color.Color.names.h["$" + "khaki"] = value58;
+var value59 = thx.color.Color.lavender = 15132410;
+thx.color.Color.names.h["$" + "lavender"] = value59;
+var value60 = thx.color.Color.lavenderblush = 16773365;
+thx.color.Color.names.h["$" + "lavenderblush"] = value60;
+thx.color.Color.names.h["$" + "lavender blush"] = thx.color.Color.lavenderblush;
+var value61 = thx.color.Color.lawngreen = 8190976;
+thx.color.Color.names.h["$" + "lawngreen"] = value61;
+thx.color.Color.names.h["$" + "lawn green"] = thx.color.Color.lawngreen;
+var value62 = thx.color.Color.lemonchiffon = 16775885;
+thx.color.Color.names.h["$" + "lemonchiffon"] = value62;
+thx.color.Color.names.h["$" + "lemon chiffon"] = thx.color.Color.lemonchiffon;
+var value63 = thx.color.Color.lightblue = 11393254;
+thx.color.Color.names.h["$" + "lightblue"] = value63;
+thx.color.Color.names.h["$" + "light blue"] = thx.color.Color.lightblue;
+var value64 = thx.color.Color.lightcoral = 15761536;
+thx.color.Color.names.h["$" + "lightcoral"] = value64;
+thx.color.Color.names.h["$" + "light coral"] = thx.color.Color.lightcoral;
+var value65 = thx.color.Color.lightcyan = 14745599;
+thx.color.Color.names.h["$" + "lightcyan"] = value65;
+thx.color.Color.names.h["$" + "light cyan"] = thx.color.Color.lightcyan;
+var value66 = thx.color.Color.lightgoldenrodyellow = 16448210;
+thx.color.Color.names.h["$" + "lightgoldenrodyellow"] = value66;
+thx.color.Color.names.h["$" + "light golden rod yellow"] = thx.color.Color.lightgoldenrodyellow;
+var value67 = thx.color.Color.lightgray = thx.color.Color.lightgrey = 13882323;
+thx.color.Color.names.h["$" + "lightgray"] = value67;
+thx.color.Color.names.h["$" + "light gray"] = thx.color.Color.lightgray;
+thx.color.Color.names.h["$" + "lightgrey"] = thx.color.Color.lightgrey;
+thx.color.Color.names.h["$" + "light grey"] = thx.color.Color.lightgrey;
+var value68 = thx.color.Color.lightgreen = 9498256;
+thx.color.Color.names.h["$" + "lightgreen"] = value68;
+thx.color.Color.names.h["$" + "light green"] = thx.color.Color.lightgreen;
+var value69 = thx.color.Color.lightpink = 16758465;
+thx.color.Color.names.h["$" + "lightpink"] = value69;
+thx.color.Color.names.h["$" + "light pink"] = thx.color.Color.lightpink;
+var value70 = thx.color.Color.lightsalmon = 16752762;
+thx.color.Color.names.h["$" + "lightsalmon"] = value70;
+thx.color.Color.names.h["$" + "light salmon"] = thx.color.Color.lightsalmon;
+var value71 = thx.color.Color.lightseagreen = 2142890;
+thx.color.Color.names.h["$" + "lightseagreen"] = value71;
+thx.color.Color.names.h["$" + "light sea green"] = thx.color.Color.lightseagreen;
+var value72 = thx.color.Color.lightskyblue = 8900346;
+thx.color.Color.names.h["$" + "lightskyblue"] = value72;
+thx.color.Color.names.h["$" + "light sky blue"] = thx.color.Color.lightskyblue;
+var value73 = thx.color.Color.lightslategray = thx.color.Color.lightslategrey = 7833753;
+thx.color.Color.names.h["$" + "lightslategray"] = value73;
+thx.color.Color.names.h["$" + "light slate gray"] = thx.color.Color.lightslategray;
+thx.color.Color.names.h["$" + "lightslategrey"] = thx.color.Color.lightslategrey;
+thx.color.Color.names.h["$" + "light slate grey"] = thx.color.Color.lightslategrey;
+var value74 = thx.color.Color.lightsteelblue = 11584734;
+thx.color.Color.names.h["$" + "lightsteelblue"] = value74;
+thx.color.Color.names.h["$" + "light steel blue"] = thx.color.Color.lightsteelblue;
+var value75 = thx.color.Color.lightyellow = 16777184;
+thx.color.Color.names.h["$" + "lightyellow"] = value75;
+thx.color.Color.names.h["$" + "light yellow"] = thx.color.Color.lightyellow;
+var value76 = thx.color.Color.lime = 65280;
+thx.color.Color.names.h["$" + "lime"] = value76;
+var value77 = thx.color.Color.limegreen = 3329330;
+thx.color.Color.names.h["$" + "limegreen"] = value77;
+thx.color.Color.names.h["$" + "lime green"] = thx.color.Color.limegreen;
+var value78 = thx.color.Color.linen = 16445670;
+thx.color.Color.names.h["$" + "linen"] = value78;
+var value79 = thx.color.Color.magenta = 16711935;
+thx.color.Color.names.h["$" + "magenta"] = value79;
+var value80 = thx.color.Color.maroon = 8388608;
+thx.color.Color.names.h["$" + "maroon"] = value80;
+var value81 = thx.color.Color.mediumaquamarine = 6737322;
+thx.color.Color.names.h["$" + "mediumaquamarine"] = value81;
+thx.color.Color.names.h["$" + "mediuma quamarine"] = thx.color.Color.mediumaquamarine;
+var value82 = thx.color.Color.mediumblue = 205;
+thx.color.Color.names.h["$" + "mediumblue"] = value82;
+thx.color.Color.names.h["$" + "medium blue"] = thx.color.Color.mediumblue;
+var value83 = thx.color.Color.mediumorchid = 12211667;
+thx.color.Color.names.h["$" + "mediumorchid"] = value83;
+thx.color.Color.names.h["$" + "medium orchid"] = thx.color.Color.mediumorchid;
+var value84 = thx.color.Color.mediumpurple = 9662683;
+thx.color.Color.names.h["$" + "mediumpurple"] = value84;
+thx.color.Color.names.h["$" + "medium purple"] = thx.color.Color.mediumpurple;
+var value85 = thx.color.Color.mediumseagreen = 3978097;
+thx.color.Color.names.h["$" + "mediumseagreen"] = value85;
+thx.color.Color.names.h["$" + "medium sea green"] = thx.color.Color.mediumseagreen;
+var value86 = thx.color.Color.mediumslateblue = 8087790;
+thx.color.Color.names.h["$" + "mediumslateblue"] = value86;
+thx.color.Color.names.h["$" + "medium slate blue"] = thx.color.Color.mediumslateblue;
+var value87 = thx.color.Color.mediumspringgreen = 64154;
+thx.color.Color.names.h["$" + "mediumspringgreen"] = value87;
+thx.color.Color.names.h["$" + "medium spring green"] = thx.color.Color.mediumspringgreen;
+var value88 = thx.color.Color.mediumturquoise = 4772300;
+thx.color.Color.names.h["$" + "mediumturquoise"] = value88;
+thx.color.Color.names.h["$" + "medium turquoise"] = thx.color.Color.mediumturquoise;
+var value89 = thx.color.Color.mediumvioletred = 13047173;
+thx.color.Color.names.h["$" + "mediumvioletred"] = value89;
+thx.color.Color.names.h["$" + "medium violet red"] = thx.color.Color.mediumvioletred;
+var value90 = thx.color.Color.midnightblue = 1644912;
+thx.color.Color.names.h["$" + "midnightblue"] = value90;
+thx.color.Color.names.h["$" + "midnight blue"] = thx.color.Color.midnightblue;
+var value91 = thx.color.Color.mintcream = 16121850;
+thx.color.Color.names.h["$" + "mintcream"] = value91;
+thx.color.Color.names.h["$" + "mint cream"] = thx.color.Color.mintcream;
+var value92 = thx.color.Color.mistyrose = 16770273;
+thx.color.Color.names.h["$" + "mistyrose"] = value92;
+thx.color.Color.names.h["$" + "misty rose"] = thx.color.Color.mistyrose;
+var value93 = thx.color.Color.moccasin = 16770229;
+thx.color.Color.names.h["$" + "moccasin"] = value93;
+var value94 = thx.color.Color.navajowhite = 16768685;
+thx.color.Color.names.h["$" + "navajowhite"] = value94;
+thx.color.Color.names.h["$" + "navajo white"] = thx.color.Color.navajowhite;
+var value95 = thx.color.Color.navy = 128;
+thx.color.Color.names.h["$" + "navy"] = value95;
+var value96 = thx.color.Color.oldlace = 16643558;
+thx.color.Color.names.h["$" + "oldlace"] = value96;
+thx.color.Color.names.h["$" + "old lace"] = thx.color.Color.oldlace;
+var value97 = thx.color.Color.olive = 8421376;
+thx.color.Color.names.h["$" + "olive"] = value97;
+var value98 = thx.color.Color.olivedrab = 7048739;
+thx.color.Color.names.h["$" + "olivedrab"] = value98;
+thx.color.Color.names.h["$" + "olive drab"] = thx.color.Color.olivedrab;
+var value99 = thx.color.Color.orange = 16753920;
+thx.color.Color.names.h["$" + "orange"] = value99;
+var value100 = thx.color.Color.orangered = 16729344;
+thx.color.Color.names.h["$" + "orangered"] = value100;
+thx.color.Color.names.h["$" + "orange red"] = thx.color.Color.orangered;
+var value101 = thx.color.Color.orchid = 14315734;
+thx.color.Color.names.h["$" + "orchid"] = value101;
+var value102 = thx.color.Color.palegoldenrod = 15657130;
+thx.color.Color.names.h["$" + "palegoldenrod"] = value102;
+thx.color.Color.names.h["$" + "pale golden rod"] = thx.color.Color.palegoldenrod;
+var value103 = thx.color.Color.palegreen = 10025880;
+thx.color.Color.names.h["$" + "palegreen"] = value103;
+thx.color.Color.names.h["$" + "pale green"] = thx.color.Color.palegreen;
+var value104 = thx.color.Color.paleturquoise = 11529966;
+thx.color.Color.names.h["$" + "paleturquoise"] = value104;
+thx.color.Color.names.h["$" + "pale turquoise"] = thx.color.Color.paleturquoise;
+var value105 = thx.color.Color.palevioletred = 14381203;
+thx.color.Color.names.h["$" + "palevioletred"] = value105;
+thx.color.Color.names.h["$" + "pale violet red"] = thx.color.Color.palevioletred;
+var value106 = thx.color.Color.papayawhip = 16773077;
+thx.color.Color.names.h["$" + "papayawhip"] = value106;
+thx.color.Color.names.h["$" + "papaya whip"] = thx.color.Color.papayawhip;
+var value107 = thx.color.Color.peachpuff = 16767673;
+thx.color.Color.names.h["$" + "peachpuff"] = value107;
+thx.color.Color.names.h["$" + "peach puff"] = thx.color.Color.peachpuff;
+var value108 = thx.color.Color.peru = 13468991;
+thx.color.Color.names.h["$" + "peru"] = value108;
+var value109 = thx.color.Color.pink = 16761035;
+thx.color.Color.names.h["$" + "pink"] = value109;
+var value110 = thx.color.Color.plum = 14524637;
+thx.color.Color.names.h["$" + "plum"] = value110;
+var value111 = thx.color.Color.powderblue = 11591910;
+thx.color.Color.names.h["$" + "powderblue"] = value111;
+thx.color.Color.names.h["$" + "powder blue"] = thx.color.Color.powderblue;
+var value112 = thx.color.Color.purple = 8388736;
+thx.color.Color.names.h["$" + "purple"] = value112;
+var value113 = thx.color.Color.red = 16711680;
+thx.color.Color.names.h["$" + "red"] = value113;
+var value114 = thx.color.Color.rosybrown = 12357519;
+thx.color.Color.names.h["$" + "rosybrown"] = value114;
+thx.color.Color.names.h["$" + "rosy brown"] = thx.color.Color.rosybrown;
+var value115 = thx.color.Color.royalblue = 4286945;
+thx.color.Color.names.h["$" + "royalblue"] = value115;
+thx.color.Color.names.h["$" + "royal blue"] = thx.color.Color.royalblue;
+var value116 = thx.color.Color.saddlebrown = 9127187;
+thx.color.Color.names.h["$" + "saddlebrown"] = value116;
+thx.color.Color.names.h["$" + "saddle brown"] = thx.color.Color.saddlebrown;
+var value117 = thx.color.Color.salmon = 16416882;
+thx.color.Color.names.h["$" + "salmon"] = value117;
+var value118 = thx.color.Color.sandybrown = 16032864;
+thx.color.Color.names.h["$" + "sandybrown"] = value118;
+thx.color.Color.names.h["$" + "sandy brown"] = thx.color.Color.sandybrown;
+var value119 = thx.color.Color.seagreen = 3050327;
+thx.color.Color.names.h["$" + "seagreen"] = value119;
+thx.color.Color.names.h["$" + "sea green"] = thx.color.Color.seagreen;
+var value120 = thx.color.Color.seashell = 16774638;
+thx.color.Color.names.h["$" + "seashell"] = value120;
+thx.color.Color.names.h["$" + "sea shell"] = thx.color.Color.seashell;
+var value121 = thx.color.Color.sienna = 10506797;
+thx.color.Color.names.h["$" + "sienna"] = value121;
+var value122 = thx.color.Color.silver = 12632256;
+thx.color.Color.names.h["$" + "silver"] = value122;
+var value123 = thx.color.Color.skyblue = 8900331;
+thx.color.Color.names.h["$" + "skyblue"] = value123;
+thx.color.Color.names.h["$" + "sky blue"] = thx.color.Color.skyblue;
+var value124 = thx.color.Color.slateblue = 6970061;
+thx.color.Color.names.h["$" + "slateblue"] = value124;
+thx.color.Color.names.h["$" + "slate blue"] = thx.color.Color.slateblue;
+var value125 = thx.color.Color.slategray = thx.color.Color.slategrey = 7372944;
+thx.color.Color.names.h["$" + "slategray"] = value125;
+thx.color.Color.names.h["$" + "slate gray"] = thx.color.Color.slategray;
+thx.color.Color.names.h["$" + "slategrey"] = thx.color.Color.slategrey;
+thx.color.Color.names.h["$" + "slate grey"] = thx.color.Color.slategrey;
+var value126 = thx.color.Color.snow = 16775930;
+thx.color.Color.names.h["$" + "snow"] = value126;
+var value127 = thx.color.Color.springgreen = 65407;
+thx.color.Color.names.h["$" + "springgreen"] = value127;
+thx.color.Color.names.h["$" + "spring green"] = thx.color.Color.springgreen;
+var value128 = thx.color.Color.steelblue = 4620980;
+thx.color.Color.names.h["$" + "steelblue"] = value128;
+thx.color.Color.names.h["$" + "steel blue"] = thx.color.Color.steelblue;
+var value129 = thx.color.Color.tan = 13808780;
+thx.color.Color.names.h["$" + "tan"] = value129;
+var value130 = thx.color.Color.teal = 32896;
+thx.color.Color.names.h["$" + "teal"] = value130;
+var value131 = thx.color.Color.thistle = 14204888;
+thx.color.Color.names.h["$" + "thistle"] = value131;
+var value132 = thx.color.Color.tomato = 16737095;
+thx.color.Color.names.h["$" + "tomato"] = value132;
+var value133 = thx.color.Color.turquoise = 4251856;
+thx.color.Color.names.h["$" + "turquoise"] = value133;
+var value134 = thx.color.Color.violet = 15631086;
+thx.color.Color.names.h["$" + "violet"] = value134;
+var value135 = thx.color.Color.wheat = 16113331;
+thx.color.Color.names.h["$" + "wheat"] = value135;
+var value136 = thx.color.Color.white = 16777215;
+thx.color.Color.names.h["$" + "white"] = value136;
+var value137 = thx.color.Color.whitesmoke = 16119285;
+thx.color.Color.names.h["$" + "whitesmoke"] = value137;
+thx.color.Color.names.h["$" + "white smoke"] = thx.color.Color.whitesmoke;
+var value138 = thx.color.Color.yellow = 16776960;
+thx.color.Color.names.h["$" + "yellow"] = value138;
+var value139 = thx.color.Color.yellowgreen = 10145074;
+thx.color.Color.names.h["$" + "yellowgreen"] = value139;
+thx.color.Color.names.h["$" + "yellow green"] = thx.color.Color.yellowgreen;
 var scope = ("undefined" !== typeof window && window) || ("undefined" !== typeof global && global) || this;
 if(!scope.setImmediate) scope.setImmediate = function(callback) {
 	scope.setTimeout(callback,0);
@@ -1354,4 +1840,4 @@ thx.color.parse.ColorParser.isPureHex = new EReg("^([0-9a-f]{2}){3,4}$","i");
 thx.core.Floats.pattern_parse = new EReg("^(\\+|-)?\\d+(\\.\\d+)?(e-?\\d+)?$","");
 thx.core.Ints.pattern_parse = new EReg("^[+-]?(\\d+|0x[0-9A-F]+)$","i");
 Main.main();
-})(typeof window != "undefined" ? window : exports);
+})();
