@@ -282,8 +282,8 @@ class MiniCanvas {
     return this;
   }
 
-  public function with(callback : MiniCanvas -> Int -> Int -> Void) {
-    callback(this, width, height);
+  public function with(callback : MiniCanvas -> Void) {
+    callback(this);
     return this;
   }
 
