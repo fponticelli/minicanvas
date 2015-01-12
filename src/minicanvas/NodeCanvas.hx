@@ -38,9 +38,11 @@ class NodeCanvas extends MiniCanvas {
   }
 
   var hasFrames = false;
-  override public function storeFrame() {
+  override public function storeFrame(times : Int = 1) {
     hasFrames = true;
-    ensureEncoder().addFrame(ctx);
+    if(times <= 0) times = 1;
+    for(i in 0...times)
+      ensureEncoder().addFrame(ctx);
     return this;
   }
 
