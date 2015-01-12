@@ -22,4 +22,9 @@ class Interaction {
 
   public function done()
     return mini;
+
+  public function frame(callback : MiniCanvas -> Void) {
+    callback(mini);
+    return this;
+  }
 }

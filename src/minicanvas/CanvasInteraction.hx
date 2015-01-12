@@ -29,6 +29,11 @@ class CanvasInteraction extends Interaction {
     return this;
   }
 
+  override public function frame(callback : MiniCanvas -> Void) {
+    stack.push(callback.bind(mini));
+    return this;
+  }
+
   override public function move(x : Float, y : Float, ?delta : Float = 9) {
     var dist  = Math.sqrt((x - this.x) * (x - this.x) + (y - this.y) * (y - this.y)),
         steps = Math.ceil(dist / delta),
