@@ -55,7 +55,7 @@ class MiniCanvas {
   }
 
   // drawing
-  public function border(weight = 1.0, ?color : RGBA, ?ox = 0.5, ?oy = 0.5) {
+  public function border(weight = 1.0, ?color : RGBA) {
     if(null == color) color = "rgba(0,0,0,1)";
     return rect(weight / 2, weight / 2, width - weight / 2, height - weight / 2, weight, color);
   }
@@ -239,15 +239,7 @@ class MiniCanvas {
     return this;
   }
 
-  public function sample(name : String, callback : CanvasRenderingContext2D -> Int -> Int -> Void) {
-    context(callback);
-    display(name);
-    return this;
-  }
-
   // animation
-  public function storeFrame(times : Int = 1) return this;
-
   public function animate(?x : Float, ?y : Float) : Interaction {
     var interaction = new CanvasInteraction(
       this,
@@ -275,6 +267,8 @@ class MiniCanvas {
       return new Interaction(this);
   }
 
+  public function storeFrame(times : Int = 1) return this;
+
   // utility
   public function context(callback : CanvasRenderingContext2D -> Int -> Int -> Void) {
     callback(ctx, width, height);
@@ -284,17 +278,6 @@ class MiniCanvas {
   public function with(callback : MiniCanvas -> Void) {
     callback(this);
     return this;
-  }
-
-  // protected
-  function beforeAnimate() {}
-  function afterAnimate() {}
-
-  function resolveStack(stack : Array<Void -> Void>, done : Void -> Void) {
-    if(stack.length == 0) return done();
-    stack.shift()();
-    storeFrame();
-    resolveStack(stack, done);
   }
 
   // interaction
@@ -427,6 +410,17 @@ class MiniCanvas {
           scaleMode = NoScale;
       case _: // do nothing;
     };
+  }
+
+  // protected
+  function beforeAnimate() {}
+  function afterAnimate() {}
+
+  function resolveStack(stack : Array<Void -> Void>, done : Void -> Void) {
+    if(stack.length == 0) return done();
+    stack.shift()();
+    storeFrame();
+    resolveStack(stack, done);
   }
 
 #if expose
