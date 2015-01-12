@@ -105,11 +105,6 @@ class MiniCanvas {
     return this;
   }
 
-  public function context(callback : CanvasRenderingContext2D -> Int -> Int -> Void) {
-    callback(ctx, width, height);
-    return this;
-  }
-
   public function cross(?ox : Float, ?oy : Float, ?weight = 1.0, ?color : RGBA) {
     if(null == ox) ox = width / 2;
     if(null == oy) oy = height / 2;
@@ -278,6 +273,18 @@ class MiniCanvas {
       return new Interaction(this);
   }
 
+  // utility
+  public function context(callback : CanvasRenderingContext2D -> Int -> Int -> Void) {
+    callback(ctx, width, height);
+    return this;
+  }
+
+  public function with(callback : MiniCanvas -> Int -> Int -> Void) {
+    callback(this, width, height);
+    return this;
+  }
+
+  // protected
   function beforeAnimate() {}
   function afterAnimate() {}
 
