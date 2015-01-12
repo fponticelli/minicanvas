@@ -2,11 +2,8 @@ package minicanvas;
 
 import js.html.CanvasElement;
 import js.html.CanvasRenderingContext2D;
-import js.html.Element;
-
 import thx.color.*;
 using thx.core.Floats;
-using thx.core.Strings;
 import js.html.MouseEvent;
 import thx.core.Timer;
 using thx.core.Nulls;
