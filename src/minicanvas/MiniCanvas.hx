@@ -12,7 +12,7 @@ import thx.core.Timer;
 using thx.core.Nulls;
 import thx.core.error.AbstractMethod;
 
-@:expose
+#if expose @:expose #end
 class MiniCanvas {
   public static var displayGenerationTime = false;
 
@@ -426,6 +426,12 @@ class MiniCanvas {
       case _: // do nothing;
     };
   }
+
+#if expose
+  static function __init__() {
+    untyped $hx_exports.MiniCanvas = minicanvas.MiniCanvas;
+  }
+#end
 }
 
 typedef MiniCanvasEvent = {
