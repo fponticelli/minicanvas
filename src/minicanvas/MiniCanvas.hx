@@ -2,12 +2,16 @@ package minicanvas;
 
 import js.html.CanvasElement;
 import js.html.CanvasRenderingContext2D;
-import thx.color.*;
-using thx.core.Floats;
 import js.html.MouseEvent;
-import thx.core.Timer;
+using thx.core.Floats;
 using thx.core.Nulls;
+import thx.core.Timer;
 import thx.core.error.AbstractMethod;
+#if !jslib
+import thx.color.*;
+#else
+typedef RGBA = String;
+#end
 
 #if expose @:expose #end
 class MiniCanvas {
