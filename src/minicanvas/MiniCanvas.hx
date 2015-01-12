@@ -55,20 +55,20 @@ class MiniCanvas {
   }
 
   // drawing
-  public function border(weight = 1.0, ?color : RGBA = 0x000000ff)
+  public function border(weight = 1.0, ?color : RGBA = 0x000000ff, ?ox = 0.5, ?oy = 0.5)
     return rect(weight / 2, weight / 2, width - weight / 2, height - weight / 2, weight, color);
 
-  public function box(handler : Float -> Float -> RGBA) {
+  public function box(handler : Float -> Float -> RGBA, ?ox = 0.5, ?oy = 0.5) {
     for(x in 0...width) {
       for(y in 0...height) {
         ctx.fillStyle = handler(x/width, y/height).toCSS3();
-        ctx.fillRect(x, y, 1, 1);
+        ctx.fillRect(x + ox, y + oy, 1, 1);
       }
     }
     return this;
   }
 
-  public function checkboard(?size : Float = 8, ?light : RGBA, ?dark : RGBA) {
+  public function checkboard(?size : Float = 8, ?light : RGBA, ?dark : RGBA, ?ox = 0.5, ?oy = 0.5) {
     var cols   = (width / size).ceil(),
         rows   = (height / size).ceil(),
         slight = (null == light ? (0xFFFFFFFF : RGBA) : light).toCSS3(),
@@ -76,7 +76,7 @@ class MiniCanvas {
     for(c in 0...cols) {
       for(r in 0...rows) {
         ctx.fillStyle = c % 2 != r % 2 ? slight : sdark;
-        ctx.fillRect(c * size, r * size, size, size);
+        ctx.fillRect(c * size + ox, r * size + oy, size, size);
       }
     }
     return this;
@@ -106,8 +106,8 @@ class MiniCanvas {
   }
 
   public function cross(?ox : Float, ?oy : Float, ?weight = 1.0, ?color : RGBA) {
-    if(null == ox) ox = width / 2;
-    if(null == oy) oy = height / 2;
+    if(null == ox) ox = width / 2 + 0.5;
+    if(null == oy) oy = height / 2 + 0.5;
     lineHorizontal(oy, weight, color);
     lineVertical(ox, weight, color);
     return this;
@@ -121,7 +121,7 @@ class MiniCanvas {
     return this;
   }
 
-  public function dotGrid(?dx = 10.0, ?dy = 10.0, ?radius = 1.0, ?color : RGBA, ?ox = 0.0, ?oy = 0.0) {
+  public function dotGrid(?dx = 10.0, ?dy = 10.0, ?radius = 1.0, ?color : RGBA, ?ox = 0.5, ?oy = 0.5) {
     if(dx == 0) throw 'invalid argument dx, should be different from zero';
     if(dy == 0) throw 'invalid argument dy, should be different from zero';
     if(null == color)
@@ -130,7 +130,7 @@ class MiniCanvas {
     while(py - radius <= height) {
       var px = ox % dx;
       while(px - radius <= height) {
-        dot(px, py, radius, color);
+        dot(px + 0.5, py + 0.5, radius, color);
         px += dx;
       }
       py += dy;
@@ -144,13 +144,13 @@ class MiniCanvas {
     return this;
   }
 
-  public function grid(?dx = 10.0, ?dy = 10.0, ?weight = 1.0, ?color : RGBA, ?ox = 0.0, ?oy = 0.0) {
+  public function grid(?dx = 10.0, ?dy = 10.0, ?weight = 1.0, ?color : RGBA, ?ox = 0.5, ?oy = 0.5) {
     gridHorizontal(dy, weight, color, oy);
     gridVertical(dx, weight, color, ox);
     return this;
   }
 
-  public function gridHorizontal(?dy = 10.0, ?weight = 1.0, ?color : RGBA, ?oy = 0.0) {
+  public function gridHorizontal(?dy = 10.0, ?weight = 1.0, ?color : RGBA, ?oy = 0.5) {
     if(dy == 0) throw 'invalid argument dy, should be different from zero';
     if(null == color)
       color = (0xCCCCCCFF : RGBA);
@@ -162,7 +162,7 @@ class MiniCanvas {
     return this;
   }
 
-  public function gridVertical(?dx = 10.0, ?weight = 1.0, ?color : RGBA, ?ox = 0.0) {
+  public function gridVertical(?dx = 10.0, ?weight = 1.0, ?color : RGBA, ?ox = 0.5) {
     if(dx == 0) throw 'invalid argument dx, should be different from zero';
     if(null == color)
       color = (0xCCCCCCFF : RGBA);
@@ -177,7 +177,7 @@ class MiniCanvas {
   public function gradientHorizontal(handler : Float -> RGBA) {
     for(x in 0...width) {
       ctx.fillStyle = handler(x/width).toCSS3();
-      ctx.fillRect(x, 0, 1, height);
+      ctx.fillRect(x + 0.5, 0, 1, height);
     }
     return this;
   }
@@ -185,7 +185,7 @@ class MiniCanvas {
   public function gradientVertical(handler : Float -> RGBA) {
     for(y in 0...height) {
       ctx.fillStyle = handler(y/height).toCSS3();
-      ctx.fillRect(0, y, width, 1);
+      ctx.fillRect(0, y + 0.5, width, 1);
     }
     return this;
   }
@@ -209,11 +209,11 @@ class MiniCanvas {
   public function palette(colors : Array<Array<RGBA>>, ?padding = 2.0, ?margin = 0.0) {
     var rows = colors.length,
         h    = (height - 2 * margin - (rows - 1) * padding) / rows,
-        py   = margin;
+        py   = margin + 0.5;
     for(row in colors) {
       var cols = row.length,
           w    = (width - 2 * margin - (cols - 1) * padding) / cols,
-          px   = margin;
+          px   = margin + 0.5;
       for(col in row) {
         ctx.fillStyle = col.toCSS3();
         ctx.fillRect(px, py, w, h);
