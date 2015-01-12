@@ -1,5 +1,6 @@
 (function () { "use strict";
 var console = (1,eval)('this').console || {log:function(){}};
+var $estr = function() { return js.Boot.__string_rec(this,''); };
 function $extend(from, fields) {
 	function Inherit() {} Inherit.prototype = from; var proto = new Inherit();
 	for (var name in fields) proto[name] = fields[name];
@@ -108,21 +109,21 @@ Main.main = function() {
 		return $r;
 	}(this))),thx.color._HSL.HSL_Impl_.toRGBA(red),thx.color._HSL.HSL_Impl_.toRGBA((function($this) {
 		var $r;
-		var this11 = thx.color._HSL.HSL_Impl_.analogous(red);
-		$r = this11._1;
+		var this2 = thx.color._HSL.HSL_Impl_.analogous(red);
+		$r = this2._1;
 		return $r;
 	}(this)))],[thx.color._HSL.HSL_Impl_.toRGBA((function($this) {
 		var $r;
-		var this12 = thx.color._HSL.HSL_Impl_.split(green);
-		$r = this12._0;
+		var this3 = thx.color._HSL.HSL_Impl_.split(green);
+		$r = this3._0;
 		return $r;
 	}(this))),thx.color._HSL.HSL_Impl_.toRGBA(green),thx.color._HSL.HSL_Impl_.toRGBA((function($this) {
 		var $r;
-		var this13 = thx.color._HSL.HSL_Impl_.split(green);
-		$r = this13._1;
+		var this4 = thx.color._HSL.HSL_Impl_.split(green);
+		$r = this4._1;
 		return $r;
 	}(this)))]]).display("palette");
-	minicanvas.MiniCanvas.create(200,200).grid().cross().display("grid");
+	minicanvas.MiniCanvas.create(201,201).grid().cross().display("grid");
 	minicanvas.MiniCanvas.create(200,200).checkboard().onDown(function(e) {
 		e.mini.dot(e.x,e.y,6,thx.color._RGBA.RGBA_Impl_.fromString("#0066CC")).onMove(function(e1) {
 			e1.mini.dot(e1.x,e1.y);
@@ -150,11 +151,12 @@ StringTools.replace = function(s,sub,by) {
 var haxe = {};
 haxe.StackItem = { __constructs__ : ["CFunction","Module","FilePos","Method","LocalFunction"] };
 haxe.StackItem.CFunction = ["CFunction",0];
+haxe.StackItem.CFunction.toString = $estr;
 haxe.StackItem.CFunction.__enum__ = haxe.StackItem;
-haxe.StackItem.Module = function(m) { var $x = ["Module",1,m]; $x.__enum__ = haxe.StackItem; return $x; };
-haxe.StackItem.FilePos = function(s,file,line) { var $x = ["FilePos",2,s,file,line]; $x.__enum__ = haxe.StackItem; return $x; };
-haxe.StackItem.Method = function(classname,method) { var $x = ["Method",3,classname,method]; $x.__enum__ = haxe.StackItem; return $x; };
-haxe.StackItem.LocalFunction = function(v) { var $x = ["LocalFunction",4,v]; $x.__enum__ = haxe.StackItem; return $x; };
+haxe.StackItem.Module = function(m) { var $x = ["Module",1,m]; $x.__enum__ = haxe.StackItem; $x.toString = $estr; return $x; };
+haxe.StackItem.FilePos = function(s,file,line) { var $x = ["FilePos",2,s,file,line]; $x.__enum__ = haxe.StackItem; $x.toString = $estr; return $x; };
+haxe.StackItem.Method = function(classname,method) { var $x = ["Method",3,classname,method]; $x.__enum__ = haxe.StackItem; $x.toString = $estr; return $x; };
+haxe.StackItem.LocalFunction = function(v) { var $x = ["LocalFunction",4,v]; $x.__enum__ = haxe.StackItem; $x.toString = $estr; return $x; };
 haxe.CallStack = function() { };
 haxe.CallStack.callStack = function() {
 	var oldValue = Error.prepareStackTrace;
@@ -300,13 +302,11 @@ minicanvas.MiniCanvas.prototype = {
 	,border: function(weight,color,ox,oy) {
 		if(oy == null) oy = 0.5;
 		if(ox == null) ox = 0.5;
-		if(color == null) color = 255;
 		if(weight == null) weight = 1.0;
+		if(null == color) color = thx.color._RGBA.RGBA_Impl_.fromString("rgba(0,0,0,1)");
 		return this.rect(weight / 2,weight / 2,this.width - weight / 2,this.height - weight / 2,weight,color);
 	}
-	,box: function(handler,ox,oy) {
-		if(oy == null) oy = 0.5;
-		if(ox == null) ox = 0.5;
+	,box: function(handler) {
 		var _g1 = 0;
 		var _g = this.width;
 		while(_g1 < _g) {
@@ -315,28 +315,28 @@ minicanvas.MiniCanvas.prototype = {
 			var _g2 = this.height;
 			while(_g3 < _g2) {
 				var y = _g3++;
-				this.ctx.fillStyle = thx.color._RGBA.RGBA_Impl_.toCSS3(handler(x / this.width,y / this.height));
-				this.ctx.fillRect(x + ox,y + oy,1,1);
+				this.ctx.fillStyle = thx.color._RGBA.RGBA_Impl_.toString(handler(x / this.width,y / this.height));
+				this.ctx.fillRect(x,y,1,1);
 			}
 		}
 		return this;
 	}
-	,checkboard: function(size,light,dark,ox,oy) {
-		if(oy == null) oy = 0.5;
-		if(ox == null) ox = 0.5;
+	,checkboard: function(size,light,dark) {
 		if(size == null) size = 8;
 		var cols = Math.ceil(this.width / size);
 		var rows = Math.ceil(this.height / size);
-		var slight = thx.color._RGBA.RGBA_Impl_.toCSS3(null == light?-1:light);
-		var sdark = thx.color._RGBA.RGBA_Impl_.toCSS3(null == dark?-858993409:dark);
+		var slight;
+		if(null == light) slight = thx.color._RGBA.RGBA_Impl_.fromString("rgba(255,255,255,1)"); else slight = light;
+		var sdark;
+		if(null == dark) sdark = thx.color._RGBA.RGBA_Impl_.fromString("rgba(204,204,204,1)"); else sdark = dark;
 		var _g = 0;
 		while(_g < cols) {
 			var c = _g++;
 			var _g1 = 0;
 			while(_g1 < rows) {
 				var r = _g1++;
-				if(c % 2 != r % 2) this.ctx.fillStyle = slight; else this.ctx.fillStyle = sdark;
-				this.ctx.fillRect(c * size + ox,r * size + oy,size,size);
+				if(c % 2 != r % 2) this.ctx.fillStyle = thx.color._RGBA.RGBA_Impl_.toString(slight); else this.ctx.fillStyle = thx.color._RGBA.RGBA_Impl_.toString(sdark);
+				this.ctx.fillRect(c * size,r * size,size,size);
 			}
 		}
 		return this;
@@ -352,14 +352,14 @@ minicanvas.MiniCanvas.prototype = {
 	,dot: function(x,y,radius,color) {
 		if(radius == null) radius = 3.0;
 		this.ctx.beginPath();
-		this.ctx.fillStyle = thx.color._RGBA.RGBA_Impl_.toCSS3((function($this) {
+		this.ctx.fillStyle = thx.color._RGBA.RGBA_Impl_.toString((function($this) {
 			var $r;
 			var t;
 			{
 				var _0 = color;
 				if(null == _0) t = null; else t = _0;
 			}
-			$r = t != null?t:-869072641;
+			$r = t != null?t:thx.color._RGBA.RGBA_Impl_.fromString("rgba(204,51,0,1)");
 			return $r;
 		}(this)));
 		this.ctx.arc(x,y,radius,0,Math.PI * 2,true);
@@ -374,7 +374,7 @@ minicanvas.MiniCanvas.prototype = {
 		if(dx == null) dx = 10.0;
 		if(dx == 0) throw "invalid argument dx, should be different from zero";
 		if(dy == 0) throw "invalid argument dy, should be different from zero";
-		if(null == color) color = -1431655681;
+		if(null == color) color = thx.color._RGBA.RGBA_Impl_.fromString("rgba(170,170,170,1)");
 		var py = oy % dy;
 		while(py - radius <= this.height) {
 			var px = ox % dx;
@@ -387,7 +387,7 @@ minicanvas.MiniCanvas.prototype = {
 		return this;
 	}
 	,fill: function(color) {
-		this.ctx.fillStyle = thx.color._RGBA.RGBA_Impl_.toCSS3(color);
+		this.ctx.fillStyle = thx.color._RGBA.RGBA_Impl_.toString(color);
 		this.ctx.fillRect(0,0,this.width,this.height);
 		return this;
 	}
@@ -406,7 +406,7 @@ minicanvas.MiniCanvas.prototype = {
 		if(weight == null) weight = 1.0;
 		if(dy == null) dy = 10.0;
 		if(dy == 0) throw "invalid argument dy, should be different from zero";
-		if(null == color) color = -858993409;
+		if(null == color) color = thx.color._RGBA.RGBA_Impl_.fromString("rgba(204,204,204,1)");
 		var py = oy % dy;
 		while(py - weight / 2 <= this.height) {
 			this.lineHorizontal(py,weight,color);
@@ -419,7 +419,7 @@ minicanvas.MiniCanvas.prototype = {
 		if(weight == null) weight = 1.0;
 		if(dx == null) dx = 10.0;
 		if(dx == 0) throw "invalid argument dx, should be different from zero";
-		if(null == color) color = -858993409;
+		if(null == color) color = thx.color._RGBA.RGBA_Impl_.fromString("rgba(204,204,204,1)");
 		var px = ox % dx;
 		while(px - weight / 2 <= this.width) {
 			this.lineVertical(px,weight,color);
@@ -432,8 +432,8 @@ minicanvas.MiniCanvas.prototype = {
 		var _g = this.width;
 		while(_g1 < _g) {
 			var x = _g1++;
-			this.ctx.fillStyle = thx.color._RGBA.RGBA_Impl_.toCSS3(handler(x / this.width));
-			this.ctx.fillRect(x + 0.5,0,1,this.height);
+			this.ctx.fillStyle = thx.color._RGBA.RGBA_Impl_.toString(handler(x / this.width));
+			this.ctx.fillRect(x,0,1,this.height);
 		}
 		return this;
 	}
@@ -442,24 +442,18 @@ minicanvas.MiniCanvas.prototype = {
 		var _g = this.height;
 		while(_g1 < _g) {
 			var y = _g1++;
-			this.ctx.fillStyle = thx.color._RGBA.RGBA_Impl_.toCSS3(handler(y / this.height));
-			this.ctx.fillRect(0,y + 0.5,this.width,1);
+			this.ctx.fillStyle = thx.color._RGBA.RGBA_Impl_.toString(handler(y / this.height));
+			this.ctx.fillRect(0,y,this.width,1);
 		}
 		return this;
 	}
 	,line: function(x0,y0,x1,y1,weight,color) {
 		if(weight == null) weight = 1.0;
 		this.ctx.lineWidth = weight;
-		this.ctx.strokeStyle = thx.color._RGBA.RGBA_Impl_.toCSS3((function($this) {
-			var $r;
-			var t;
-			{
-				var _0 = color;
-				if(null == _0) t = null; else t = _0;
-			}
-			$r = t != null?t:255;
-			return $r;
-		}(this)));
+		var t;
+		var _0 = color;
+		if(null == _0) t = null; else t = _0;
+		if(t != null) this.ctx.strokeStyle = thx.color._RGBA.RGBA_Impl_.toString(t); else this.ctx.strokeStyle = thx.color._RGBA.RGBA_Impl_.toString(thx.color._RGBA.RGBA_Impl_.fromString("rgba(0,0,0,1)"));
 		this.ctx.beginPath();
 		this.ctx.moveTo(x0,y0);
 		this.ctx.lineTo(x1,y1);
@@ -479,19 +473,19 @@ minicanvas.MiniCanvas.prototype = {
 		if(padding == null) padding = 2.0;
 		var rows = colors.length;
 		var h = (this.height - 2 * margin - (rows - 1) * padding) / rows;
-		var py = margin + 0.5;
+		var py = margin;
 		var _g = 0;
 		while(_g < colors.length) {
 			var row = colors[_g];
 			++_g;
 			var cols = row.length;
 			var w = (this.width - 2 * margin - (cols - 1) * padding) / cols;
-			var px = margin + 0.5;
+			var px = margin;
 			var _g1 = 0;
 			while(_g1 < row.length) {
 				var col = row[_g1];
 				++_g1;
-				this.ctx.fillStyle = thx.color._RGBA.RGBA_Impl_.toCSS3(col);
+				this.ctx.fillStyle = thx.color._RGBA.RGBA_Impl_.toString(col);
 				this.ctx.fillRect(px,py,w,h);
 				px += w + padding;
 			}
@@ -502,12 +496,12 @@ minicanvas.MiniCanvas.prototype = {
 	,rect: function(x0,y0,x1,y1,weight,lineColor,fillColor) {
 		if(weight == null) weight = 1.0;
 		if(null != fillColor) {
-			this.ctx.fillStyle = thx.color._RGBA.RGBA_Impl_.toCSS3(fillColor);
+			this.ctx.fillStyle = thx.color._RGBA.RGBA_Impl_.toString(fillColor);
 			this.ctx.fillRect(x0,y0,x1 - x0,y1 - y0);
 		}
 		if(null != lineColor) {
 			this.ctx.lineWidth = weight;
-			this.ctx.strokeStyle = thx.color._RGBA.RGBA_Impl_.toCSS3(lineColor);
+			this.ctx.strokeStyle = thx.color._RGBA.RGBA_Impl_.toString(lineColor);
 			this.ctx.strokeRect(x0,y0,x1 - x0,y1 - y0);
 		}
 		return this;
@@ -633,16 +627,16 @@ minicanvas.MiniCanvas.prototype = {
 		return this;
 	}
 	,getDevicePixelRatio: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 406, className : "minicanvas.MiniCanvas", methodName : "getDevicePixelRatio"});
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 409, className : "minicanvas.MiniCanvas", methodName : "getDevicePixelRatio"});
 	}
 	,getBackingStoreRatio: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 409, className : "minicanvas.MiniCanvas", methodName : "getBackingStoreRatio"});
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 412, className : "minicanvas.MiniCanvas", methodName : "getBackingStoreRatio"});
 	}
 	,init: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 412, className : "minicanvas.MiniCanvas", methodName : "init"});
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 415, className : "minicanvas.MiniCanvas", methodName : "init"});
 	}
 	,nativeDisplay: function(name) {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 415, className : "minicanvas.MiniCanvas", methodName : "nativeDisplay"});
+		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 418, className : "minicanvas.MiniCanvas", methodName : "nativeDisplay"});
 	}
 	,processScale: function() {
 		var _g = this.scaleMode;
@@ -657,10 +651,12 @@ minicanvas.MiniCanvas.prototype = {
 };
 minicanvas.ScaleMode = { __constructs__ : ["NoScale","Auto","Scaled"] };
 minicanvas.ScaleMode.NoScale = ["NoScale",0];
+minicanvas.ScaleMode.NoScale.toString = $estr;
 minicanvas.ScaleMode.NoScale.__enum__ = minicanvas.ScaleMode;
 minicanvas.ScaleMode.Auto = ["Auto",1];
+minicanvas.ScaleMode.Auto.toString = $estr;
 minicanvas.ScaleMode.Auto.__enum__ = minicanvas.ScaleMode;
-minicanvas.ScaleMode.Scaled = function(v) { var $x = ["Scaled",2,v]; $x.__enum__ = minicanvas.ScaleMode; return $x; };
+minicanvas.ScaleMode.Scaled = function(v) { var $x = ["Scaled",2,v]; $x.__enum__ = minicanvas.ScaleMode; $x.toString = $estr; return $x; };
 minicanvas.BrowserCanvas = function(width,height,scaleMode) {
 	this.isNode = false;
 	this.isBrowser = true;
@@ -1130,9 +1126,6 @@ thx.color._RGBA.RGBA_Impl_.fromString = function(color) {
 		return null;
 	}
 };
-thx.color._RGBA.RGBA_Impl_.toCSS3 = function(this1) {
-	return thx.color._RGBA.RGBA_Impl_.toString(this1);
-};
 thx.color._RGBA.RGBA_Impl_.toString = function(this1) {
 	return "rgba(" + (this1 >> 24 & 255) + "," + (this1 >> 16 & 255) + "," + (this1 >> 8 & 255) + "," + (this1 & 255) / 255 + ")";
 };
@@ -1284,12 +1277,12 @@ thx.color.parse.ColorInfo = function(name,channels) {
 	this.channels = channels;
 };
 thx.color.parse.ChannelInfo = { __constructs__ : ["CIPercent","CIFloat","CIDegree","CIInt8","CIInt","CIBool"] };
-thx.color.parse.ChannelInfo.CIPercent = function(value) { var $x = ["CIPercent",0,value]; $x.__enum__ = thx.color.parse.ChannelInfo; return $x; };
-thx.color.parse.ChannelInfo.CIFloat = function(value) { var $x = ["CIFloat",1,value]; $x.__enum__ = thx.color.parse.ChannelInfo; return $x; };
-thx.color.parse.ChannelInfo.CIDegree = function(value) { var $x = ["CIDegree",2,value]; $x.__enum__ = thx.color.parse.ChannelInfo; return $x; };
-thx.color.parse.ChannelInfo.CIInt8 = function(value) { var $x = ["CIInt8",3,value]; $x.__enum__ = thx.color.parse.ChannelInfo; return $x; };
-thx.color.parse.ChannelInfo.CIInt = function(value) { var $x = ["CIInt",4,value]; $x.__enum__ = thx.color.parse.ChannelInfo; return $x; };
-thx.color.parse.ChannelInfo.CIBool = function(value) { var $x = ["CIBool",5,value]; $x.__enum__ = thx.color.parse.ChannelInfo; return $x; };
+thx.color.parse.ChannelInfo.CIPercent = function(value) { var $x = ["CIPercent",0,value]; $x.__enum__ = thx.color.parse.ChannelInfo; $x.toString = $estr; return $x; };
+thx.color.parse.ChannelInfo.CIFloat = function(value) { var $x = ["CIFloat",1,value]; $x.__enum__ = thx.color.parse.ChannelInfo; $x.toString = $estr; return $x; };
+thx.color.parse.ChannelInfo.CIDegree = function(value) { var $x = ["CIDegree",2,value]; $x.__enum__ = thx.color.parse.ChannelInfo; $x.toString = $estr; return $x; };
+thx.color.parse.ChannelInfo.CIInt8 = function(value) { var $x = ["CIInt8",3,value]; $x.__enum__ = thx.color.parse.ChannelInfo; $x.toString = $estr; return $x; };
+thx.color.parse.ChannelInfo.CIInt = function(value) { var $x = ["CIInt",4,value]; $x.__enum__ = thx.color.parse.ChannelInfo; $x.toString = $estr; return $x; };
+thx.color.parse.ChannelInfo.CIBool = function(value) { var $x = ["CIBool",5,value]; $x.__enum__ = thx.color.parse.ChannelInfo; $x.toString = $estr; return $x; };
 thx.core = {};
 thx.core.ArrayFloats = function() { };
 thx.core.ArrayFloats.resize = function(array,length,fill) {

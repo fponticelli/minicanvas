@@ -102,7 +102,7 @@ class Main {
       ]])
       .display("palette");
 
-    MiniCanvas.create(200, 200)
+    MiniCanvas.create(201, 201)
       .grid()
       .cross()
       .display("grid");
