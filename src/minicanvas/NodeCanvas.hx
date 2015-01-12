@@ -1,18 +1,8 @@
 package minicanvas;
 
-import js.html.CanvasElement;
-import js.html.CanvasRenderingContext2D;
-import js.html.Element;
-
-import thx.color.*;
-using thx.core.Floats;
-using thx.core.Strings;
-import js.html.MouseEvent;
 import minicanvas.node.GifEncoder;
 import minicanvas.node.IEncoder;
 import minicanvas.node.PNGEncoder;
-import thx.core.Timer;
-using thx.core.Nulls;
 import minicanvas.MiniCanvas;
 
 class NodeCanvas extends MiniCanvas {
