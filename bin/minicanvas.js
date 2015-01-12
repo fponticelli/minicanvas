@@ -49,28 +49,38 @@ HxOverrides.iter = function(a) {
 };
 var Main = function() { };
 Main.randomGraph = function(name,width,height,random) {
-	minicanvas.MiniCanvas.create(width,height).fill(-1).gridHorizontal(20).border(1)["with"](function(mini,w,h) {
-		var max = 0;
-		var min = h;
-		var avg = 0.0;
-		var map = new haxe.ds.IntMap();
-		var tot = Math.round(w * h * 0.5);
-		var r;
-		var v;
-		var _g = 0;
-		while(_g < tot) {
-			var i = _g++;
-			r = Math.floor(random() * w);
-			if(map.h.hasOwnProperty(r)) {
-				var value = v = map.h[r] + 1;
-				map.h[r] = value;
-			} else {
-				var value1 = v = 1;
-				map.h[r] = value1;
+	var w = width;
+	var h = height;
+	var max = 0;
+	var min = h;
+	var avg = 0.0;
+	var map = new haxe.ds.IntMap();
+	var tot = Math.round(w * h * 0.5);
+	var rounds = Math.round(tot / 200);
+	var perRound = Math.round(tot / rounds);
+	var r;
+	var v;
+	var interaction = minicanvas.MiniCanvas.create(width,height).fill(-1).gridHorizontal(20).border(1).animate();
+	var _g = 0;
+	while(_g < rounds) {
+		var i = _g++;
+		interaction.frame(function(mini) {
+			var _g1 = 0;
+			while(_g1 < perRound) {
+				var j = _g1++;
+				r = Math.floor(random() * w);
+				if(map.h.hasOwnProperty(r)) {
+					var value = v = map.h[r] + 1;
+					map.h[r] = value;
+				} else {
+					var value1 = v = 1;
+					map.h[r] = value1;
+				}
+				mini.dot(r + 0.5,h - v + 0.5,0.5,thx.color._Grey.Grey_Impl_.toRGBA(0.7 - v / h));
 			}
-			mini.dot(r + 0.5,h - v + 0.5,0.5,thx.color._Grey.Grey_Impl_.toRGBA(0.7 - v / h));
-			if(i % 200 == 0) mini.storeFrame();
-		}
+		});
+	}
+	interaction.frame(function(mini1) {
 		var $it0 = map.keys();
 		while( $it0.hasNext() ) {
 			var k = $it0.next();
@@ -80,8 +90,9 @@ Main.randomGraph = function(name,width,height,random) {
 			if(v > max) max = v;
 		}
 		avg = avg / w;
-		mini.storeFrame().lineHorizontal(Math.round(h - min) + 0.5,1,thx.color._RGB.RGB_Impl_.toRGBA(thx.color.Color.red)).storeFrame().lineHorizontal(Math.round(h - max) + 0.5,1,thx.color._RGB.RGB_Impl_.toRGBA(thx.color.Color.green)).storeFrame().lineHorizontal(Math.round(h - (max + min) / 2) + 0.5,1,thx.color._RGB.RGB_Impl_.toRGBA(thx.color.Color.cyan)).storeFrame().lineHorizontal(Math.round(h - avg) + 0.5,1,thx.color._RGB.RGB_Impl_.toRGBA(thx.color.Color.blue)).storeFrame(50);
-	}).display(name);
+		mini1.storeFrame().lineHorizontal(Math.round(h - min) + 0.5,1,thx.color._RGB.RGB_Impl_.toRGBA(thx.color.Color.red)).storeFrame().lineHorizontal(Math.round(h - max) + 0.5,1,thx.color._RGB.RGB_Impl_.toRGBA(thx.color.Color.green)).storeFrame().lineHorizontal(Math.round(h - (max + min) / 2) + 0.5,1,thx.color._RGB.RGB_Impl_.toRGBA(thx.color.Color.cyan)).storeFrame().lineHorizontal(Math.round(h - avg) + 0.5,1,thx.color._RGB.RGB_Impl_.toRGBA(thx.color.Color.blue)).storeFrame(50);
+	});
+	interaction.done().display(name);
 };
 Main.main = function() {
 	minicanvas.MiniCanvas.displayGenerationTime = true;
@@ -537,10 +548,6 @@ minicanvas.MiniCanvas.prototype = {
 		this.beforeAnimate();
 		return interaction;
 	}
-	,'with': function(callback) {
-		callback(this,this.width,this.height);
-		return this;
-	}
 	,beforeAnimate: function() {
 	}
 	,afterAnimate: function() {
@@ -761,6 +768,10 @@ minicanvas.Interaction.prototype = {
 	,done: function() {
 		return this.mini;
 	}
+	,frame: function(callback) {
+		callback(this.mini);
+		return this;
+	}
 };
 minicanvas.CanvasInteraction = function(mini,x,y,done) {
 	minicanvas.Interaction.call(this,mini);
@@ -778,6 +789,14 @@ minicanvas.CanvasInteraction.prototype = $extend(minicanvas.Interaction.prototyp
 				return f(x1,y1);
 			};
 		})(($_=this.mini,$bind($_,$_.down)),x,y));
+		return this;
+	}
+	,frame: function(callback) {
+		this.stack.push((function(f,a1) {
+			return function() {
+				f(a1);
+			};
+		})(callback,this.mini));
 		return this;
 	}
 	,move: function(x,y,delta) {

@@ -6,16 +6,23 @@ using thx.core.Iterators;
 
 class Main {
   public static function randomGraph(name : String, width : Int, height : Int, random : Void -> Float) {
-    MiniCanvas.create(width, height)
-      .fill(0xFFFFFFFF)
-      .gridHorizontal(20)
-      .border(1)
-      .with(function(mini, w, h) {
-        var max = 0, min = h, avg = 0.0,
-            map = new Map(),
-            tot = Math.round(w * h * 0.5),
-            r, v;
-        for(i in 0...tot) {
+    var w = width,
+        h = height,
+        max = 0, min = h, avg = 0.0,
+        map = new Map(),
+        tot = Math.round(w * h * 0.5),
+        rounds = Math.round(tot / 200),
+        perRound = Math.round(tot / rounds),
+        r, v;
+    var interaction = MiniCanvas.create(width, height)
+          .fill(0xFFFFFFFF)
+          .gridHorizontal(20)
+          .border(1)
+          .animate();
+
+    for(i in 0...rounds) {
+      interaction.frame(function(mini) {
+        for(j in 0...perRound) {
           r = Math.floor(random() * w);
           if(map.exists(r)) {
             map.set(r, v = map.get(r) + 1);
@@ -23,29 +30,32 @@ class Main {
             map.set(r, v = 1);
           }
           mini.dot(r + 0.5, h - v + 0.5, 0.5, (0.7 - v / h : Grey));
-          if(i % 200 == 0)
-            mini.storeFrame();
         }
-        for(k in map.keys()) {
-          v = map.get(k);
-          avg += v;
-          if(v < min)
-            min = v;
-          if(v > max)
-            max = v;
-        }
-        avg = avg / w;
-        mini
-          .storeFrame()
-          .lineHorizontal(Math.round(h-min) + 0.5, 1, Color.red)
-          .storeFrame()
-          .lineHorizontal(Math.round(h-max) + 0.5, 1, Color.green)
-          .storeFrame()
-          .lineHorizontal(Math.round(h-(max + min)/2) + 0.5, 1, Color.cyan)
-          .storeFrame()
-          .lineHorizontal(Math.round(h-avg) + 0.5, 1, Color.blue)
-          .storeFrame(50);
-      })
+      });
+    }
+    interaction.frame(function(mini) {
+      for(k in map.keys()) {
+        v = map.get(k);
+        avg += v;
+        if(v < min)
+          min = v;
+        if(v > max)
+          max = v;
+      }
+      avg = avg / w;
+      mini
+        .storeFrame()
+        .lineHorizontal(Math.round(h-min) + 0.5, 1, Color.red)
+        .storeFrame()
+        .lineHorizontal(Math.round(h-max) + 0.5, 1, Color.green)
+        .storeFrame()
+        .lineHorizontal(Math.round(h-(max + min)/2) + 0.5, 1, Color.cyan)
+        .storeFrame()
+        .lineHorizontal(Math.round(h-avg) + 0.5, 1, Color.blue)
+        .storeFrame(50);
+    });
+    interaction
+      .done()
       .display(name);
   }
 
