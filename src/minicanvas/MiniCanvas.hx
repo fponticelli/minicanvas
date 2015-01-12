@@ -52,13 +52,15 @@ class MiniCanvas {
   }
 
   // drawing
-  public function border(weight = 1.0, ?color : RGBA = 0x000000ff, ?ox = 0.5, ?oy = 0.5)
+  public function border(weight = 1.0, ?color : RGBA, ?ox = 0.5, ?oy = 0.5) {
+    if(null == color) color = "rgba(0,0,0,1)";
     return rect(weight / 2, weight / 2, width - weight / 2, height - weight / 2, weight, color);
+  }
 
   public function box(handler : Float -> Float -> RGBA) {
     for(x in 0...width) {
       for(y in 0...height) {
-        ctx.fillStyle = handler(x/width, y/height).toCSS3();
+        ctx.fillStyle = (handler(x / width, y / height) : String);
         ctx.fillRect(x, y, 1, 1);
       }
     }
@@ -68,11 +70,11 @@ class MiniCanvas {
   public function checkboard(?size : Float = 8, ?light : RGBA, ?dark : RGBA) {
     var cols   = (width / size).ceil(),
         rows   = (height / size).ceil(),
-        slight = (null == light ? (0xFFFFFFFF : RGBA) : light).toCSS3(),
-        sdark  = (null == dark  ? (0xCCCCCCFF : RGBA) : dark).toCSS3();
+        slight = (null == light ? ("rgba(255,255,255,1)" : RGBA) : light),
+        sdark  = (null == dark  ? ("rgba(204,204,204,1)" : RGBA) : dark);
     for(c in 0...cols) {
       for(r in 0...rows) {
-        ctx.fillStyle = c % 2 != r % 2 ? slight : sdark;
+        ctx.fillStyle = ((c % 2 != r % 2 ? slight : sdark) : String);
         ctx.fillRect(c * size, r * size, size, size);
       }
     }
@@ -83,9 +85,9 @@ class MiniCanvas {
     if(null != fillColor || null != lineColor)
       ctx.beginPath();
     if(null != fillColor)
-      ctx.fillStyle = fillColor.toCSS3();
+      ctx.fillStyle = (fillColor : String);
     if(null != lineColor) {
-      ctx.strokeStyle = lineColor.toCSS3();
+      ctx.strokeStyle = (lineColor : String);
       ctx.lineWidth = weight;
     }
 
@@ -112,7 +114,7 @@ class MiniCanvas {
 
   public function dot(x : Float, y : Float, ?radius = 3.0, ?color : RGBA) {
     ctx.beginPath();
-    ctx.fillStyle = color.or((0xCC3300FF : RGBA)).toCSS3();
+    ctx.fillStyle = ((color.or("rgba(204,51,0,1)") : RGBA) : String);
     ctx.arc(x, y, radius, 0, Math.PI * 2, true);
     ctx.fill();
     return this;
@@ -122,7 +124,7 @@ class MiniCanvas {
     if(dx == 0) throw 'invalid argument dx, should be different from zero';
     if(dy == 0) throw 'invalid argument dy, should be different from zero';
     if(null == color)
-      color = (0xAAAAAAFF : RGBA);
+      color = ("rgba(170,170,170,1)" : RGBA);
     var py = oy % dy;
     while(py - radius <= height) {
       var px = ox % dx;
@@ -136,7 +138,7 @@ class MiniCanvas {
   }
 
   public function fill(color : RGBA) {
-    ctx.fillStyle = color.toCSS3();
+    ctx.fillStyle = (color : String);
     ctx.fillRect(0, 0, width, height);
     return this;
   }
@@ -150,7 +152,7 @@ class MiniCanvas {
   public function gridHorizontal(?dy = 10.0, ?weight = 1.0, ?color : RGBA, ?oy = 0.5) {
     if(dy == 0) throw 'invalid argument dy, should be different from zero';
     if(null == color)
-      color = (0xCCCCCCFF : RGBA);
+      color = ("rgba(204,204,204,1)" : RGBA);
     var py = oy % dy;
     while(py - weight / 2 <= height) {
       lineHorizontal(py, weight, color);
@@ -162,7 +164,7 @@ class MiniCanvas {
   public function gridVertical(?dx = 10.0, ?weight = 1.0, ?color : RGBA, ?ox = 0.5) {
     if(dx == 0) throw 'invalid argument dx, should be different from zero';
     if(null == color)
-      color = (0xCCCCCCFF : RGBA);
+      color = ("rgba(204,204,204,1)" : RGBA);
     var px = ox % dx;
     while(px - weight / 2 <= width) {
       lineVertical(px, weight, color);
@@ -173,7 +175,7 @@ class MiniCanvas {
 
   public function gradientHorizontal(handler : Float -> RGBA) {
     for(x in 0...width) {
-      ctx.fillStyle = handler(x/width).toCSS3();
+      ctx.fillStyle = (handler(x/width) : String);
       ctx.fillRect(x, 0, 1, height);
     }
     return this;
@@ -181,7 +183,7 @@ class MiniCanvas {
 
   public function gradientVertical(handler : Float -> RGBA) {
     for(y in 0...height) {
-      ctx.fillStyle = handler(y/height).toCSS3();
+      ctx.fillStyle = (handler(y/height) : String);
       ctx.fillRect(0, y, width, 1);
     }
     return this;
@@ -189,7 +191,7 @@ class MiniCanvas {
 
   public function line(x0 : Float, y0 : Float, x1 : Float, y1 : Float, ?weight = 1.0, ?color : RGBA) {
     ctx.lineWidth = weight;
-    ctx.strokeStyle = color.or((0x000000FF : RGBA)).toCSS3();
+    ctx.strokeStyle = (color.or(("rgba(0,0,0,1)" : RGBA)) : String);
     ctx.beginPath();
     ctx.moveTo(x0, y0);
     ctx.lineTo(x1, y1);
@@ -212,7 +214,7 @@ class MiniCanvas {
           w    = (width - 2 * margin - (cols - 1) * padding) / cols,
           px   = margin;
       for(col in row) {
-        ctx.fillStyle = col.toCSS3();
+        ctx.fillStyle = (col : String);
         ctx.fillRect(px, py, w, h);
         px += w + padding;
       }
@@ -223,12 +225,12 @@ class MiniCanvas {
 
   public function rect(x0 : Float, y0 : Float, x1 : Float, y1 : Float, ?weight = 1.0, ?lineColor : RGBA, ?fillColor : RGBA) {
     if(null != fillColor) {
-      ctx.fillStyle = fillColor.toCSS3();
+      ctx.fillStyle = (fillColor : String);
       ctx.fillRect(x0, y0, x1 - x0, y1 - y0);
     }
     if(null != lineColor) {
       ctx.lineWidth = weight;
-      ctx.strokeStyle = lineColor.toCSS3();
+      ctx.strokeStyle = (lineColor : String);
       ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
     }
     return this;
