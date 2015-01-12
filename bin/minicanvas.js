@@ -120,18 +120,18 @@ Main.main = function() {
 		return $r;
 	}(this))),thx.color._HSL.HSL_Impl_.toRGBA(red),thx.color._HSL.HSL_Impl_.toRGBA((function($this) {
 		var $r;
-		var this2 = thx.color._HSL.HSL_Impl_.analogous(red);
-		$r = this2._1;
+		var this11 = thx.color._HSL.HSL_Impl_.analogous(red);
+		$r = this11._1;
 		return $r;
 	}(this)))],[thx.color._HSL.HSL_Impl_.toRGBA((function($this) {
 		var $r;
-		var this3 = thx.color._HSL.HSL_Impl_.split(green);
-		$r = this3._0;
+		var this12 = thx.color._HSL.HSL_Impl_.split(green);
+		$r = this12._0;
 		return $r;
 	}(this))),thx.color._HSL.HSL_Impl_.toRGBA(green),thx.color._HSL.HSL_Impl_.toRGBA((function($this) {
 		var $r;
-		var this4 = thx.color._HSL.HSL_Impl_.split(green);
-		$r = this4._1;
+		var this13 = thx.color._HSL.HSL_Impl_.split(green);
+		$r = this13._1;
 		return $r;
 	}(this)))]]).display("palette");
 	minicanvas.MiniCanvas.create(201,201).grid().cross().display("grid");
@@ -152,9 +152,6 @@ Std.parseInt = function(x) {
 	if(isNaN(v)) return null;
 	return v;
 };
-var StringBuf = function() {
-	this.b = "";
-};
 var StringTools = function() { };
 StringTools.replace = function(s,sub,by) {
 	return s.split(sub).join(by);
@@ -168,98 +165,6 @@ haxe.StackItem.Module = function(m) { var $x = ["Module",1,m]; $x.__enum__ = hax
 haxe.StackItem.FilePos = function(s,file,line) { var $x = ["FilePos",2,s,file,line]; $x.__enum__ = haxe.StackItem; $x.toString = $estr; return $x; };
 haxe.StackItem.Method = function(classname,method) { var $x = ["Method",3,classname,method]; $x.__enum__ = haxe.StackItem; $x.toString = $estr; return $x; };
 haxe.StackItem.LocalFunction = function(v) { var $x = ["LocalFunction",4,v]; $x.__enum__ = haxe.StackItem; $x.toString = $estr; return $x; };
-haxe.CallStack = function() { };
-haxe.CallStack.callStack = function() {
-	var oldValue = Error.prepareStackTrace;
-	Error.prepareStackTrace = function(error,callsites) {
-		var stack = [];
-		var _g = 0;
-		while(_g < callsites.length) {
-			var site = callsites[_g];
-			++_g;
-			var method = null;
-			var fullName = site.getFunctionName();
-			if(fullName != null) {
-				var idx = fullName.lastIndexOf(".");
-				if(idx >= 0) {
-					var className = HxOverrides.substr(fullName,0,idx);
-					var methodName = HxOverrides.substr(fullName,idx + 1,null);
-					method = haxe.StackItem.Method(className,methodName);
-				}
-			}
-			stack.push(haxe.StackItem.FilePos(method,site.getFileName(),site.getLineNumber()));
-		}
-		return stack;
-	};
-	var a = haxe.CallStack.makeStack(new Error().stack);
-	a.shift();
-	Error.prepareStackTrace = oldValue;
-	return a;
-};
-haxe.CallStack.exceptionStack = function() {
-	return [];
-};
-haxe.CallStack.toString = function(stack) {
-	var b = new StringBuf();
-	var _g = 0;
-	while(_g < stack.length) {
-		var s = stack[_g];
-		++_g;
-		b.b += "\nCalled from ";
-		haxe.CallStack.itemToString(b,s);
-	}
-	return b.b;
-};
-haxe.CallStack.itemToString = function(b,s) {
-	switch(s[1]) {
-	case 0:
-		b.b += "a C function";
-		break;
-	case 1:
-		var m = s[2];
-		b.b += "module ";
-		if(m == null) b.b += "null"; else b.b += "" + m;
-		break;
-	case 2:
-		var line = s[4];
-		var file = s[3];
-		var s1 = s[2];
-		if(s1 != null) {
-			haxe.CallStack.itemToString(b,s1);
-			b.b += " (";
-		}
-		if(file == null) b.b += "null"; else b.b += "" + file;
-		b.b += " line ";
-		if(line == null) b.b += "null"; else b.b += "" + line;
-		if(s1 != null) b.b += ")";
-		break;
-	case 3:
-		var meth = s[3];
-		var cname = s[2];
-		if(cname == null) b.b += "null"; else b.b += "" + cname;
-		b.b += ".";
-		if(meth == null) b.b += "null"; else b.b += "" + meth;
-		break;
-	case 4:
-		var n = s[2];
-		b.b += "local function #";
-		if(n == null) b.b += "null"; else b.b += "" + n;
-		break;
-	}
-};
-haxe.CallStack.makeStack = function(s) {
-	if(typeof(s) == "string") {
-		var stack = s.split("\n");
-		var m = [];
-		var _g = 0;
-		while(_g < stack.length) {
-			var line = stack[_g];
-			++_g;
-			m.push(haxe.StackItem.Module(line));
-		}
-		return m;
-	} else return s;
-};
 haxe.IMap = function() { };
 haxe.ds = {};
 haxe.ds.IntMap = function() {
@@ -634,16 +539,18 @@ minicanvas.MiniCanvas.prototype = {
 		return this;
 	}
 	,getDevicePixelRatio: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 409, className : "minicanvas.MiniCanvas", methodName : "getDevicePixelRatio"});
+		throw "abstract method getDevicePixelRatio()";
 	}
 	,getBackingStoreRatio: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 412, className : "minicanvas.MiniCanvas", methodName : "getBackingStoreRatio"});
+		throw "abstract method getBackingStoreRatio()";
 	}
 	,init: function() {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 415, className : "minicanvas.MiniCanvas", methodName : "init"});
+		throw "abstract method init()";
+		return;
 	}
 	,nativeDisplay: function(name) {
-		throw new thx.core.error.AbstractMethod({ fileName : "MiniCanvas.hx", lineNumber : 418, className : "minicanvas.MiniCanvas", methodName : "nativeDisplay"});
+		throw "abstract method nativeDisplay()";
+		return;
 	}
 	,processScale: function() {
 		var _g = this.scaleMode;
@@ -1317,30 +1224,6 @@ thx.core.ArrayInts.resize = function(array,length,fill) {
 	array.splice(length,array.length - length);
 	return array;
 };
-thx.core.Error = function(message,stack,pos) {
-	Error.call(this,message);
-	this.message = message;
-	if(null == stack) {
-		try {
-			stack = haxe.CallStack.exceptionStack();
-		} catch( e ) {
-			stack = [];
-		}
-		if(stack.length == 0) try {
-			stack = haxe.CallStack.callStack();
-		} catch( e1 ) {
-			stack = [];
-		}
-	}
-	this.stackItems = stack;
-	this.pos = pos;
-};
-thx.core.Error.__super__ = Error;
-thx.core.Error.prototype = $extend(Error.prototype,{
-	toString: function() {
-		return this.message + "\nfrom: " + this.pos.className + "." + this.pos.methodName + "() at " + this.pos.lineNumber + "\n\n" + haxe.CallStack.toString(this.stackItems);
-	}
-});
 thx.core.Floats = function() { };
 thx.core.Floats.canParse = function(s) {
 	return thx.core.Floats.pattern_parse.match(s);
@@ -1392,13 +1275,6 @@ thx.core.Timer.clear = function(id) {
 	clearTimeout(id);
 	return;
 };
-thx.core.error = {};
-thx.core.error.AbstractMethod = function(posInfo) {
-	thx.core.Error.call(this,"method " + posInfo.className + "." + posInfo.methodName + "() is abstract",null,posInfo);
-};
-thx.core.error.AbstractMethod.__super__ = thx.core.Error;
-thx.core.error.AbstractMethod.prototype = $extend(thx.core.Error.prototype,{
-});
 thx.math = {};
 thx.math.random = {};
 thx.math.random.PseudoRandom = function(seed) {

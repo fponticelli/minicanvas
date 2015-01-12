@@ -6,7 +6,6 @@ import js.html.MouseEvent;
 using thx.core.Floats;
 using thx.core.Nulls;
 import thx.core.Timer;
-import thx.core.error.AbstractMethod;
 #if !jslib
 import thx.color.*;
 #else
@@ -406,16 +405,16 @@ class MiniCanvas {
 
   // protected methods that need override
   function getDevicePixelRatio() : Float
-    return throw new AbstractMethod();
+    return throw 'abstract method getDevicePixelRatio()';
 
   function getBackingStoreRatio() : Float
-    return throw new AbstractMethod();
+    return throw 'abstract method getBackingStoreRatio()';
 
   function init()
-    throw new AbstractMethod();
+    return throw 'abstract method init()';
 
   function nativeDisplay(name : String)
-    throw new AbstractMethod();
+    return throw 'abstract method nativeDisplay()';
 
   // private methods
   function processScale() {
@@ -451,6 +450,7 @@ typedef TrailEvent = {
   y1 : Float
 }
 
+#if expose @:expose #end
 enum ScaleMode {
   NoScale;
   Auto;
