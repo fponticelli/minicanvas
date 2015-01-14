@@ -26,6 +26,7 @@ class BrowserCanvas extends MiniCanvas {
     return _backingStoreRatio;
   }
 
+  public static var attachKeyEventsToCanvas = false;
   public static var defaultScaleMode = Auto;
   public static var parentNode : Element = untyped __js__("typeof document != 'undefined' && document.body");
 

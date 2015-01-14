@@ -292,8 +292,12 @@ class MiniCanvas {
       callback : callback
     };
     if(isBrowser) {
-      canvas.setAttribute("tabIndex", "1");
-      canvas.addEventListener("keyup", _keyUp.listener);
+      if(minicanvas.BrowserCanvas.attachKeyEventsToCanvas) {
+        canvas.setAttribute("tabIndex", "1");
+        canvas.addEventListener("keyup", _keyUp.listener);
+      } else {
+        js.Browser.window.addEventListener("keyup", _keyUp.listener);
+      }
     }
     return this;
   }
@@ -306,16 +310,24 @@ class MiniCanvas {
       callback : callback
     };
     if(isBrowser) {
-      canvas.setAttribute("tabIndex", "1");
-      canvas.addEventListener("keydown", _keyDown.listener);
+      if(minicanvas.BrowserCanvas.attachKeyEventsToCanvas) {
+        canvas.setAttribute("tabIndex", "1");
+        canvas.addEventListener("keydown", _keyDown.listener);
+      } else {
+        js.Browser.window.addEventListener("keydown", _keyDown.listener);
+      }
     }
     return this;
   }
 
   public function offKeyDown() {
     if(isBrowser && null != _keyDown) {
-      canvas.removeAttribute("tabIndex");
-      canvas.removeEventListener("keydown", _keyDown.listener);
+      if(minicanvas.BrowserCanvas.attachKeyEventsToCanvas) {
+        canvas.removeAttribute("tabIndex");
+        canvas.removeEventListener("keydown", _keyDown.listener);
+      } else {
+        js.Browser.window.removeEventListener("keydown", _keyDown.listener);
+      }
     }
     _keyDown = null;
     return this;
@@ -323,8 +335,12 @@ class MiniCanvas {
 
   public function offKeyUp() {
     if(isBrowser && null != _keyUp) {
-      canvas.removeAttribute("tabIndex");
-      canvas.removeEventListener("keyup", _keyUp.listener);
+      if(minicanvas.BrowserCanvas.attachKeyEventsToCanvas) {
+        canvas.removeAttribute("tabIndex");
+        canvas.removeEventListener("keyup", _keyUp.listener);
+      } else {
+        js.Browser.window.removeEventListener("keyup", _keyUp.listener);
+      }
     }
     _keyUp = null;
     return this;

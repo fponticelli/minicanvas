@@ -120,18 +120,18 @@ Main.main = function() {
 		return $r;
 	}(this))),thx.color._HSL.HSL_Impl_.toRGBA(red),thx.color._HSL.HSL_Impl_.toRGBA((function($this) {
 		var $r;
-		var this11 = thx.color._HSL.HSL_Impl_.analogous(red);
-		$r = this11._1;
+		var this2 = thx.color._HSL.HSL_Impl_.analogous(red);
+		$r = this2._1;
 		return $r;
 	}(this)))],[thx.color._HSL.HSL_Impl_.toRGBA((function($this) {
 		var $r;
-		var this12 = thx.color._HSL.HSL_Impl_.split(green);
-		$r = this12._0;
+		var this3 = thx.color._HSL.HSL_Impl_.split(green);
+		$r = this3._0;
 		return $r;
 	}(this))),thx.color._HSL.HSL_Impl_.toRGBA(green),thx.color._HSL.HSL_Impl_.toRGBA((function($this) {
 		var $r;
-		var this13 = thx.color._HSL.HSL_Impl_.split(green);
-		$r = this13._1;
+		var this4 = thx.color._HSL.HSL_Impl_.split(green);
+		$r = this4._1;
 		return $r;
 	}(this)))]]).display("palette");
 	minicanvas.MiniCanvas.create(201,201).grid().cross().display("grid");
@@ -466,8 +466,10 @@ minicanvas.MiniCanvas.prototype = {
 			_g.keyDown(e.keyCode);
 		}, callback : callback};
 		if(this.isBrowser) {
-			this.canvas.setAttribute("tabIndex","1");
-			this.canvas.addEventListener("keydown",this._keyDown.listener);
+			if(minicanvas.BrowserCanvas.attachKeyEventsToCanvas) {
+				this.canvas.setAttribute("tabIndex","1");
+				this.canvas.addEventListener("keydown",this._keyDown.listener);
+			} else window.addEventListener("keydown",this._keyDown.listener);
 		}
 		return this;
 	}
@@ -1760,6 +1762,7 @@ if(typeof(scope.performance.now) == "undefined") {
 }
 minicanvas.MiniCanvas.displayGenerationTime = false;
 minicanvas.BrowserCanvas._backingStoreRatio = 0;
+minicanvas.BrowserCanvas.attachKeyEventsToCanvas = false;
 minicanvas.BrowserCanvas.defaultScaleMode = minicanvas.ScaleMode.Auto;
 minicanvas.BrowserCanvas.parentNode = typeof document != 'undefined' && document.body;
 minicanvas.NodeCanvas.defaultScaleMode = minicanvas.ScaleMode.NoScale;
