@@ -284,24 +284,6 @@ class MiniCanvas {
   public function onClick(callback : MiniCanvasEvent -> Void)
     return onMouseEvent("click", callback);
 
-  public function onKeyUp(callback : MiniCanvasKeyEvent -> Void) {
-    _keyUp = {
-      listener : function(e) {
-        this.keyUp(e.keyCode);
-      },
-      callback : callback
-    };
-    if(isBrowser) {
-      if(minicanvas.BrowserCanvas.attachKeyEventsToCanvas) {
-        canvas.setAttribute("tabIndex", "1");
-        canvas.addEventListener("keyup", _keyUp.listener);
-      } else {
-        js.Browser.window.addEventListener("keyup", _keyUp.listener);
-      }
-    }
-    return this;
-  }
-
   public function onKeyDown(callback : MiniCanvasKeyEvent -> Void) {
     _keyDown = {
       listener : function(e) {
@@ -315,6 +297,60 @@ class MiniCanvas {
         canvas.addEventListener("keydown", _keyDown.listener);
       } else {
         js.Browser.window.addEventListener("keydown", _keyDown.listener);
+      }
+    }
+    return this;
+  }
+
+  public function onKeyRepeat(callback : MiniCanvasKeyEvent -> Void) {
+    var threshold = 20;
+    _keyRepeat = {
+      listener : function(e) {
+        this.keyRepeat(e.keyCode);
+        var cancel = thx.core.Timer.repeat(function() {
+              this.keyRepeat(e.keyCode);
+            }, threshold),
+            keyupListener = null,
+            keyupListener = function(_) {
+              cancel();
+              if(minicanvas.BrowserCanvas.attachKeyEventsToCanvas) {
+                canvas.removeEventListener("keyup", keyupListener);
+              } else {
+                js.Browser.window.removeEventListener("keyup", keyupListener);
+              }
+            };
+        if(minicanvas.BrowserCanvas.attachKeyEventsToCanvas) {
+          canvas.addEventListener("keyup", keyupListener);
+        } else {
+          js.Browser.window.addEventListener("keyup", keyupListener);
+        }
+      },
+      callback : callback
+    };
+    if(isBrowser) {
+      if(minicanvas.BrowserCanvas.attachKeyEventsToCanvas) {
+        canvas.setAttribute("tabIndex", "1");
+        canvas.addEventListener("keydown", _keyRepeat.listener);
+      } else {
+        js.Browser.window.addEventListener("keydown", _keyRepeat.listener);
+      }
+    }
+    return this;
+  }
+
+  public function onKeyUp(callback : MiniCanvasKeyEvent -> Void) {
+    _keyUp = {
+      listener : function(e) {
+        this.keyUp(e.keyCode);
+      },
+      callback : callback
+    };
+    if(isBrowser) {
+      if(minicanvas.BrowserCanvas.attachKeyEventsToCanvas) {
+        canvas.setAttribute("tabIndex", "1");
+        canvas.addEventListener("keyup", _keyUp.listener);
+      } else {
+        js.Browser.window.addEventListener("keyup", _keyUp.listener);
       }
     }
     return this;
@@ -400,6 +436,12 @@ class MiniCanvas {
   public function keyDown(keyCode : Int) {
     if(null != _keyDown)
       _keyDown.callback({ mini : this, keyCode : keyCode });
+    return this;
+  }
+
+  public function keyRepeat(keyCode : Int) {
+    if(null != _keyRepeat)
+      _keyRepeat.callback({ mini : this, keyCode : keyCode });
     return this;
   }
 
@@ -492,6 +534,11 @@ class MiniCanvas {
   };
 
   var _keyDown : {
+    listener : js.html.KeyboardEvent -> Void,
+    callback : MiniCanvasKeyEvent -> Void
+  };
+
+  var _keyRepeat : {
     listener : js.html.KeyboardEvent -> Void,
     callback : MiniCanvasKeyEvent -> Void
   };
