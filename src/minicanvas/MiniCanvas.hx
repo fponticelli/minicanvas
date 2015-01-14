@@ -284,6 +284,52 @@ class MiniCanvas {
   public function onClick(callback : MiniCanvasEvent -> Void)
     return onMouseEvent("click", callback);
 
+  public function onKeyUp(callback : MiniCanvasKeyEvent -> Void) {
+    _keyUp = {
+      listener : function(e) {
+        this.keyUp(e.keyCode);
+      },
+      callback : callback
+    };
+    if(isBrowser) {
+      canvas.setAttribute("tabIndex", "1");
+      canvas.addEventListener("keyup", _keyUp.listener);
+    }
+    return this;
+  }
+
+  public function onKeyDown(callback : MiniCanvasKeyEvent -> Void) {
+    _keyDown = {
+      listener : function(e) {
+        this.keyDown(e.keyCode);
+      },
+      callback : callback
+    };
+    if(isBrowser) {
+      canvas.setAttribute("tabIndex", "1");
+      canvas.addEventListener("keydown", _keyDown.listener);
+    }
+    return this;
+  }
+
+  public function offKeyDown() {
+    if(isBrowser && null != _keyDown) {
+      canvas.removeAttribute("tabIndex");
+      canvas.removeEventListener("keydown", _keyDown.listener);
+    }
+    _keyDown = null;
+    return this;
+  }
+
+  public function offKeyUp() {
+    if(isBrowser && null != _keyUp) {
+      canvas.removeAttribute("tabIndex");
+      canvas.removeEventListener("keyup", _keyUp.listener);
+    }
+    _keyUp = null;
+    return this;
+  }
+
   public function onDown(callback : MiniCanvasEvent -> Void)
     return onMouseEvent("mousedown", callback);
 
