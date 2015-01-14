@@ -12,6 +12,12 @@ class Interaction {
   public function down(x : Float, y : Float)
     return this;
 
+  public function keyDown(keyCode : Int)
+    return this;
+
+  public function keyUp(keyCode : Int)
+    return this;
+
   public function move(x : Float, y : Float, ?delta : Float = 9)
     return this;
 

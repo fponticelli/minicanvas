@@ -34,6 +34,16 @@ class CanvasInteraction extends Interaction {
     return this;
   }
 
+  override public function keyDown(keyCode : Int) {
+    stack.push(mini.keyDown.bind(keyCode));
+    return this;
+  }
+
+  override public function keyUp(keyCode : Int) {
+    stack.push(mini.keyUp.bind(keyCode));
+    return this;
+  }
+
   override public function move(x : Float, y : Float, ?delta : Float = 9) {
     var dist  = Math.sqrt((x - this.x) * (x - this.x) + (y - this.y) * (y - this.y)),
         steps = Math.ceil(dist / delta),
