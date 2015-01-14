@@ -144,6 +144,20 @@ Main.main = function() {
 	}).onUp(function(e3) {
 		e3.mini.dot(e3.x,e3.y,8,thx.color._RGBA.RGBA_Impl_.fromString("#33CC33")).offMove().offTrail();
 	}).animate().down(30,170).up(40,30).sleep(10).down(25,25).move(100,90).up(165,20).sleep(10).down(150,30).up(165,170).sleep(40).done().display("events");
+	minicanvas.MiniCanvas.create(200,200).checkboard().onKeyDown(function(e4) {
+		var _g = e4.keyCode;
+		var c = _g;
+		switch(_g) {
+		case 13:
+			e4.mini.dot(100,100,50);
+			break;
+		case 32:case 27:
+			e4.mini.checkboard();
+			break;
+		default:
+			console.log(c);
+		}
+	}).animateNode().keyDown(13).done().display("keyevents");
 };
 var Std = function() { };
 Std.parseInt = function(x) {
@@ -157,14 +171,6 @@ StringTools.replace = function(s,sub,by) {
 	return s.split(sub).join(by);
 };
 var haxe = {};
-haxe.StackItem = { __constructs__ : ["CFunction","Module","FilePos","Method","LocalFunction"] };
-haxe.StackItem.CFunction = ["CFunction",0];
-haxe.StackItem.CFunction.toString = $estr;
-haxe.StackItem.CFunction.__enum__ = haxe.StackItem;
-haxe.StackItem.Module = function(m) { var $x = ["Module",1,m]; $x.__enum__ = haxe.StackItem; $x.toString = $estr; return $x; };
-haxe.StackItem.FilePos = function(s,file,line) { var $x = ["FilePos",2,s,file,line]; $x.__enum__ = haxe.StackItem; $x.toString = $estr; return $x; };
-haxe.StackItem.Method = function(classname,method) { var $x = ["Method",3,classname,method]; $x.__enum__ = haxe.StackItem; $x.toString = $estr; return $x; };
-haxe.StackItem.LocalFunction = function(v) { var $x = ["LocalFunction",4,v]; $x.__enum__ = haxe.StackItem; $x.toString = $estr; return $x; };
 haxe.IMap = function() { };
 haxe.ds = {};
 haxe.ds.IntMap = function() {
@@ -215,9 +221,7 @@ minicanvas.MiniCanvas.prototype = {
 		this.nativeDisplay(name);
 		return this;
 	}
-	,border: function(weight,color,ox,oy) {
-		if(oy == null) oy = 0.5;
-		if(ox == null) ox = 0.5;
+	,border: function(weight,color) {
 		if(weight == null) weight = 1.0;
 		if(null == color) color = thx.color._RGBA.RGBA_Impl_.fromString("rgba(0,0,0,1)");
 		return this.rect(weight / 2,weight / 2,this.width - weight / 2,this.height - weight / 2,weight,color);
@@ -422,10 +426,6 @@ minicanvas.MiniCanvas.prototype = {
 		}
 		return this;
 	}
-	,storeFrame: function(times) {
-		if(times == null) times = 1;
-		return this;
-	}
 	,animate: function(x,y) {
 		var _g = this;
 		var interaction = new minicanvas.CanvasInteraction(this,(function($this) {
@@ -453,15 +453,23 @@ minicanvas.MiniCanvas.prototype = {
 		this.beforeAnimate();
 		return interaction;
 	}
-	,beforeAnimate: function() {
+	,animateNode: function(x,y) {
+		if(this.isNode) return this.animate(x,y); else return new minicanvas.Interaction(this);
 	}
-	,afterAnimate: function() {
+	,storeFrame: function(times) {
+		if(times == null) times = 1;
+		return this;
 	}
-	,resolveStack: function(stack,done) {
-		if(stack.length == 0) return done();
-		(stack.shift())();
-		this.storeFrame();
-		this.resolveStack(stack,done);
+	,onKeyDown: function(callback) {
+		var _g = this;
+		this._keyDown = { listener : function(e) {
+			_g.keyDown(e.keyCode);
+		}, callback : callback};
+		if(this.isBrowser) {
+			this.canvas.setAttribute("tabIndex","1");
+			this.canvas.addEventListener("keydown",this._keyDown.listener);
+		}
+		return this;
 	}
 	,onDown: function(callback) {
 		return this.onMouseEvent("mousedown",null,callback);
@@ -502,6 +510,10 @@ minicanvas.MiniCanvas.prototype = {
 	}
 	,down: function(x,y) {
 		return this.trigger("mousedown",x,y);
+	}
+	,keyDown: function(keyCode) {
+		if(null != this._keyDown) this._keyDown.callback({ mini : this, keyCode : keyCode});
+		return this;
 	}
 	,move: function(x,y) {
 		if(x < 0 || x > this.width || y < 0 || y > this.height) return this;
@@ -562,6 +574,16 @@ minicanvas.MiniCanvas.prototype = {
 		default:
 		}
 	}
+	,beforeAnimate: function() {
+	}
+	,afterAnimate: function() {
+	}
+	,resolveStack: function(stack,done) {
+		if(stack.length == 0) return done();
+		(stack.shift())();
+		this.storeFrame();
+		this.resolveStack(stack,done);
+	}
 };
 minicanvas.ScaleMode = { __constructs__ : ["NoScale","Auto","Scaled"] };
 minicanvas.ScaleMode.NoScale = ["NoScale",0];
@@ -606,6 +628,7 @@ minicanvas.BrowserCanvas.prototype = $extend(minicanvas.MiniCanvas.prototype,{
 		caption.innerHTML = thx.core.Strings.humanize(name) + (minicanvas.MiniCanvas.displayGenerationTime?" <span class=\"info\">(" + thx.core.Floats.roundTo(this.deltaTime,2) + "ms)</span>":"");
 		figure.appendChild(caption);
 		minicanvas.BrowserCanvas.parentNode.appendChild(figure);
+		if(null != this._keyUp || null != this._keyDown) this.canvas.focus();
 	}
 	,init: function() {
 		var _this = window.document;
@@ -662,6 +685,9 @@ minicanvas.Interaction.prototype = {
 	down: function(x,y) {
 		return this;
 	}
+	,keyDown: function(keyCode) {
+		return this;
+	}
 	,move: function(x,y,delta) {
 		if(delta == null) delta = 9;
 		return this;
@@ -704,6 +730,14 @@ minicanvas.CanvasInteraction.prototype = $extend(minicanvas.Interaction.prototyp
 				f(a1);
 			};
 		})(callback,this.mini));
+		return this;
+	}
+	,keyDown: function(keyCode) {
+		this.stack.push((function(f,a1) {
+			return function() {
+				return f(a1);
+			};
+		})(($_=this.mini,$bind($_,$_.keyDown)),keyCode));
 		return this;
 	}
 	,move: function(x,y,delta) {
@@ -1277,15 +1311,22 @@ thx.core.Timer.clear = function(id) {
 };
 thx.math = {};
 thx.math.random = {};
+thx.math.random.IRandom = function() { };
+thx.math.random.BaseRandom = function() { };
+thx.math.random.BaseRandom.__interfaces__ = [thx.math.random.IRandom];
 thx.math.random.PseudoRandom = function(seed) {
 	if(seed == null) seed = 1;
 	this.seed = seed;
 };
-thx.math.random.PseudoRandom.prototype = {
-	'float': function() {
-		return ((this.seed = this.seed * 48271.0 % 2147483647.0 | 0) & 1073741823) / 1073741823.0;
+thx.math.random.PseudoRandom.__super__ = thx.math.random.BaseRandom;
+thx.math.random.PseudoRandom.prototype = $extend(thx.math.random.BaseRandom.prototype,{
+	'int': function() {
+		return (this.seed = this.seed * 48271.0 % 2147483647.0 | 0) & 1073741823;
 	}
-};
+	,'float': function() {
+		return this["int"]() / 1073741823.0;
+	}
+});
 var $_, $fid = 0;
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $fid++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = function(){ return f.method.apply(f.scope, arguments); }; f.scope = o; f.method = m; o.hx__closures__[m.__id__] = f; } return f; }
 if(Array.prototype.map == null) Array.prototype.map = function(f) {

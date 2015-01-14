@@ -139,5 +139,22 @@ class Main {
       .up(165, 170).sleep(40)
       .done()
       .display("events");
+
+    MiniCanvas.create(200, 200)
+      .checkboard()
+      .onKeyDown(function(e) {
+        switch e.keyCode {
+          case 13:
+            e.mini.dot(100, 100, 50);
+          case 32, 27:
+            e.mini.checkboard();
+          case c:
+            trace(c);
+        }
+      })
+      .animateNode()
+      .keyDown(13)
+      .done()
+      .display("keyevents");
   }
 }
