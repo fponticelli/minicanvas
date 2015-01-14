@@ -335,6 +335,18 @@ class MiniCanvas {
   public function down(x : Float, y : Float)
     return trigger("mousedown", x, y);
 
+  public function keyDown(keyCode : Int) {
+    if(null != _keyDown)
+      _keyDown.callback({ mini : this, keyCode : keyCode });
+    return this;
+  }
+
+  public function keyUp(keyCode : Int) {
+    if(null != _keyUp)
+      _keyUp.callback({ mini : this, keyCode : keyCode });
+    return this;
+  }
+
   public function move(x : Float, y : Float) {
     if(x < 0 || x > width || y < 0 || y > height)
       return this;
@@ -412,6 +424,16 @@ class MiniCanvas {
     };
   }
 
+  var _keyUp : {
+    listener : js.html.KeyboardEvent -> Void,
+    callback : MiniCanvasKeyEvent -> Void
+  };
+
+  var _keyDown : {
+    listener : js.html.KeyboardEvent -> Void,
+    callback : MiniCanvasKeyEvent -> Void
+  };
+
   // protected
   function beforeAnimate() {}
   function afterAnimate() {}
@@ -434,6 +456,11 @@ typedef MiniCanvasEvent = {
   mini : MiniCanvas,
   x : Float,
   y : Float
+}
+
+typedef MiniCanvasKeyEvent = {
+  mini : MiniCanvas,
+  keyCode : Int
 }
 
 typedef TrailEvent = {
