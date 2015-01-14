@@ -45,6 +45,8 @@ class BrowserCanvas extends MiniCanvas {
     caption.innerHTML = name.humanize() + (MiniCanvas.displayGenerationTime ? ' <span class="info">(${deltaTime.roundTo(2)}ms)</span>' : '');
     figure.appendChild(caption);
     parentNode.appendChild(figure);
+    if(null != _keyUp || null != _keyDown)
+      canvas.focus();
   }
 
   // platform specific
