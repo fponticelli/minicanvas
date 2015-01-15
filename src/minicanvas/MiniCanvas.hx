@@ -5,6 +5,7 @@ import js.html.CanvasRenderingContext2D;
 import js.html.MouseEvent;
 using thx.core.Floats;
 using thx.core.Nulls;
+import thx.core.Set;
 import thx.core.Timer;
 #if !jslib
 import thx.color.*;
@@ -302,16 +303,22 @@ class MiniCanvas {
     return this;
   }
 
-  public function onKeyRepeat(callback : MiniCanvasKeyEvent -> Void) {
-    var threshold = 20;
+  public function onKeyRepeat(callback : MiniCanvasKeyRepeatEvent -> Void) {
+    var threshold = 20,
+        keys = Set.create();
     _keyRepeat = {
       listener : function(e) {
-        this.keyRepeat(e.keyCode);
+        var isEmpty = keys.length == 0;
+        keys.add(e.keyCode);
+        if(!isEmpty) return;
+
         var cancel = thx.core.Timer.repeat(function() {
-              this.keyRepeat(e.keyCode);
+              this.keyRepeat(keys);
             }, threshold),
             keyupListener = null,
-            keyupListener = function(_) {
+            keyupListener = function(e) {
+              keys.remove(e.keyCode);
+              if(keys.length > 0) return; // there are still keys pressed
               cancel();
               if(minicanvas.BrowserCanvas.attachKeyEventsToCanvas) {
                 canvas.removeEventListener("keyup", keyupListener);
@@ -439,9 +446,9 @@ class MiniCanvas {
     return this;
   }
 
-  public function keyRepeat(keyCode : Int) {
+  public function keyRepeat(keyCodes : Array<Int>) {
     if(null != _keyRepeat)
-      _keyRepeat.callback({ mini : this, keyCode : keyCode });
+      _keyRepeat.callback({ mini : this, keyCodes : keyCodes });
     return this;
   }
 
@@ -540,7 +547,7 @@ class MiniCanvas {
 
   var _keyRepeat : {
     listener : js.html.KeyboardEvent -> Void,
-    callback : MiniCanvasKeyEvent -> Void
+    callback : MiniCanvasKeyRepeatEvent -> Void
   };
 
   // protected
@@ -570,6 +577,11 @@ typedef MiniCanvasEvent = {
 typedef MiniCanvasKeyEvent = {
   mini : MiniCanvas,
   keyCode : Int
+}
+
+typedef MiniCanvasKeyRepeatEvent = {
+  mini : MiniCanvas,
+  keyCodes : Array<Int>
 }
 
 typedef TrailEvent = {
