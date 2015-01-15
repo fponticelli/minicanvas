@@ -304,7 +304,7 @@ class MiniCanvas {
   }
 
   public function onKeyRepeat(callback : MiniCanvasKeyRepeatEvent -> Void) {
-    var threshold = 20,
+    var threshold = 40,
         keys = Set.create();
     _keyRepeat = {
       listener : function(e) {
