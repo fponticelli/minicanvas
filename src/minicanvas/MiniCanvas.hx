@@ -132,7 +132,7 @@ class MiniCanvas {
     var py = oy % dy;
     while(py - radius <= height) {
       var px = ox % dx;
-      while(px - radius <= height) {
+      while(px - radius <= width) {
         dot(px + 0.5, py + 0.5, radius, color);
         px += dx;
       }
