@@ -1,7 +1,7 @@
 package minicanvas.node;
 
 import js.html.CanvasRenderingContext2D;
-using thx.core.Arrays;
+using thx.Arrays;
 
 class GifEncoder implements IEncoder {
   var encoder : Dynamic;

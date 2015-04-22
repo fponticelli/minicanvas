@@ -1,6 +1,6 @@
 package minicanvas;
 
-using thx.core.Floats;
+using thx.Floats;
 
 class CanvasInteraction extends Interaction {
   var x : Float;

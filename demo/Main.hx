@@ -2,7 +2,7 @@ import thx.math.random.PseudoRandom;
 
 import thx.color.*;
 
-using thx.core.Iterators;
+using thx.Iterators;
 
 class Main {
   public static function randomGraph(name : String, width : Int, height : Int, random : Void -> Float) {

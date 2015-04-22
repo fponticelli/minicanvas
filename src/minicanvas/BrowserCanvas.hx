@@ -2,9 +2,9 @@ package minicanvas;
 
 import js.html.Element;
 import minicanvas.MiniCanvas;
-using thx.core.Floats;
-using thx.core.Strings;
-import thx.core.Timer;
+using thx.Floats;
+using thx.Strings;
+import thx.Timer;
 
 class BrowserCanvas extends MiniCanvas {
   public static function devicePixelRatio() : Float

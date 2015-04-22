@@ -3,10 +3,10 @@ package minicanvas;
 import js.html.CanvasElement;
 import js.html.CanvasRenderingContext2D;
 import js.html.MouseEvent;
-using thx.core.Floats;
-using thx.core.Nulls;
-import thx.core.Set;
-import thx.core.Timer;
+using thx.Floats;
+using thx.Nulls;
+import thx.Set;
+import thx.Timer;
 #if !jslib
 import thx.color.*;
 #else
@@ -312,7 +312,7 @@ class MiniCanvas {
         keys.add(e.keyCode);
         if(!isEmpty) return;
 
-        var cancel = thx.core.Timer.repeat(function() {
+        var cancel = thx.Timer.repeat(function() {
               this.keyRepeat(keys);
             }, threshold),
             keyupListener = null,
