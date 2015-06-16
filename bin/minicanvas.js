@@ -62,7 +62,7 @@ Main.randomGraph = function(name,width,height,random) {
 	var perRound = Math.round(tot / rounds);
 	var r;
 	var v;
-	var interaction = minicanvas_MiniCanvas.create(width,height).fill(-1).gridHorizontal(20).border(1).animate();
+	var interaction = minicanvas_MiniCanvas.create(width,height).fill(thx_color__$Rgbxa_Rgbxa_$Impl_$.fromInt(-1)).gridHorizontal(20).border(1).animate();
 	var _g = 0;
 	while(_g < rounds) {
 		var i = _g++;
@@ -78,7 +78,7 @@ Main.randomGraph = function(name,width,height,random) {
 					var value1 = v = 1;
 					map.h[r] = value1;
 				}
-				mini.dot(r + 0.5,h - v + 0.5,0.5,thx_color__$Grey_Grey_$Impl_$.toRgba(0.7 - v / h));
+				mini.dot(r + 0.5,h - v + 0.5,0.5,thx_color__$Grey_Grey_$Impl_$.toRgbxa(0.7 - v / h));
 			}
 		});
 	}
@@ -92,45 +92,45 @@ Main.randomGraph = function(name,width,height,random) {
 			if(v > max) max = v;
 		}
 		avg = avg / w;
-		mini1.storeFrame().lineHorizontal(Math.round(h - min) + 0.5,1,thx_color__$Rgb_Rgb_$Impl_$.toRgba(thx_color_Color.red)).storeFrame().lineHorizontal(Math.round(h - max) + 0.5,1,thx_color__$Rgb_Rgb_$Impl_$.toRgba(thx_color_Color.green)).storeFrame().lineHorizontal(Math.round(h - (max + min) / 2) + 0.5,1,thx_color__$Rgb_Rgb_$Impl_$.toRgba(thx_color_Color.cyan)).storeFrame().lineHorizontal(Math.round(h - avg) + 0.5,1,thx_color__$Rgb_Rgb_$Impl_$.toRgba(thx_color_Color.blue)).storeFrame(50);
+		mini1.storeFrame().lineHorizontal(Math.round(h - min) + 0.5,1,thx_color__$Rgb_Rgb_$Impl_$.toRgbxa(thx_color_Color.red)).storeFrame().lineHorizontal(Math.round(h - max) + 0.5,1,thx_color__$Rgb_Rgb_$Impl_$.toRgbxa(thx_color_Color.green)).storeFrame().lineHorizontal(Math.round(h - (max + min) / 2) + 0.5,1,thx_color__$Rgb_Rgb_$Impl_$.toRgbxa(thx_color_Color.cyan)).storeFrame().lineHorizontal(Math.round(h - avg) + 0.5,1,thx_color__$Rgb_Rgb_$Impl_$.toRgbxa(thx_color_Color.blue)).storeFrame(50);
 	});
 	interaction.done().display(name);
 };
 Main.main = function() {
 	minicanvas_MiniCanvas.displayGenerationTime = true;
 	Main.randomGraph("pseudoRandom",200,200,($_=new thx_math_random_PseudoRandom(),$bind($_,$_["float"])));
-	minicanvas_MiniCanvas.create(200,200).checkboard().border(2,255).rect(20,20,180,180,2,-864616244,13399910).display("checkboard");
-	minicanvas_MiniCanvas.create(200,200).checkboard(40).dotGrid(10,10,1,-1145324545).display("dotgrid");
+	minicanvas_MiniCanvas.create(200,200).checkboard().border(2,thx_color__$Rgbxa_Rgbxa_$Impl_$.fromInt(255)).rect(20,20,180,180,2,thx_color__$Rgbxa_Rgbxa_$Impl_$.fromInt(-864616244),thx_color__$Rgbxa_Rgbxa_$Impl_$.fromInt(13399910)).display("checkboard");
+	minicanvas_MiniCanvas.create(200,200).checkboard(40).dotGrid(10,10,1,thx_color__$Rgbxa_Rgbxa_$Impl_$.fromInt(-1145324545)).display("dotgrid");
 	minicanvas_MiniCanvas.create(200,200).checkboard().box(function(x,y) {
-		return thx_color__$Hsla_Hsla_$Impl_$.toRgba(thx_color__$Hsla_Hsla_$Impl_$.create(x * 360,1,y,0.75));
+		return thx_color__$Hsla_Hsla_$Impl_$.toRgbxa(thx_color__$Hsla_Hsla_$Impl_$.create(x * 360,1,y,0.75));
 	}).display("rainbowAlpha");
 	minicanvas_MiniCanvas.create(200,200).box(function(x1,y1) {
-		return thx_color__$Hsl_Hsl_$Impl_$.toRgba(thx_color__$Hsl_Hsl_$Impl_$.create(x1 * 360,1,y1));
+		return thx_color__$Hsl_Hsl_$Impl_$.toRgbxa(thx_color__$Hsl_Hsl_$Impl_$.create(x1 * 360,1,y1));
 	}).display("rainbow");
 	minicanvas_MiniCanvas.create(200,20).gradientHorizontal(function(x2) {
-		return thx_color__$Hsv_Hsv_$Impl_$.toRgba(thx_color__$Hsv_Hsv_$Impl_$.create(x2 * 360,1,1));
+		return thx_color__$Hsv_Hsv_$Impl_$.toRgbxa(thx_color__$Hsv_Hsv_$Impl_$.create(x2 * 360,1,1));
 	}).display("gradientHorizontal");
 	minicanvas_MiniCanvas.create(20,200).gradientVertical(function(y2) {
-		return thx_color__$Hsv_Hsv_$Impl_$.toRgba(thx_color__$Hsv_Hsv_$Impl_$.create(y2 * 360,1,1));
+		return thx_color__$Hsv_Hsv_$Impl_$.toRgbxa(thx_color__$Hsv_Hsv_$Impl_$.create(y2 * 360,1,1));
 	}).display("gradientVertical");
 	var red = thx_color__$Hsl_Hsl_$Impl_$.create(340,0.5,0.5);
 	var green = thx_color__$Hsl_Hsl_$Impl_$.create(120,0.5,0.5);
-	minicanvas_MiniCanvas.create(200,90).palette([[thx_color__$Hsl_Hsl_$Impl_$.toRgba((function($this) {
+	minicanvas_MiniCanvas.create(200,90).palette([[thx_color__$Hsl_Hsl_$Impl_$.toRgbxa((function($this) {
 		var $r;
 		var this1 = thx_color__$Hsl_Hsl_$Impl_$.analogous(red);
 		$r = this1._0;
 		return $r;
-	}(this))),thx_color__$Hsl_Hsl_$Impl_$.toRgba(red),thx_color__$Hsl_Hsl_$Impl_$.toRgba((function($this) {
+	}(this))),thx_color__$Hsl_Hsl_$Impl_$.toRgbxa(red),thx_color__$Hsl_Hsl_$Impl_$.toRgbxa((function($this) {
 		var $r;
 		var this2 = thx_color__$Hsl_Hsl_$Impl_$.analogous(red);
 		$r = this2._1;
 		return $r;
-	}(this)))],[thx_color__$Hsl_Hsl_$Impl_$.toRgba((function($this) {
+	}(this)))],[thx_color__$Hsl_Hsl_$Impl_$.toRgbxa((function($this) {
 		var $r;
 		var this3 = thx_color__$Hsl_Hsl_$Impl_$.split(green);
 		$r = this3._0;
 		return $r;
-	}(this))),thx_color__$Hsl_Hsl_$Impl_$.toRgba(green),thx_color__$Hsl_Hsl_$Impl_$.toRgba((function($this) {
+	}(this))),thx_color__$Hsl_Hsl_$Impl_$.toRgbxa(green),thx_color__$Hsl_Hsl_$Impl_$.toRgbxa((function($this) {
 		var $r;
 		var this4 = thx_color__$Hsl_Hsl_$Impl_$.split(green);
 		$r = this4._1;
@@ -138,13 +138,13 @@ Main.main = function() {
 	}(this)))]]).display("palette");
 	minicanvas_MiniCanvas.create(201,201).grid().cross().display("grid");
 	minicanvas_MiniCanvas.create(200,200).checkboard().onDown(function(e) {
-		e.mini.dot(e.x,e.y,6,thx_color__$Rgba_Rgba_$Impl_$.fromString("#0066CC")).onMove(function(e1) {
+		e.mini.dot(e.x,e.y,6,thx_color__$Rgbxa_Rgbxa_$Impl_$.fromString("#0066CC")).onMove(function(e1) {
 			e1.mini.dot(e1.x,e1.y);
 		}).onTrail(function(e2) {
 			e2.mini.line(e2.x0,e2.y0,e2.x1,e2.y1);
 		});
 	}).onUp(function(e3) {
-		e3.mini.dot(e3.x,e3.y,8,thx_color__$Rgba_Rgba_$Impl_$.fromString("#33CC33")).offMove().offTrail();
+		e3.mini.dot(e3.x,e3.y,8,thx_color__$Rgbxa_Rgbxa_$Impl_$.fromString("#33CC33")).offMove().offTrail();
 	}).animate().down(30,170).up(40,30).sleep(10).down(25,25).move(100,90).up(165,20).sleep(10).down(150,30).up(165,170).sleep(40).done().display("events");
 	minicanvas_MiniCanvas.create(200,200).checkboard().onKeyDown(function(e4) {
 		var _g = e4.keyCode;
@@ -329,7 +329,7 @@ minicanvas_MiniCanvas.prototype = {
 	}
 	,border: function(weight,color) {
 		if(weight == null) weight = 1.0;
-		if(null == color) color = thx_color__$Rgba_Rgba_$Impl_$.fromString("Rgba(0,0,0,1)");
+		if(null == color) color = thx_color__$Rgbxa_Rgbxa_$Impl_$.create(0,0,0,1);
 		return this.rect(weight / 2,weight / 2,this.width - weight / 2,this.height - weight / 2,weight,color);
 	}
 	,box: function(handler) {
@@ -341,8 +341,11 @@ minicanvas_MiniCanvas.prototype = {
 			var _g2 = this.height;
 			while(_g3 < _g2) {
 				var y = _g3++;
-				this.ctx.fillStyle = thx_color__$Rgba_Rgba_$Impl_$.toString(handler(x / this.width,y / this.height));
-				this.ctx.fillRect(x,y,1,1);
+				var color = handler(x / this.width,y / this.height);
+				if(thx_color__$Rgbxa_Rgbxa_$Impl_$.get_inSpace(color)) {
+					this.ctx.fillStyle = thx_color__$Rgbxa_Rgbxa_$Impl_$.toString(color);
+					this.ctx.fillRect(x,y,1,1);
+				}
 			}
 		}
 		return this;
@@ -352,16 +355,16 @@ minicanvas_MiniCanvas.prototype = {
 		var cols = Math.ceil(this.width / size);
 		var rows = Math.ceil(this.height / size);
 		var slight;
-		if(null == light) slight = thx_color__$Rgba_Rgba_$Impl_$.fromString("Rgba(255,255,255,1)"); else slight = light;
+		if(null == light) slight = thx_color__$Rgbxa_Rgbxa_$Impl_$.create(1,1,1,1); else slight = light;
 		var sdark;
-		if(null == dark) sdark = thx_color__$Rgba_Rgba_$Impl_$.fromString("Rgba(204,204,204,1)"); else sdark = dark;
+		if(null == dark) sdark = thx_color__$Rgbxa_Rgbxa_$Impl_$.create(0.5,0.5,0.5,1); else sdark = dark;
 		var _g = 0;
 		while(_g < cols) {
 			var c = _g++;
 			var _g1 = 0;
 			while(_g1 < rows) {
 				var r = _g1++;
-				if(c % 2 != r % 2) this.ctx.fillStyle = thx_color__$Rgba_Rgba_$Impl_$.toString(slight); else this.ctx.fillStyle = thx_color__$Rgba_Rgba_$Impl_$.toString(sdark);
+				if(c % 2 != r % 2) this.ctx.fillStyle = thx_color__$Rgbxa_Rgbxa_$Impl_$.toString(slight); else this.ctx.fillStyle = thx_color__$Rgbxa_Rgbxa_$Impl_$.toString(sdark);
 				this.ctx.fillRect(c * size,r * size,size,size);
 			}
 		}
@@ -378,16 +381,10 @@ minicanvas_MiniCanvas.prototype = {
 	,dot: function(x,y,radius,color) {
 		if(radius == null) radius = 3.0;
 		this.ctx.beginPath();
-		this.ctx.fillStyle = thx_color__$Rgba_Rgba_$Impl_$.toString((function($this) {
-			var $r;
-			var t;
-			{
-				var _0 = color;
-				if(null == _0) t = null; else t = _0;
-			}
-			$r = t != null?t:thx_color__$Rgba_Rgba_$Impl_$.fromString("Rgba(204,51,0,1)");
-			return $r;
-		}(this)));
+		var t;
+		var _0 = color;
+		if(null == _0) t = null; else t = _0;
+		if(t != null) this.ctx.fillStyle = thx_color__$Rgbxa_Rgbxa_$Impl_$.toString(t); else this.ctx.fillStyle = thx_color__$Rgbxa_Rgbxa_$Impl_$.toString(thx_color__$Rgbxa_Rgbxa_$Impl_$.create(0.8,0.2,0,1));
 		this.ctx.arc(x,y,radius,0,Math.PI * 2,true);
 		this.ctx.fill();
 		return this;
@@ -400,7 +397,7 @@ minicanvas_MiniCanvas.prototype = {
 		if(dx == null) dx = 10.0;
 		if(dx == 0) throw new js__$Boot_HaxeError("invalid argument dx, should be different from zero");
 		if(dy == 0) throw new js__$Boot_HaxeError("invalid argument dy, should be different from zero");
-		if(null == color) color = thx_color__$Rgba_Rgba_$Impl_$.fromString("Rgba(170,170,170,1)");
+		if(null == color) color = thx_color__$Rgbxa_Rgbxa_$Impl_$.create(0.675,0.675,0.678,1);
 		var py = oy % dy;
 		while(py - radius <= this.height) {
 			var px = ox % dx;
@@ -413,7 +410,7 @@ minicanvas_MiniCanvas.prototype = {
 		return this;
 	}
 	,fill: function(color) {
-		this.ctx.fillStyle = thx_color__$Rgba_Rgba_$Impl_$.toString(color);
+		this.ctx.fillStyle = thx_color__$Rgbxa_Rgbxa_$Impl_$.toString(color);
 		this.ctx.fillRect(0,0,this.width,this.height);
 		return this;
 	}
@@ -432,7 +429,7 @@ minicanvas_MiniCanvas.prototype = {
 		if(weight == null) weight = 1.0;
 		if(dy == null) dy = 10.0;
 		if(dy == 0) throw new js__$Boot_HaxeError("invalid argument dy, should be different from zero");
-		if(null == color) color = thx_color__$Rgba_Rgba_$Impl_$.fromString("Rgba(204,204,204,1)");
+		if(null == color) color = thx_color__$Rgbxa_Rgbxa_$Impl_$.create(0.8,0.8,0.8,1);
 		var py = oy % dy;
 		while(py - weight / 2 <= this.height) {
 			this.lineHorizontal(py,weight,color);
@@ -445,7 +442,7 @@ minicanvas_MiniCanvas.prototype = {
 		if(weight == null) weight = 1.0;
 		if(dx == null) dx = 10.0;
 		if(dx == 0) throw new js__$Boot_HaxeError("invalid argument dx, should be different from zero");
-		if(null == color) color = thx_color__$Rgba_Rgba_$Impl_$.fromString("Rgba(204,204,204,1)");
+		if(null == color) color = thx_color__$Rgbxa_Rgbxa_$Impl_$.create(0.8,0.8,0.8,1);
 		var px = ox % dx;
 		while(px - weight / 2 <= this.width) {
 			this.lineVertical(px,weight,color);
@@ -458,8 +455,11 @@ minicanvas_MiniCanvas.prototype = {
 		var _g = this.width;
 		while(_g1 < _g) {
 			var x = _g1++;
-			this.ctx.fillStyle = thx_color__$Rgba_Rgba_$Impl_$.toString(handler(x / this.width));
-			this.ctx.fillRect(x,0,1,this.height);
+			var color = handler(x / this.width);
+			if(thx_color__$Rgbxa_Rgbxa_$Impl_$.get_inSpace(color)) {
+				this.ctx.fillStyle = thx_color__$Rgbxa_Rgbxa_$Impl_$.toString(color);
+				this.ctx.fillRect(x,0,1,this.height);
+			}
 		}
 		return this;
 	}
@@ -468,8 +468,11 @@ minicanvas_MiniCanvas.prototype = {
 		var _g = this.height;
 		while(_g1 < _g) {
 			var y = _g1++;
-			this.ctx.fillStyle = thx_color__$Rgba_Rgba_$Impl_$.toString(handler(y / this.height));
-			this.ctx.fillRect(0,y,this.width,1);
+			var color = handler(y / this.height);
+			if(thx_color__$Rgbxa_Rgbxa_$Impl_$.get_inSpace(color)) {
+				this.ctx.fillStyle = thx_color__$Rgbxa_Rgbxa_$Impl_$.toString(color);
+				this.ctx.fillRect(0,y,this.width,1);
+			}
 		}
 		return this;
 	}
@@ -479,7 +482,7 @@ minicanvas_MiniCanvas.prototype = {
 		var t;
 		var _0 = color;
 		if(null == _0) t = null; else t = _0;
-		if(t != null) this.ctx.strokeStyle = thx_color__$Rgba_Rgba_$Impl_$.toString(t); else this.ctx.strokeStyle = thx_color__$Rgba_Rgba_$Impl_$.toString(thx_color__$Rgba_Rgba_$Impl_$.fromString("Rgba(0,0,0,1)"));
+		if(t != null) this.ctx.strokeStyle = thx_color__$Rgbxa_Rgbxa_$Impl_$.toString(t); else this.ctx.strokeStyle = thx_color__$Rgbxa_Rgbxa_$Impl_$.toString(thx_color__$Rgbxa_Rgbxa_$Impl_$.fromString("Rgbxa(0,0,0,1)"));
 		this.ctx.beginPath();
 		this.ctx.moveTo(x0,y0);
 		this.ctx.lineTo(x1,y1);
@@ -509,10 +512,12 @@ minicanvas_MiniCanvas.prototype = {
 			var px = margin;
 			var _g1 = 0;
 			while(_g1 < row.length) {
-				var col = row[_g1];
+				var color = row[_g1];
 				++_g1;
-				this.ctx.fillStyle = thx_color__$Rgba_Rgba_$Impl_$.toString(col);
-				this.ctx.fillRect(px,py,w,h);
+				if(thx_color__$Rgbxa_Rgbxa_$Impl_$.get_inSpace(color)) {
+					this.ctx.fillStyle = thx_color__$Rgbxa_Rgbxa_$Impl_$.toString(color);
+					this.ctx.fillRect(px,py,w,h);
+				}
 				px += w + padding;
 			}
 			py += h + padding;
@@ -522,12 +527,12 @@ minicanvas_MiniCanvas.prototype = {
 	,rect: function(x0,y0,x1,y1,weight,lineColor,fillColor) {
 		if(weight == null) weight = 1.0;
 		if(null != fillColor) {
-			this.ctx.fillStyle = thx_color__$Rgba_Rgba_$Impl_$.toString(fillColor);
+			this.ctx.fillStyle = thx_color__$Rgbxa_Rgbxa_$Impl_$.toString(fillColor);
 			this.ctx.fillRect(x0,y0,x1 - x0,y1 - y0);
 		}
 		if(null != lineColor) {
 			this.ctx.lineWidth = weight;
-			this.ctx.strokeStyle = thx_color__$Rgba_Rgba_$Impl_$.toString(lineColor);
+			this.ctx.strokeStyle = thx_color__$Rgbxa_Rgbxa_$Impl_$.toString(lineColor);
 			this.ctx.strokeRect(x0,y0,x1 - x0,y1 - y0);
 		}
 		return this;
@@ -1081,9 +1086,6 @@ var thx_color_Color = function() { };
 thx_color_Color.__name__ = true;
 var thx_color__$Grey_Grey_$Impl_$ = {};
 thx_color__$Grey_Grey_$Impl_$.__name__ = true;
-thx_color__$Grey_Grey_$Impl_$.toRgba = function(this1) {
-	return thx_color__$Rgbxa_Rgbxa_$Impl_$.toRgba(thx_color__$Grey_Grey_$Impl_$.toRgbxa(this1));
-};
 thx_color__$Grey_Grey_$Impl_$.toRgbx = function(this1) {
 	return [this1,this1,this1];
 };
@@ -1115,9 +1117,6 @@ thx_color__$Hsl_Hsl_$Impl_$.withHue = function(this1,newhue) {
 	var channels = [thx_Floats.wrapCircular(newhue,360),this1[1],this1[2]];
 	return channels;
 };
-thx_color__$Hsl_Hsl_$Impl_$.toRgba = function(this1) {
-	return thx_color__$Rgbxa_Rgbxa_$Impl_$.toRgba(thx_color__$Hsl_Hsl_$Impl_$.toRgbxa(this1));
-};
 thx_color__$Hsl_Hsl_$Impl_$.toRgbx = function(this1) {
 	var channels = [thx_color__$Hsl_Hsl_$Impl_$._c(this1[0] + 120,this1[1],this1[2]),thx_color__$Hsl_Hsl_$Impl_$._c(this1[0],this1[1],this1[2]),thx_color__$Hsl_Hsl_$Impl_$._c(this1[0] - 120,this1[1],this1[2])];
 	return channels;
@@ -1138,9 +1137,6 @@ thx_color__$Hsla_Hsla_$Impl_$.create = function(hue,saturation,lightness,alpha) 
 	var channels = [thx_Floats.wrapCircular(hue,360),saturation < 0?0:saturation > 1?1:saturation,lightness < 0?0:lightness > 1?1:lightness,alpha < 0?0:alpha > 1?1:alpha];
 	return channels;
 };
-thx_color__$Hsla_Hsla_$Impl_$.toRgba = function(this1) {
-	return thx_color__$Rgbxa_Rgbxa_$Impl_$.toRgba(thx_color__$Hsla_Hsla_$Impl_$.toRgbxa(this1));
-};
 thx_color__$Hsla_Hsla_$Impl_$.toRgbxa = function(this1) {
 	var channels = [thx_color__$Hsla_Hsla_$Impl_$._c(this1[0] + 120,this1[1],this1[2]),thx_color__$Hsla_Hsla_$Impl_$._c(this1[0],this1[1],this1[2]),thx_color__$Hsla_Hsla_$Impl_$._c(this1[0] - 120,this1[1],this1[2]),this1[3]];
 	return channels;
@@ -1157,9 +1153,6 @@ thx_color__$Hsv_Hsv_$Impl_$.__name__ = true;
 thx_color__$Hsv_Hsv_$Impl_$.create = function(hue,saturation,lightness) {
 	var channels = [thx_Floats.wrapCircular(hue,360),saturation < 0?0:saturation > 1?1:saturation,lightness < 0?0:lightness > 1?1:lightness];
 	return channels;
-};
-thx_color__$Hsv_Hsv_$Impl_$.toRgba = function(this1) {
-	return thx_color__$Rgbxa_Rgbxa_$Impl_$.toRgba(thx_color__$Hsv_Hsv_$Impl_$.toRgbxa(this1));
 };
 thx_color__$Hsv_Hsv_$Impl_$.toRgbx = function(this1) {
 	if(this1[1] == 0) return [this1[2],this1[2],this1[2]];
@@ -1215,18 +1208,14 @@ thx_color__$Hsv_Hsv_$Impl_$.toRgbxa = function(this1) {
 };
 var thx_color__$Rgb_Rgb_$Impl_$ = {};
 thx_color__$Rgb_Rgb_$Impl_$.__name__ = true;
-thx_color__$Rgb_Rgb_$Impl_$.create = function(red,green,blue) {
-	return (red & 255) << 16 | (green & 255) << 8 | blue & 255;
-};
-thx_color__$Rgb_Rgb_$Impl_$.fromInts = function(arr) {
-	thx_ArrayInts.resize(arr,3);
-	return thx_color__$Rgb_Rgb_$Impl_$.create(arr[0],arr[1],arr[2]);
-};
 thx_color__$Rgb_Rgb_$Impl_$.withAlpha = function(this1,alpha) {
 	return thx_color__$Rgba_Rgba_$Impl_$.fromInts([thx_color__$Rgb_Rgb_$Impl_$.get_red(this1),thx_color__$Rgb_Rgb_$Impl_$.get_green(this1),thx_color__$Rgb_Rgb_$Impl_$.get_blue(this1),alpha]);
 };
 thx_color__$Rgb_Rgb_$Impl_$.toRgba = function(this1) {
 	return thx_color__$Rgb_Rgb_$Impl_$.withAlpha(this1,255);
+};
+thx_color__$Rgb_Rgb_$Impl_$.toRgbxa = function(this1) {
+	return thx_color__$Rgba_Rgba_$Impl_$.toRgbxa(thx_color__$Rgb_Rgb_$Impl_$.toRgba(this1));
 };
 thx_color__$Rgb_Rgb_$Impl_$.get_red = function(this1) {
 	return this1 >> 16 & 255;
@@ -1242,40 +1231,22 @@ thx_color__$Rgba_Rgba_$Impl_$.__name__ = true;
 thx_color__$Rgba_Rgba_$Impl_$.create = function(red,green,blue,alpha) {
 	return (red & 255) << 24 | (green & 255) << 16 | (blue & 255) << 8 | alpha & 255;
 };
-thx_color__$Rgba_Rgba_$Impl_$.fromFloats = function(arr) {
-	var ints = thx_ArrayFloats.resize(arr,4).map(function(_) {
-		return Math.round(_ * 255);
-	});
-	return thx_color__$Rgba_Rgba_$Impl_$.create(ints[0],ints[1],ints[2],ints[3]);
-};
 thx_color__$Rgba_Rgba_$Impl_$.fromInts = function(arr) {
 	thx_ArrayInts.resize(arr,4);
 	return thx_color__$Rgba_Rgba_$Impl_$.create(arr[0],arr[1],arr[2],arr[3]);
 };
-thx_color__$Rgba_Rgba_$Impl_$.fromString = function(color) {
-	var info = thx_color_parse_ColorParser.parseHex(color);
-	if(null == info) info = thx_color_parse_ColorParser.parseColor(color);
-	if(null == info) return null;
-	try {
-		var _g = info.name;
-		switch(_g) {
-		case "rgb":
-			return thx_color__$Rgb_Rgb_$Impl_$.toRgba(thx_color__$Rgb_Rgb_$Impl_$.fromInts(thx_color_parse_ColorParser.getInt8Channels(info.channels,3)));
-		case "rgba":
-			return thx_color__$Rgba_Rgba_$Impl_$.create(thx_color_parse_ColorParser.getInt8Channel(info.channels[0]),thx_color_parse_ColorParser.getInt8Channel(info.channels[1]),thx_color_parse_ColorParser.getInt8Channel(info.channels[2]),Math.round(thx_color_parse_ColorParser.getFloatChannel(info.channels[3]) * 255));
-		default:
-			return null;
-		}
-	} catch( e ) {
-		if (e instanceof js__$Boot_HaxeError) e = e.val;
-		return null;
-	}
-};
-thx_color__$Rgba_Rgba_$Impl_$.toString = function(this1) {
-	return "rgba(" + (this1 >> 24 & 255) + "," + (this1 >> 16 & 255) + "," + (this1 >> 8 & 255) + "," + (this1 & 255) / 255 + ")";
+thx_color__$Rgba_Rgba_$Impl_$.toRgbxa = function(this1) {
+	return thx_color__$Rgbxa_Rgbxa_$Impl_$.fromInts([this1 >> 24 & 255,this1 >> 16 & 255,this1 >> 8 & 255,this1 & 255]);
 };
 var thx_color__$Rgbx_Rgbx_$Impl_$ = {};
 thx_color__$Rgbx_Rgbx_$Impl_$.__name__ = true;
+thx_color__$Rgbx_Rgbx_$Impl_$.create = function(red,green,blue) {
+	return [red,green,blue];
+};
+thx_color__$Rgbx_Rgbx_$Impl_$.fromFloats = function(arr) {
+	thx_ArrayFloats.resize(arr,3);
+	return thx_color__$Rgbx_Rgbx_$Impl_$.create(arr[0],arr[1],arr[2]);
+};
 thx_color__$Rgbx_Rgbx_$Impl_$.withAlpha = function(this1,alpha) {
 	var channels = this1.concat([alpha < 0?0:alpha > 1?1:alpha]);
 	return channels;
@@ -1285,8 +1256,56 @@ thx_color__$Rgbx_Rgbx_$Impl_$.toRgbxa = function(this1) {
 };
 var thx_color__$Rgbxa_Rgbxa_$Impl_$ = {};
 thx_color__$Rgbxa_Rgbxa_$Impl_$.__name__ = true;
-thx_color__$Rgbxa_Rgbxa_$Impl_$.toRgba = function(this1) {
-	return thx_color__$Rgba_Rgba_$Impl_$.fromFloats([this1[0],this1[1],this1[2],this1[3]]);
+thx_color__$Rgbxa_Rgbxa_$Impl_$.create = function(red,green,blue,alpha) {
+	return [red < 0?0:red > 1?1:red,green < 0?0:green > 1?1:green,blue < 0?0:blue > 1?1:blue,alpha < 0?0:alpha > 1?1:alpha];
+};
+thx_color__$Rgbxa_Rgbxa_$Impl_$.fromFloats = function(arr) {
+	thx_ArrayFloats.resize(arr,4);
+	return thx_color__$Rgbxa_Rgbxa_$Impl_$.create(arr[0],arr[1],arr[2],arr[3]);
+};
+thx_color__$Rgbxa_Rgbxa_$Impl_$.fromInts = function(arr) {
+	thx_ArrayInts.resize(arr,4);
+	return thx_color__$Rgbxa_Rgbxa_$Impl_$.create(arr[0] / 255,arr[1] / 255,arr[2] / 255,arr[3] / 255);
+};
+thx_color__$Rgbxa_Rgbxa_$Impl_$.fromInt = function(value) {
+	return thx_color__$Rgbxa_Rgbxa_$Impl_$.create(((thx_color__$Rgbxa_Rgbxa_$Impl_$.get_red() & 255) << 24) / 255,((thx_color__$Rgbxa_Rgbxa_$Impl_$.get_green() & 255) << 16) / 255,((thx_color__$Rgbxa_Rgbxa_$Impl_$.get_blue() & 255) << 8) / 255,(thx_color__$Rgbxa_Rgbxa_$Impl_$.get_alpha() & 255) / 255);
+};
+thx_color__$Rgbxa_Rgbxa_$Impl_$.fromString = function(color) {
+	var info = thx_color_parse_ColorParser.parseHex(color);
+	if(null == info) info = thx_color_parse_ColorParser.parseColor(color);
+	if(null == info) return null;
+	try {
+		var _g = info.name;
+		switch(_g) {
+		case "rgb":
+			return thx_color__$Rgbx_Rgbx_$Impl_$.toRgbxa(thx_color__$Rgbx_Rgbx_$Impl_$.fromFloats(thx_color_parse_ColorParser.getFloatChannels(info.channels,3)));
+		case "rgba":
+			return thx_color__$Rgbxa_Rgbxa_$Impl_$.fromFloats(thx_color_parse_ColorParser.getFloatChannels(info.channels,4));
+		default:
+			return null;
+		}
+	} catch( e ) {
+		if (e instanceof js__$Boot_HaxeError) e = e.val;
+		return null;
+	}
+};
+thx_color__$Rgbxa_Rgbxa_$Impl_$.toString = function(this1) {
+	return "rgba(" + thx_Floats.roundTo(this1[0] * 100,6) + "%," + thx_Floats.roundTo(this1[1] * 100,6) + "%," + thx_Floats.roundTo(this1[2] * 100,6) + "%," + thx_Floats.roundTo(this1[3],6) + ")";
+};
+thx_color__$Rgbxa_Rgbxa_$Impl_$.get_red = function(this1) {
+	return Math.round(this1[0] * 255);
+};
+thx_color__$Rgbxa_Rgbxa_$Impl_$.get_green = function(this1) {
+	return Math.round(this1[1] * 255);
+};
+thx_color__$Rgbxa_Rgbxa_$Impl_$.get_blue = function(this1) {
+	return Math.round(this1[2] * 255);
+};
+thx_color__$Rgbxa_Rgbxa_$Impl_$.get_alpha = function(this1) {
+	return Math.round(this1[3] * 255);
+};
+thx_color__$Rgbxa_Rgbxa_$Impl_$.get_inSpace = function(this1) {
+	return this1[0] >= 0 && this1[0] <= 1 && this1[1] >= 0 && this1[1] <= 1 && this1[2] >= 0 && this1[2] <= 1 && this1[3] >= 0 && this1[3] <= 1;
 };
 var thx_color_parse_ColorParser = function() {
 	this.pattern_color = new EReg("^\\s*([^(]+)\\s*\\(([^)]*)\\)\\s*$","i");
@@ -1299,9 +1318,14 @@ thx_color_parse_ColorParser.parseColor = function(s) {
 thx_color_parse_ColorParser.parseHex = function(s) {
 	return thx_color_parse_ColorParser.parser.processHex(s);
 };
-thx_color_parse_ColorParser.getInt8Channels = function(channels,length) {
+thx_color_parse_ColorParser.getFloatChannels = function(channels,length,useInt8) {
+	if(useInt8 == null) useInt8 = true;
 	if(length != channels.length) throw new js__$Boot_HaxeError("invalid number of channels, expected " + length + " but it is " + channels.length);
-	return channels.map(thx_color_parse_ColorParser.getInt8Channel);
+	return channels.map((function(f,a2) {
+		return function(a1) {
+			return f(a1,a2);
+		};
+	})(thx_color_parse_ColorParser.getFloatChannel,useInt8));
 };
 thx_color_parse_ColorParser.getFloatChannel = function(channel,useInt8) {
 	if(useInt8 == null) useInt8 = true;
@@ -1329,22 +1353,6 @@ thx_color_parse_ColorParser.getFloatChannel = function(channel,useInt8) {
 	case 0:
 		var v6 = channel[2];
 		return v6 / 100;
-	}
-};
-thx_color_parse_ColorParser.getInt8Channel = function(channel) {
-	switch(channel[1]) {
-	case 5:
-		var v = channel[2];
-		if(v) return 1; else return 0;
-		break;
-	case 3:
-		var v1 = channel[2];
-		return v1;
-	case 0:
-		var v2 = channel[2];
-		return Math.round(255 * v2 / 100);
-	default:
-		throw new js__$Boot_HaxeError("unable to extract a valid int8 value");
 	}
 };
 thx_color_parse_ColorParser.prototype = {

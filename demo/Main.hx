@@ -78,22 +78,22 @@ class Main {
 
     MiniCanvas.create(200, 200)
       .checkboard()
-      .box(function(x, y) : Rgba
+      .box(function(x, y) : Rgbxa
         return Hsla.create(x * 360, 1, y, 0.75))
       .display("rainbowAlpha");
 
     MiniCanvas.create(200, 200)
-      .box(function(x, y) : Rgba
+      .box(function(x, y) : Rgbxa
         return Hsl.create(x * 360, 1, y))
       .display("rainbow");
 
     MiniCanvas.create(200, 20)
-      .gradientHorizontal(function(x) : Rgba
+      .gradientHorizontal(function(x) : Rgbxa
         return Hsv.create(x * 360, 1, 1))
       .display("gradientHorizontal");
 
     MiniCanvas.create(20, 200)
-      .gradientVertical(function(y) : Rgba
+      .gradientVertical(function(y) : Rgbxa
         return Hsv.create(y * 360, 1, 1))
       .display("gradientVertical");
 

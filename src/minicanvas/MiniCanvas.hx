@@ -10,7 +10,7 @@ import thx.Timer;
 #if !jslib
 import thx.color.*;
 #else
-typedef Rgba = String;
+typedef Rgbxa = String;
 #end
 
 #if expose @:expose @:keep #end
@@ -56,26 +56,29 @@ class MiniCanvas {
   }
 
   // drawing
-  public function border(weight = 1.0, ?color : Rgba) {
-    if(null == color) color = "Rgba(0,0,0,1)";
+  public function border(weight = 1.0, ?color : Rgbxa) {
+    if(null == color) color = Rgbxa.create(0,0,0,1);
     return rect(weight / 2, weight / 2, width - weight / 2, height - weight / 2, weight, color);
   }
 
-  public function box(handler : Float -> Float -> Rgba) {
+  public function box(handler : Float -> Float -> Rgbxa) {
     for(x in 0...width) {
       for(y in 0...height) {
-        ctx.fillStyle = (handler(x / width, y / height) : String);
-        ctx.fillRect(x, y, 1, 1);
+        var color = handler(x / width, y / height);
+        if(color.inSpace) {
+          ctx.fillStyle = (color : String);
+          ctx.fillRect(x, y, 1, 1);
+        }
       }
     }
     return this;
   }
 
-  public function checkboard(?size : Float = 8, ?light : Rgba, ?dark : Rgba) {
+  public function checkboard(?size : Float = 8, ?light : Rgbxa, ?dark : Rgbxa) {
     var cols   = (width / size).ceil(),
         rows   = (height / size).ceil(),
-        slight = (null == light ? ("Rgba(255,255,255,1)" : Rgba) : light),
-        sdark  = (null == dark  ? ("Rgba(204,204,204,1)" : Rgba) : dark);
+        slight = (null == light ? Rgbxa.create(1,1,1,1) : light),
+        sdark  = (null == dark  ? Rgbxa.create(0.5,0.5,0.5,1) : dark);
     for(c in 0...cols) {
       for(r in 0...rows) {
         ctx.fillStyle = ((c % 2 != r % 2 ? slight : sdark) : String);
@@ -85,7 +88,7 @@ class MiniCanvas {
     return this;
   }
 
-  public function circle(x : Float, y : Float, radius : Float, ?weight = 1.0, ?lineColor : Rgba, ?fillColor : Rgba) {
+  public function circle(x : Float, y : Float, radius : Float, ?weight = 1.0, ?lineColor : Rgbxa, ?fillColor : Rgbxa) {
     if(null != fillColor || null != lineColor)
       ctx.beginPath();
     if(null != fillColor)
@@ -108,7 +111,7 @@ class MiniCanvas {
     return this;
   }
 
-  public function cross(?ox : Float, ?oy : Float, ?weight = 1.0, ?color : Rgba) {
+  public function cross(?ox : Float, ?oy : Float, ?weight = 1.0, ?color : Rgbxa) {
     if(null == ox) ox = width / 2 + 0.5;
     if(null == oy) oy = height / 2 + 0.5;
     lineHorizontal(oy, weight, color);
@@ -116,19 +119,19 @@ class MiniCanvas {
     return this;
   }
 
-  public function dot(x : Float, y : Float, ?radius = 3.0, ?color : Rgba) {
+  public function dot(x : Float, y : Float, ?radius = 3.0, ?color : Rgbxa) {
     ctx.beginPath();
-    ctx.fillStyle = ((color.or("Rgba(204,51,0,1)") : Rgba) : String);
+    ctx.fillStyle = (color.or(Rgbxa.create(0.8,0.2,0,1)) : String);
     ctx.arc(x, y, radius, 0, Math.PI * 2, true);
     ctx.fill();
     return this;
   }
 
-  public function dotGrid(?dx = 10.0, ?dy = 10.0, ?radius = 1.0, ?color : Rgba, ?ox = 0.5, ?oy = 0.5) {
+  public function dotGrid(?dx = 10.0, ?dy = 10.0, ?radius = 1.0, ?color : Rgbxa, ?ox = 0.5, ?oy = 0.5) {
     if(dx == 0) throw 'invalid argument dx, should be different from zero';
     if(dy == 0) throw 'invalid argument dy, should be different from zero';
     if(null == color)
-      color = ("Rgba(170,170,170,1)" : Rgba);
+      color = Rgbxa.create(0.675,0.675,0.678,1);
     var py = oy % dy;
     while(py - radius <= height) {
       var px = ox % dx;
@@ -141,22 +144,22 @@ class MiniCanvas {
     return this;
   }
 
-  public function fill(color : Rgba) {
+  public function fill(color : Rgbxa) {
     ctx.fillStyle = (color : String);
     ctx.fillRect(0, 0, width, height);
     return this;
   }
 
-  public function grid(?dx = 10.0, ?dy = 10.0, ?weight = 1.0, ?color : Rgba, ?ox = 0.5, ?oy = 0.5) {
+  public function grid(?dx = 10.0, ?dy = 10.0, ?weight = 1.0, ?color : Rgbxa, ?ox = 0.5, ?oy = 0.5) {
     gridHorizontal(dy, weight, color, oy);
     gridVertical(dx, weight, color, ox);
     return this;
   }
 
-  public function gridHorizontal(?dy = 10.0, ?weight = 1.0, ?color : Rgba, ?oy = 0.5) {
+  public function gridHorizontal(?dy = 10.0, ?weight = 1.0, ?color : Rgbxa, ?oy = 0.5) {
     if(dy == 0) throw 'invalid argument dy, should be different from zero';
     if(null == color)
-      color = ("Rgba(204,204,204,1)" : Rgba);
+      color = Rgbxa.create(0.8,0.8,0.8,1);
     var py = oy % dy;
     while(py - weight / 2 <= height) {
       lineHorizontal(py, weight, color);
@@ -165,10 +168,10 @@ class MiniCanvas {
     return this;
   }
 
-  public function gridVertical(?dx = 10.0, ?weight = 1.0, ?color : Rgba, ?ox = 0.5) {
+  public function gridVertical(?dx = 10.0, ?weight = 1.0, ?color : Rgbxa, ?ox = 0.5) {
     if(dx == 0) throw 'invalid argument dx, should be different from zero';
     if(null == color)
-      color = ("Rgba(204,204,204,1)" : Rgba);
+      color = Rgbxa.create(0.8,0.8,0.8,1);
     var px = ox % dx;
     while(px - weight / 2 <= width) {
       lineVertical(px, weight, color);
@@ -177,25 +180,31 @@ class MiniCanvas {
     return this;
   }
 
-  public function gradientHorizontal(handler : Float -> Rgba) {
+  public function gradientHorizontal(handler : Float -> Rgbxa) {
     for(x in 0...width) {
-      ctx.fillStyle = (handler(x/width) : String);
-      ctx.fillRect(x, 0, 1, height);
+      var color = handler(x/width);
+      if(color.inSpace) {
+        ctx.fillStyle = (color : String);
+        ctx.fillRect(x, 0, 1, height);
+      }
     }
     return this;
   }
 
-  public function gradientVertical(handler : Float -> Rgba) {
+  public function gradientVertical(handler : Float -> Rgbxa) {
     for(y in 0...height) {
-      ctx.fillStyle = (handler(y/height) : String);
-      ctx.fillRect(0, y, width, 1);
+      var color = handler(y/height);
+      if(color.inSpace) {
+        ctx.fillStyle = (color : String);
+        ctx.fillRect(0, y, width, 1);
+      }
     }
     return this;
   }
 
-  public function line(x0 : Float, y0 : Float, x1 : Float, y1 : Float, ?weight = 1.0, ?color : Rgba) {
+  public function line(x0 : Float, y0 : Float, x1 : Float, y1 : Float, ?weight = 1.0, ?color : Rgbxa) {
     ctx.lineWidth = weight;
-    ctx.strokeStyle = (color.or(("Rgba(0,0,0,1)" : Rgba)) : String);
+    ctx.strokeStyle = (color.or(("Rgbxa(0,0,0,1)" : Rgbxa)) : String);
     ctx.beginPath();
     ctx.moveTo(x0, y0);
     ctx.lineTo(x1, y1);
@@ -203,13 +212,13 @@ class MiniCanvas {
     return this;
   }
 
-  public function lineHorizontal(offset : Float, ?weight = 1.0, ?color : Rgba)
+  public function lineHorizontal(offset : Float, ?weight = 1.0, ?color : Rgbxa)
     return line(0, offset, width, offset, weight, color);
 
-  public function lineVertical(offset : Float, ?weight = 1.0, ?color : Rgba)
+  public function lineVertical(offset : Float, ?weight = 1.0, ?color : Rgbxa)
     return line(offset, 0, offset, height, weight, color);
 
-  public function palette(colors : Array<Array<Rgba>>, ?padding = 2.0, ?margin = 0.0) {
+  public function palette(colors : Array<Array<Rgbxa>>, ?padding = 2.0, ?margin = 0.0) {
     var rows = colors.length,
         h    = (height - 2 * margin - (rows - 1) * padding) / rows,
         py   = margin;
@@ -217,9 +226,11 @@ class MiniCanvas {
       var cols = row.length,
           w    = (width - 2 * margin - (cols - 1) * padding) / cols,
           px   = margin;
-      for(col in row) {
-        ctx.fillStyle = (col : String);
-        ctx.fillRect(px, py, w, h);
+      for(color in row) {
+        if(color.inSpace) {
+          ctx.fillStyle = (color : String);
+          ctx.fillRect(px, py, w, h);
+        }
         px += w + padding;
       }
       py += h + padding;
@@ -227,7 +238,7 @@ class MiniCanvas {
     return this;
   }
 
-  public function rect(x0 : Float, y0 : Float, x1 : Float, y1 : Float, ?weight = 1.0, ?lineColor : Rgba, ?fillColor : Rgba) {
+  public function rect(x0 : Float, y0 : Float, x1 : Float, y1 : Float, ?weight = 1.0, ?lineColor : Rgbxa, ?fillColor : Rgbxa) {
     if(null != fillColor) {
       ctx.fillStyle = (fillColor : String);
       ctx.fillRect(x0, y0, x1 - x0, y1 - y0);
