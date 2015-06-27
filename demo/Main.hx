@@ -1,6 +1,7 @@
 import thx.math.random.PseudoRandom;
 
 import thx.color.*;
+import thx.color.palettes.*;
 
 using thx.Iterators;
 
@@ -45,13 +46,13 @@ class Main {
       avg = avg / w;
       mini
         .storeFrame()
-        .lineHorizontal(Math.round(h-min) + 0.5, 1, Color.red)
+        .lineHorizontal(Math.round(h-min) + 0.5, 1, Web.red)
         .storeFrame()
-        .lineHorizontal(Math.round(h-max) + 0.5, 1, Color.green)
+        .lineHorizontal(Math.round(h-max) + 0.5, 1, Web.green)
         .storeFrame()
-        .lineHorizontal(Math.round(h-(max + min)/2) + 0.5, 1, Color.cyan)
+        .lineHorizontal(Math.round(h-(max + min)/2) + 0.5, 1, Web.cyan)
         .storeFrame()
-        .lineHorizontal(Math.round(h-avg) + 0.5, 1, Color.blue)
+        .lineHorizontal(Math.round(h-avg) + 0.5, 1, Web.blue)
         .storeFrame(50);
     });
     interaction
