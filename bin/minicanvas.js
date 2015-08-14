@@ -34,12 +34,13 @@ HxOverrides.cca = function(s,index) {
 	return x;
 };
 HxOverrides.substr = function(s,pos,len) {
-	if(pos != null && pos != 0 && len != null && len < 0) return "";
-	if(len == null) len = s.length;
+	if(len == null) len = s.length; else if(len < 0) {
+		if(pos == 0) len = s.length + len; else return "";
+	}
 	if(pos < 0) {
 		pos = s.length + pos;
 		if(pos < 0) pos = 0;
-	} else if(len < 0) len = s.length + len - pos;
+	}
 	return s.substr(pos,len);
 };
 HxOverrides.iter = function(a) {
@@ -1057,10 +1058,10 @@ thx_Floats.wrapCircular = function(v,max) {
 };
 var thx_Ints = function() { };
 thx_Ints.__name__ = true;
-thx_Ints.canParse = function(s) {
-	return thx_Ints.pattern_parse.match(s);
-};
 thx_Ints.parse = function(s,base) {
+	if(null == base) {
+		if(s.substring(0,2) == "0x") base = 16; else base = 10;
+	}
 	var v = parseInt(s,base);
 	if(isNaN(v)) return null; else return v;
 };
@@ -1378,7 +1379,7 @@ thx_color_parse_ColorParser.prototype = {
 				if(thx_Floats.canParse(value)) return thx_color_parse_ChannelInfo.CIDegree(thx_Floats.parse(value) * 180 / Math.PI); else return null;
 				break;
 			case "":
-				if(thx_Ints.canParse(value)) {
+				if(value == "" + thx_Ints.parse(value)) {
 					var i = thx_Ints.parse(value);
 					if(i == 0) return thx_color_parse_ChannelInfo.CIBool(false); else if(i == 1) return thx_color_parse_ChannelInfo.CIBool(true); else if(i < 256) return thx_color_parse_ChannelInfo.CIInt8(i); else return thx_color_parse_ChannelInfo.CIInt(i);
 				} else if(thx_Floats.canParse(value)) return thx_color_parse_ChannelInfo.CIFloat(thx_Floats.parse(value)); else return null;
@@ -1860,7 +1861,6 @@ minicanvas_BrowserCanvas.parentNode = typeof document != 'undefined' && document
 minicanvas_NodeCanvas.defaultScaleMode = minicanvas_ScaleMode.NoScale;
 minicanvas_NodeCanvas.imagePath = "images";
 thx_Floats.pattern_parse = new EReg("^(\\+|-)?\\d+(\\.\\d+)?(e-?\\d+)?$","");
-thx_Ints.pattern_parse = new EReg("^[+-]?(\\d+|0x[0-9A-F]+)$","i");
 thx_color_parse_ColorParser.parser = new thx_color_parse_ColorParser();
 thx_color_parse_ColorParser.isPureHex = new EReg("^([0-9a-f]{2}){3,4}$","i");
 Main.main();
