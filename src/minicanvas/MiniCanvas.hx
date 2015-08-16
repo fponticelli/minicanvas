@@ -47,9 +47,9 @@ class MiniCanvas {
     init();
   }
 
-  public function display(name : String) {
+  public function display(?name : String) {
     deltaTime = Timer.time() - startTime;
-    if(!displayGenerationTime)
+    if(null != name && !displayGenerationTime)
       trace('generated "$name" in ${deltaTime.roundTo(2)}ms');
     nativeDisplay(name);
     return this;
@@ -530,7 +530,7 @@ class MiniCanvas {
   function init()
     return throw 'abstract method init()';
 
-  function nativeDisplay(name : String)
+  function nativeDisplay(?name : String)
     return throw 'abstract method nativeDisplay()';
 
   // private methods

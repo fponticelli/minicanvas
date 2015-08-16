@@ -38,13 +38,17 @@ class BrowserCanvas extends MiniCanvas {
     super(width, height, scaleMode);
   }
 
-  public function append(name : String) {
-    var figure = js.Browser.document.createElement("figure"),
-        caption = js.Browser.document.createElement("figcaption");
+  public function append(?name : String) {
+    var figure = js.Browser.document.createElement("figure");
     figure.className = "minicanvas";
     figure.appendChild(canvas);
-    caption.innerHTML = name.humanize() + (MiniCanvas.displayGenerationTime ? ' <span class="info">(${deltaTime.roundTo(2)}ms)</span>' : '');
-    figure.appendChild(caption);
+
+    if(null != name) {
+      var caption = js.Browser.document.createElement("figcaption");
+      caption.innerHTML = name.humanize() + (MiniCanvas.displayGenerationTime ? ' <span class="info">(${deltaTime.roundTo(2)}ms)</span>' : '');
+      figure.appendChild(caption);
+    }
+
     parentNode.appendChild(figure);
     if(null != _keyUp || null != _keyDown)
       canvas.focus();
@@ -71,7 +75,7 @@ class BrowserCanvas extends MiniCanvas {
   override function getDevicePixelRatio() return devicePixelRatio();
   override function getBackingStoreRatio() return backingStoreRatio();
 
-  override function nativeDisplay(name : String)
+  override function nativeDisplay(?name : String)
     append(name);
 
   override function beforeAnimate() {

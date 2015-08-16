@@ -325,7 +325,7 @@ minicanvas_MiniCanvas.create = function(width,height,scaleMode) {
 minicanvas_MiniCanvas.prototype = {
 	display: function(name) {
 		this.deltaTime = performance.now() - this.startTime;
-		if(!minicanvas_MiniCanvas.displayGenerationTime) console.log("generated \"" + name + "\" in " + thx_Floats.roundTo(this.deltaTime,2) + "ms");
+		if(null != name && !minicanvas_MiniCanvas.displayGenerationTime) console.log("generated \"" + name + "\" in " + thx_Floats.roundTo(this.deltaTime,2) + "ms");
 		this.nativeDisplay(name);
 		return this;
 	}
@@ -741,11 +741,13 @@ minicanvas_BrowserCanvas.__super__ = minicanvas_MiniCanvas;
 minicanvas_BrowserCanvas.prototype = $extend(minicanvas_MiniCanvas.prototype,{
 	append: function(name) {
 		var figure = window.document.createElement("figure");
-		var caption = window.document.createElement("figcaption");
 		figure.className = "minicanvas";
 		figure.appendChild(this.canvas);
-		caption.innerHTML = thx_Strings.humanize(name) + (minicanvas_MiniCanvas.displayGenerationTime?" <span class=\"info\">(" + thx_Floats.roundTo(this.deltaTime,2) + "ms)</span>":"");
-		figure.appendChild(caption);
+		if(null != name) {
+			var caption = window.document.createElement("figcaption");
+			caption.innerHTML = thx_Strings.humanize(name) + (minicanvas_MiniCanvas.displayGenerationTime?" <span class=\"info\">(" + thx_Floats.roundTo(this.deltaTime,2) + "ms)</span>":"");
+			figure.appendChild(caption);
+		}
 		minicanvas_BrowserCanvas.parentNode.appendChild(figure);
 		if(null != this._keyUp || null != this._keyDown) this.canvas.focus();
 	}
@@ -926,6 +928,7 @@ minicanvas_NodeCanvas.prototype = $extend(minicanvas_MiniCanvas.prototype,{
 	save: function(name) {
 		var encoder = this.ensureEncoder();
 		encoder.addFrame(this.ctx);
+		if(null == name) name = thx_Uuid.create();
 		encoder.save(name,function(file) {
 			console.log("saved " + file);
 		});
@@ -1089,6 +1092,43 @@ thx_Timer.delay = function(callback,delayms) {
 thx_Timer.clear = function(id) {
 	clearTimeout(id);
 	return;
+};
+var thx_Uuid = function() { };
+thx_Uuid.__name__ = true;
+thx_Uuid.create = function() {
+	var s = [];
+	var _g = 0;
+	while(_g < 8) {
+		var i = _g++;
+		s[i] = "0123456789ABCDEF".charAt(Math.floor(Math.random() * 16));
+	}
+	s[8] = "-";
+	var _g1 = 9;
+	while(_g1 < 13) {
+		var i1 = _g1++;
+		s[i1] = "0123456789ABCDEF".charAt(Math.floor(Math.random() * 16));
+	}
+	s[13] = "-";
+	s[14] = "4";
+	var _g2 = 15;
+	while(_g2 < 18) {
+		var i2 = _g2++;
+		s[i2] = "0123456789ABCDEF".charAt(Math.floor(Math.random() * 16));
+	}
+	s[18] = "-";
+	s[19] = "89AB".charAt(Math.floor(Math.random() * 16) & 3);
+	var _g3 = 20;
+	while(_g3 < 23) {
+		var i3 = _g3++;
+		s[i3] = "0123456789ABCDEF".charAt(Math.floor(Math.random() * 16));
+	}
+	s[23] = "-";
+	var _g4 = 24;
+	while(_g4 < 36) {
+		var i4 = _g4++;
+		s[i4] = "0123456789ABCDEF".charAt(Math.floor(Math.random() * 16));
+	}
+	return s.join("");
 };
 var thx_color__$Grey_Grey_$Impl_$ = {};
 thx_color__$Grey_Grey_$Impl_$.__name__ = true;

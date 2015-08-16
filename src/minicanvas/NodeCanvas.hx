@@ -21,9 +21,11 @@ class NodeCanvas extends MiniCanvas {
     super(width, height, scaleMode);
   }
 
-  public function save(name : String) {
+  public function save(?name : String) {
     var encoder = ensureEncoder();
     encoder.addFrame(ctx);
+    if(null == name)
+      name = thx.Uuid.create();
     encoder.save(name, function(file) untyped console.log('saved $file'));
   }
 
@@ -53,7 +55,7 @@ class NodeCanvas extends MiniCanvas {
   override function getDevicePixelRatio() return 1.0;
   override function getBackingStoreRatio() return 1.0;
 
-  override function nativeDisplay(name : String)
+  override function nativeDisplay(?name : String)
     save(name);
 
   var encoder : IEncoder;
