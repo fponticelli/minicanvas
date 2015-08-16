@@ -5,8 +5,8 @@
   "classPath": "src",
   "tags": ["js"],
   "description": "Mini-library to quickly generate canvas images (for the browser and nodejs).",
-  "releasenote": "Addressed API changes in thx.color.",
-  "version": "0.4.0",
+  "releasenote": "Make display name optional.",
+  "version": "0.5.0",
   "contributors": ["fponticelli"],
   "dependencies": {
     "thx.core": "",
