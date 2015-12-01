@@ -1038,6 +1038,9 @@ thx_ArrayInts.resize = function(array,length,fill) {
 	array.splice(length,array.length - length);
 	return array;
 };
+var thx_Either = { __ename__ : true, __constructs__ : ["Left","Right"] };
+thx_Either.Left = function(value) { var $x = ["Left",0,value]; $x.__enum__ = thx_Either; $x.toString = $estr; return $x; };
+thx_Either.Right = function(value) { var $x = ["Right",1,value]; $x.__enum__ = thx_Either; $x.toString = $estr; return $x; };
 var thx_Floats = function() { };
 thx_Floats.__name__ = true;
 thx_Floats.canParse = function(s) {
