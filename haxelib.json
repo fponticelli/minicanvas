@@ -5,8 +5,8 @@
   "classPath": "src",
   "tags": ["js"],
   "description": "Mini-library to quickly generate canvas images (for the browser and nodejs).",
-  "releasenote": "Make display name optional.",
-  "version": "0.5.0",
+  "releasenote": "Fixed thx.core compatibility issue.",
+  "version": "0.5.1",
   "contributors": ["fponticelli"],
   "dependencies": {
     "thx.core": "",
